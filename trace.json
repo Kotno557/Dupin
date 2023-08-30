@@ -4,7 +4,7 @@
 		"33434" : 
 		[
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
 				"name" : "_gateway",
 				"nat_id" : 0,
@@ -20,23 +20,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 36237,
-						"src" : "192.168.43.59",
-						"ttl" : 64
+						"dst" : "192.168.0.5",
+						"id" : 6619,
+						"src" : "192.168.0.1",
+						"ttl" : 65
 					},
-					"timestamp" : "1687237531.963637"
+					"timestamp" : "1693427439.389162"
 				},
-				"rtt_usec" : 4628,
+				"rtt_usec" : 3172,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 1
 					},
-					"timestamp" : "1687237531.959009",
+					"timestamp" : "1693427439.385990",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -46,51 +46,53 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "10.159.65.128",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 0,
-						"src" : "10.159.65.128",
-						"ttl" : 253
-					},
-					"timestamp" : "1687237532.63572"
-				},
-				"rtt_usec" : 93881,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 2
 					},
-					"timestamp" : "1687237531.969691",
+					"timestamp" : "1693427439.397180",
 					"udp" : 
 					{
 						"dport" : 33434,
 						"sport" : 12345
 					}
-				},
-				"zerottl_forwarding_bug" : true
+				}
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "10.159.67.55",
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 3
+					},
+					"timestamp" : "1693427439.408304",
+					"udp" : 
+					{
+						"dport" : 33434,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25516,
+				"is_last" : false,
+				"name" : "pths-3311.hinet.net",
 				"nat_id" : 0,
 				"received" : 
 				{
@@ -104,65 +106,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9398,
-						"src" : "10.159.67.55",
-						"ttl" : 252
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "168.95.50.10",
+						"ttl" : 253
 					},
-					"timestamp" : "1687237532.8835"
+					"timestamp" : "1693427439.429128"
 				},
-				"rtt_usec" : 28032,
+				"rtt_usec" : 10189,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 3
-					},
-					"timestamp" : "1687237531.980803",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "10.159.67.65",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9413,
-						"src" : "10.159.67.65",
-						"ttl" : 251
-					},
-					"timestamp" : "1687237532.19219"
-				},
-				"rtt_usec" : 27356,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 4
 					},
-					"timestamp" : "1687237531.991863",
+					"timestamp" : "1693427439.418939",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -172,74 +132,90 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "210-65-126-194.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9427,
-						"src" : "210.65.126.194",
-						"ttl" : 250
-					},
-					"timestamp" : "1687237532.24897"
-				},
-				"rtt_usec" : 22380,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 5
 					},
-					"timestamp" : "1687237532.2517",
+					"timestamp" : "1693427439.431111",
 					"udp" : 
 					{
 						"dport" : 33434,
 						"sport" : 12345
 					}
-				},
-				"zerottl_forwarding_bug" : false
+				}
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "",
-				"received" : null,
-				"rtt_usec" : null,
+				"name" : "tyfo-3031.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : 
+						[
+							{
+								"class" : 1,
+								"payload" : "557fd101",
+								"size" : 8,
+								"type" : 1
+							}
+						],
+						"mpls_labels" : 
+						[
+							{
+								"bottom_of_stack" : 1,
+								"experimental" : 0,
+								"label" : 350205,
+								"ttl" : 1
+							}
+						],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 10794,
+						"src" : "220.128.8.174",
+						"ttl" : 249
+					},
+					"timestamp" : "1693427439.470798"
+				},
+				"rtt_usec" : 28063,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 6
 					},
-					"timestamp" : "1687237532.13954",
+					"timestamp" : "1693427439.442735",
 					"udp" : 
 					{
 						"dport" : 33434,
 						"sport" : 12345
 					}
-				}
+				},
+				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "tpdt-3032.hinet.net",
-				"nat_id" : 49607,
+				"name" : "tyfo-3335.hinet.net",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -252,23 +228,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9452,
-						"src" : "220.128.25.14",
-						"ttl" : 246
+						"dst" : "192.168.0.5",
+						"id" : 49291,
+						"src" : "220.128.8.17",
+						"ttl" : 250
 					},
-					"timestamp" : "1687237532.52870"
+					"timestamp" : "1693427439.484105"
 				},
-				"rtt_usec" : 28124,
+				"rtt_usec" : 5307,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 7
 					},
-					"timestamp" : "1687237532.24746",
+					"timestamp" : "1693427439.478798",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -278,10 +254,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "220-128-4-161.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "72.14.213.90",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -294,23 +270,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9478,
-						"src" : "220.128.4.161",
-						"ttl" : 56
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "72.14.213.90",
+						"ttl" : 249
 					},
-					"timestamp" : "1687237532.75432"
+					"timestamp" : "1693427439.516154"
 				},
-				"rtt_usec" : 39926,
+				"rtt_usec" : 18544,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 8
 					},
-					"timestamp" : "1687237532.35506",
+					"timestamp" : "1693427439.497610",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -320,10 +296,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "220-128-30-241.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "108.170.244.33",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -336,23 +312,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9490,
-						"src" : "220.128.30.241",
+						"dst" : "192.168.0.5",
+						"id" : 37072,
+						"src" : "108.170.244.33",
 						"ttl" : 55
 					},
-					"timestamp" : "1687237532.81098"
+					"timestamp" : "1693427439.552706"
 				},
-				"rtt_usec" : 33931,
+				"rtt_usec" : 36565,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 9
 					},
-					"timestamp" : "1687237532.47167",
+					"timestamp" : "1693427439.516141",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -362,10 +338,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
+				"flowhash" : 25516,
 				"is_last" : false,
-				"name" : "211-22-33-237.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "142.251.226.171",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -378,23 +354,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9529,
-						"src" : "211.22.33.237",
-						"ttl" : 242
+						"dst" : "192.168.0.5",
+						"id" : 12793,
+						"src" : "142.251.226.171",
+						"ttl" : 53
 					},
-					"timestamp" : "1687237532.113529"
+					"timestamp" : "1693427439.558288"
 				},
-				"rtt_usec" : 55044,
+				"rtt_usec" : 27817,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 10
 					},
-					"timestamp" : "1687237532.58485",
+					"timestamp" : "1693427439.530471",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -404,39 +380,39 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "223.120.2.53",
-				"nat_id" : 49607,
+				"flowhash" : 25516,
+				"is_last" : true,
+				"name" : "dns.google",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
 					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
+						"code" : 3,
+						"description" : "Destination port unreachable",
 						"extensions" : [],
 						"mpls_labels" : [],
-						"type" : 0
+						"type" : 3
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9560,
-						"src" : "223.120.2.53",
-						"ttl" : 243
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "8.8.8.8",
+						"ttl" : 116
 					},
-					"timestamp" : "1687237532.140217"
+					"timestamp" : "1693427439.569671"
 				},
-				"rtt_usec" : 69851,
+				"rtt_usec" : 26431,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 11
 					},
-					"timestamp" : "1687237532.70366",
+					"timestamp" : "1693427439.543240",
 					"udp" : 
 					{
 						"dport" : 33434,
@@ -444,370 +420,12 @@
 					}
 				},
 				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "223.120.2.42",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9561,
-						"src" : "223.120.2.42",
-						"ttl" : 244
-					},
-					"timestamp" : "1687237532.132749"
-				},
-				"rtt_usec" : 51187,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 12
-					},
-					"timestamp" : "1687237532.81562",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "223.120.22.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9628,
-						"src" : "223.120.22.142",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237532.189145"
-				},
-				"rtt_usec" : 96816,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 13
-					},
-					"timestamp" : "1687237532.92329",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "221.183.55.110",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9645,
-						"src" : "221.183.55.110",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237532.205658"
-				},
-				"rtt_usec" : 102035,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 14
-					},
-					"timestamp" : "1687237532.103623",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "221.183.25.201",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9644,
-						"src" : "221.183.25.201",
-						"ttl" : 241
-					},
-					"timestamp" : "1687237532.200370"
-				},
-				"rtt_usec" : 85990,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 15
-					},
-					"timestamp" : "1687237532.114380",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "221.183.89.118",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9672,
-						"src" : "221.183.89.118",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237532.223873"
-				},
-				"rtt_usec" : 98452,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 16
-					},
-					"timestamp" : "1687237532.125421",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "221.183.49.130",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9677,
-						"src" : "221.183.49.130",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237532.234157"
-				},
-				"rtt_usec" : 98049,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 17
-					},
-					"timestamp" : "1687237532.136108",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "111.13.0.174",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9705,
-						"src" : "111.13.0.174",
-						"ttl" : 236
-					},
-					"timestamp" : "1687237532.250300"
-				},
-				"rtt_usec" : 103605,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 18
-					},
-					"timestamp" : "1687237532.146695",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : false,
-				"name" : "39.156.27.5",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9708,
-						"src" : "39.156.27.5",
-						"ttl" : 47
-					},
-					"timestamp" : "1687237532.265062"
-				},
-				"rtt_usec" : 107685,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 19
-					},
-					"timestamp" : "1687237532.157377",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63435,
-				"is_last" : true,
-				"name" : "",
-				"received" : null,
-				"rtt_usec" : null,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 20
-					},
-					"timestamp" : "1687237532.169502",
-					"udp" : 
-					{
-						"dport" : 33434,
-						"sport" : 12345
-					}
-				}
 			}
 		],
 		"33435" : 
 		[
 			{
-				"flowhash" : 63436,
+				"flowhash" : 25517,
 				"is_last" : false,
 				"name" : "_gateway",
 				"nat_id" : 0,
@@ -823,23 +441,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 36265,
-						"src" : "192.168.43.59",
-						"ttl" : 64
+						"dst" : "192.168.0.5",
+						"id" : 6620,
+						"src" : "192.168.0.1",
+						"ttl" : 65
 					},
-					"timestamp" : "1687237532.309608"
+					"timestamp" : "1693427439.865090"
 				},
-				"rtt_usec" : 5897,
+				"rtt_usec" : 11546,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 1
 					},
-					"timestamp" : "1687237532.303711",
+					"timestamp" : "1693427439.853544",
 					"udp" : 
 					{
 						"dport" : 33435,
@@ -849,175 +467,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "10.159.65.128",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 0,
-						"src" : "10.159.65.128",
-						"ttl" : 253
-					},
-					"timestamp" : "1687237532.477106"
-				},
-				"rtt_usec" : 161937,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 2
-					},
-					"timestamp" : "1687237532.315169",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : true
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "10.159.67.55",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9815,
-						"src" : "10.159.67.55",
-						"ttl" : 252
-					},
-					"timestamp" : "1687237532.346047"
-				},
-				"rtt_usec" : 20285,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 3
-					},
-					"timestamp" : "1687237532.325762",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "10.159.67.66",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9842,
-						"src" : "10.159.67.66",
-						"ttl" : 251
-					},
-					"timestamp" : "1687237532.366364"
-				},
-				"rtt_usec" : 30008,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 4
-					},
-					"timestamp" : "1687237532.336356",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "210-65-126-198.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9851,
-						"src" : "210.65.126.198",
-						"ttl" : 249
-					},
-					"timestamp" : "1687237532.379911"
-				},
-				"rtt_usec" : 32595,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 5
-					},
-					"timestamp" : "1687237532.347316",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
+				"flowhash" : 25517,
 				"is_last" : false,
 				"name" : "",
 				"received" : null,
@@ -1026,11 +476,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 6
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 2
 					},
-					"timestamp" : "1687237532.359049",
+					"timestamp" : "1693427439.870188",
 					"udp" : 
 					{
 						"dport" : 33435,
@@ -1039,10 +489,32 @@
 				}
 			},
 			{
-				"flowhash" : 63436,
+				"flowhash" : 25517,
 				"is_last" : false,
-				"name" : "tpdt-3032.hinet.net",
-				"nat_id" : 49607,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 3
+					},
+					"timestamp" : "1693427439.883306",
+					"udp" : 
+					{
+						"dport" : 33435,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25517,
+				"is_last" : false,
+				"name" : "pths-3311.hinet.net",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -1055,23 +527,145 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9882,
-						"src" : "220.128.25.38",
-						"ttl" : 246
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "168.95.50.10",
+						"ttl" : 253
 					},
-					"timestamp" : "1687237532.402740"
+					"timestamp" : "1693427439.911202"
 				},
-				"rtt_usec" : 33069,
+				"rtt_usec" : 17160,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 4
+					},
+					"timestamp" : "1693427439.894042",
+					"udp" : 
+					{
+						"dport" : 33435,
+						"sport" : 12345
+					}
+				},
+				"zerottl_forwarding_bug" : false
+			},
+			{
+				"flowhash" : 25517,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 5
+					},
+					"timestamp" : "1693427439.910445",
+					"udp" : 
+					{
+						"dport" : 33435,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25517,
+				"is_last" : false,
+				"name" : "tyfo-3031.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : 
+						[
+							{
+								"class" : 1,
+								"payload" : "557fe101",
+								"size" : 8,
+								"type" : 1
+							}
+						],
+						"mpls_labels" : 
+						[
+							{
+								"bottom_of_stack" : 1,
+								"experimental" : 0,
+								"label" : 350206,
+								"ttl" : 1
+							}
+						],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 21734,
+						"src" : "220.128.8.130",
+						"ttl" : 249
+					},
+					"timestamp" : "1693427439.945800"
+				},
+				"rtt_usec" : 22151,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 6
+					},
+					"timestamp" : "1693427439.923649",
+					"udp" : 
+					{
+						"dport" : 33435,
+						"sport" : 12345
+					}
+				},
+				"zerottl_forwarding_bug" : false
+			},
+			{
+				"flowhash" : 25517,
+				"is_last" : false,
+				"name" : "tylc-3336.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : [],
+						"mpls_labels" : [],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 30607,
+						"src" : "220.128.8.21",
+						"ttl" : 250
+					},
+					"timestamp" : "1693427439.956927"
+				},
+				"rtt_usec" : 21045,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 7
 					},
-					"timestamp" : "1687237532.369671",
+					"timestamp" : "1693427439.935882",
 					"udp" : 
 					{
 						"dport" : 33435,
@@ -1081,10 +675,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63436,
+				"flowhash" : 25517,
 				"is_last" : false,
-				"name" : "220-128-4-153.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "72.14.209.178",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -1097,23 +691,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 9894,
-						"src" : "220.128.4.153",
-						"ttl" : 56
+						"dst" : "192.168.0.5",
+						"id" : 30385,
+						"src" : "72.14.209.178",
+						"ttl" : 53
 					},
-					"timestamp" : "1687237532.414109"
+					"timestamp" : "1693427439.994788"
 				},
-				"rtt_usec" : 33541,
+				"rtt_usec" : 42729,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 8
 					},
-					"timestamp" : "1687237532.380568",
+					"timestamp" : "1693427439.952059",
 					"udp" : 
 					{
 						"dport" : 33435,
@@ -1123,427 +717,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "220-128-30-233.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9902,
-						"src" : "220.128.30.233",
-						"ttl" : 55
-					},
-					"timestamp" : "1687237532.419811"
-				},
-				"rtt_usec" : 28350,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 9
-					},
-					"timestamp" : "1687237532.391461",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "211-22-33-237.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9942,
-						"src" : "211.22.33.237",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237532.469693"
-				},
-				"rtt_usec" : 67157,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 10
-					},
-					"timestamp" : "1687237532.402536",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "223.120.2.53",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9943,
-						"src" : "223.120.2.53",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237532.464060"
-				},
-				"rtt_usec" : 50945,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 11
-					},
-					"timestamp" : "1687237532.413115",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "223.120.2.42",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 9961,
-						"src" : "223.120.2.42",
-						"ttl" : 244
-					},
-					"timestamp" : "1687237532.483878"
-				},
-				"rtt_usec" : 59063,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 12
-					},
-					"timestamp" : "1687237532.424815",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "223.120.22.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10004,
-						"src" : "223.120.22.142",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237532.521179"
-				},
-				"rtt_usec" : 84882,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 13
-					},
-					"timestamp" : "1687237532.436297",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "221.183.55.106",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10028,
-						"src" : "221.183.55.106",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237532.540004"
-				},
-				"rtt_usec" : 91023,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 14
-					},
-					"timestamp" : "1687237532.448981",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "221.183.46.250",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10045,
-						"src" : "221.183.46.250",
-						"ttl" : 241
-					},
-					"timestamp" : "1687237532.551493"
-				},
-				"rtt_usec" : 91542,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 15
-					},
-					"timestamp" : "1687237532.459951",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "221.183.89.102",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10072,
-						"src" : "221.183.89.102",
-						"ttl" : 240
-					},
-					"timestamp" : "1687237532.579643"
-				},
-				"rtt_usec" : 105562,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 16
-					},
-					"timestamp" : "1687237532.474081",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "221.183.49.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10070,
-						"src" : "221.183.49.142",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237532.571325"
-				},
-				"rtt_usec" : 86050,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 17
-					},
-					"timestamp" : "1687237532.485275",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
-				"is_last" : false,
-				"name" : "39.156.27.1",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10099,
-						"src" : "39.156.27.1",
-						"ttl" : 47
-					},
-					"timestamp" : "1687237532.590129"
-				},
-				"rtt_usec" : 92873,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 18
-					},
-					"timestamp" : "1687237532.497256",
-					"udp" : 
-					{
-						"dport" : 33435,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63436,
+				"flowhash" : 25517,
 				"is_last" : true,
 				"name" : "",
 				"received" : null,
@@ -1552,11 +726,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 19
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 9
 					},
-					"timestamp" : "1687237532.508825",
+					"timestamp" : "1693427439.964350",
 					"udp" : 
 					{
 						"dport" : 33435,
@@ -1568,7 +742,7 @@
 		"33436" : 
 		[
 			{
-				"flowhash" : 63437,
+				"flowhash" : 25518,
 				"is_last" : false,
 				"name" : "_gateway",
 				"nat_id" : 0,
@@ -1584,23 +758,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 36290,
-						"src" : "192.168.43.59",
-						"ttl" : 64
+						"dst" : "192.168.0.5",
+						"id" : 6621,
+						"src" : "192.168.0.1",
+						"ttl" : 65
 					},
-					"timestamp" : "1687237532.648562"
+					"timestamp" : "1693427440.341115"
 				},
-				"rtt_usec" : 5614,
+				"rtt_usec" : 11161,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 1
 					},
-					"timestamp" : "1687237532.642948",
+					"timestamp" : "1693427440.329954",
 					"udp" : 
 					{
 						"dport" : 33436,
@@ -1610,175 +784,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "10.159.65.128",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 0,
-						"src" : "10.159.65.128",
-						"ttl" : 253
-					},
-					"timestamp" : "1687237532.699385"
-				},
-				"rtt_usec" : 45966,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 2
-					},
-					"timestamp" : "1687237532.653419",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : true
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "10.159.67.55",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10206,
-						"src" : "10.159.67.55",
-						"ttl" : 252
-					},
-					"timestamp" : "1687237532.684173"
-				},
-				"rtt_usec" : 18954,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 3
-					},
-					"timestamp" : "1687237532.665219",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "10.159.67.66",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10225,
-						"src" : "10.159.67.66",
-						"ttl" : 251
-					},
-					"timestamp" : "1687237532.704880"
-				},
-				"rtt_usec" : 27829,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 4
-					},
-					"timestamp" : "1687237532.677051",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "210-65-126-198.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10234,
-						"src" : "210.65.126.198",
-						"ttl" : 249
-					},
-					"timestamp" : "1687237532.716066"
-				},
-				"rtt_usec" : 27426,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 5
-					},
-					"timestamp" : "1687237532.688640",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
+				"flowhash" : 25518,
 				"is_last" : false,
 				"name" : "",
 				"received" : null,
@@ -1787,11 +793,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 6
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 2
 					},
-					"timestamp" : "1687237532.699970",
+					"timestamp" : "1693427440.344533",
 					"udp" : 
 					{
 						"dport" : 33436,
@@ -1800,10 +806,32 @@
 				}
 			},
 			{
-				"flowhash" : 63437,
+				"flowhash" : 25518,
 				"is_last" : false,
-				"name" : "220-128-24-166.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 3
+					},
+					"timestamp" : "1693427440.355619",
+					"udp" : 
+					{
+						"dport" : 33436,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25518,
+				"is_last" : false,
+				"name" : "pths-3311.hinet.net",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -1816,23 +844,109 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 10264,
-						"src" : "220.128.24.166",
-						"ttl" : 246
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "168.95.50.10",
+						"ttl" : 253
 					},
-					"timestamp" : "1687237532.739119"
+					"timestamp" : "1693427440.382383"
 				},
-				"rtt_usec" : 27883,
+				"rtt_usec" : 13684,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 4
+					},
+					"timestamp" : "1693427440.368699",
+					"udp" : 
+					{
+						"dport" : 33436,
+						"sport" : 12345
+					}
+				},
+				"zerottl_forwarding_bug" : false
+			},
+			{
+				"flowhash" : 25518,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 5
+					},
+					"timestamp" : "1693427440.380452",
+					"udp" : 
+					{
+						"dport" : 33436,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25518,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 6
+					},
+					"timestamp" : "1693427440.391731",
+					"udp" : 
+					{
+						"dport" : 33436,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25518,
+				"is_last" : false,
+				"name" : "tyfo-3335.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : [],
+						"mpls_labels" : [],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 49408,
+						"src" : "220.128.8.17",
+						"ttl" : 250
+					},
+					"timestamp" : "1693427440.428520"
+				},
+				"rtt_usec" : 18664,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 7
 					},
-					"timestamp" : "1687237532.711236",
+					"timestamp" : "1693427440.409856",
 					"udp" : 
 					{
 						"dport" : 33436,
@@ -1842,10 +956,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63437,
+				"flowhash" : 25518,
 				"is_last" : false,
-				"name" : "220-128-1-13.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "142.250.169.122",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -1858,23 +972,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 10294,
-						"src" : "220.128.1.13",
-						"ttl" : 56
+						"dst" : "192.168.0.5",
+						"id" : 14118,
+						"src" : "142.250.169.122",
+						"ttl" : 54
 					},
-					"timestamp" : "1687237532.763318"
+					"timestamp" : "1693427440.440392"
 				},
-				"rtt_usec" : 40853,
+				"rtt_usec" : 19825,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 8
 					},
-					"timestamp" : "1687237532.722465",
+					"timestamp" : "1693427440.420567",
 					"udp" : 
 					{
 						"dport" : 33436,
@@ -1884,469 +998,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "FSE1-3101.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10295,
-						"src" : "220.128.30.229",
-						"ttl" : 55
-					},
-					"timestamp" : "1687237532.769295"
-				},
-				"rtt_usec" : 35436,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 9
-					},
-					"timestamp" : "1687237532.733859",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "211-22-33-237.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10345,
-						"src" : "211.22.33.237",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237532.809816"
-				},
-				"rtt_usec" : 63915,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 10
-					},
-					"timestamp" : "1687237532.745901",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "223.120.2.53",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10354,
-						"src" : "223.120.2.53",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237532.825025"
-				},
-				"rtt_usec" : 67588,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 11
-					},
-					"timestamp" : "1687237532.757437",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "223.120.2.42",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10363,
-						"src" : "223.120.2.42",
-						"ttl" : 244
-					},
-					"timestamp" : "1687237532.835881"
-				},
-				"rtt_usec" : 66789,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 12
-					},
-					"timestamp" : "1687237532.769092",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "223.120.22.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10419,
-						"src" : "223.120.22.142",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237532.873213"
-				},
-				"rtt_usec" : 93461,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 13
-					},
-					"timestamp" : "1687237532.779752",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "221.183.55.110",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10431,
-						"src" : "221.183.55.110",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237532.885904"
-				},
-				"rtt_usec" : 94660,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 14
-					},
-					"timestamp" : "1687237532.791244",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "221.183.25.201",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10442,
-						"src" : "221.183.25.201",
-						"ttl" : 241
-					},
-					"timestamp" : "1687237532.891954"
-				},
-				"rtt_usec" : 89742,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 15
-					},
-					"timestamp" : "1687237532.802212",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "221.183.89.122",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10476,
-						"src" : "221.183.89.122",
-						"ttl" : 238
-					},
-					"timestamp" : "1687237532.921800"
-				},
-				"rtt_usec" : 108326,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 16
-					},
-					"timestamp" : "1687237532.813474",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "221.183.49.134",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10475,
-						"src" : "221.183.49.134",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237532.915369"
-				},
-				"rtt_usec" : 90473,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 17
-					},
-					"timestamp" : "1687237532.824896",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "111.13.0.174",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10502,
-						"src" : "111.13.0.174",
-						"ttl" : 236
-					},
-					"timestamp" : "1687237532.933281"
-				},
-				"rtt_usec" : 87497,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 18
-					},
-					"timestamp" : "1687237532.845784",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
-				"is_last" : false,
-				"name" : "39.156.27.5",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10522,
-						"src" : "39.156.27.5",
-						"ttl" : 47
-					},
-					"timestamp" : "1687237532.950022"
-				},
-				"rtt_usec" : 92451,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 19
-					},
-					"timestamp" : "1687237532.857571",
-					"udp" : 
-					{
-						"dport" : 33436,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63437,
+				"flowhash" : 25518,
 				"is_last" : true,
 				"name" : "",
 				"received" : null,
@@ -2355,11 +1007,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 20
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 9
 					},
-					"timestamp" : "1687237532.868782",
+					"timestamp" : "1693427440.432418",
 					"udp" : 
 					{
 						"dport" : 33436,
@@ -2371,7 +1023,7 @@
 		"33437" : 
 		[
 			{
-				"flowhash" : 63438,
+				"flowhash" : 25519,
 				"is_last" : false,
 				"name" : "_gateway",
 				"nat_id" : 0,
@@ -2387,23 +1039,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 36306,
-						"src" : "192.168.43.59",
-						"ttl" : 64
+						"dst" : "192.168.0.5",
+						"id" : 6622,
+						"src" : "192.168.0.1",
+						"ttl" : 65
 					},
-					"timestamp" : "1687237533.1899"
+					"timestamp" : "1693427440.702492"
 				},
-				"rtt_usec" : 5964,
+				"rtt_usec" : 7596,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 1
 					},
-					"timestamp" : "1687237532.995935",
+					"timestamp" : "1693427440.694896",
 					"udp" : 
 					{
 						"dport" : 33437,
@@ -2413,175 +1065,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "10.159.65.128",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 0,
-						"src" : "10.159.65.128",
-						"ttl" : 253
-					},
-					"timestamp" : "1687237533.121130"
-				},
-				"rtt_usec" : 113933,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 2
-					},
-					"timestamp" : "1687237533.7197",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : true
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "10.159.67.55",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10627,
-						"src" : "10.159.67.55",
-						"ttl" : 252
-					},
-					"timestamp" : "1687237533.46690"
-				},
-				"rtt_usec" : 28432,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 3
-					},
-					"timestamp" : "1687237533.18258",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "10.159.67.66",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10644,
-						"src" : "10.159.67.66",
-						"ttl" : 251
-					},
-					"timestamp" : "1687237533.57690"
-				},
-				"rtt_usec" : 28625,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 4
-					},
-					"timestamp" : "1687237533.29065",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "210-65-126-198.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10657,
-						"src" : "210.65.126.198",
-						"ttl" : 249
-					},
-					"timestamp" : "1687237533.69281"
-				},
-				"rtt_usec" : 29412,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 5
-					},
-					"timestamp" : "1687237533.39869",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
+				"flowhash" : 25519,
 				"is_last" : false,
 				"name" : "",
 				"received" : null,
@@ -2590,11 +1074,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 6
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 2
 					},
-					"timestamp" : "1687237533.51269",
+					"timestamp" : "1693427440.705688",
 					"udp" : 
 					{
 						"dport" : 33437,
@@ -2603,10 +1087,32 @@
 				}
 			},
 			{
-				"flowhash" : 63438,
+				"flowhash" : 25519,
 				"is_last" : false,
-				"name" : "tpdb-3031.hinet.net",
-				"nat_id" : 49607,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 3
+					},
+					"timestamp" : "1693427440.716529",
+					"udp" : 
+					{
+						"dport" : 33437,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25519,
+				"is_last" : false,
+				"name" : "pths-3311.hinet.net",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -2619,23 +1125,109 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 10686,
-						"src" : "220.128.24.106",
-						"ttl" : 246
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "168.95.50.10",
+						"ttl" : 253
 					},
-					"timestamp" : "1687237533.93135"
+					"timestamp" : "1693427440.746141"
 				},
-				"rtt_usec" : 30779,
+				"rtt_usec" : 15973,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 4
+					},
+					"timestamp" : "1693427440.730168",
+					"udp" : 
+					{
+						"dport" : 33437,
+						"sport" : 12345
+					}
+				},
+				"zerottl_forwarding_bug" : false
+			},
+			{
+				"flowhash" : 25519,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 5
+					},
+					"timestamp" : "1693427440.740585",
+					"udp" : 
+					{
+						"dport" : 33437,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25519,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 6
+					},
+					"timestamp" : "1693427440.752453",
+					"udp" : 
+					{
+						"dport" : 33437,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25519,
+				"is_last" : false,
+				"name" : "tylc-3336.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : [],
+						"mpls_labels" : [],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 11079,
+						"src" : "220.128.8.21",
+						"ttl" : 250
+					},
+					"timestamp" : "1693427440.787994"
+				},
+				"rtt_usec" : 24335,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 7
 					},
-					"timestamp" : "1687237533.62356",
+					"timestamp" : "1693427440.763659",
 					"udp" : 
 					{
 						"dport" : 33437,
@@ -2645,10 +1237,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63438,
+				"flowhash" : 25519,
 				"is_last" : false,
-				"name" : "220-128-1-13.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "142.250.169.120",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -2661,23 +1253,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 10718,
-						"src" : "220.128.1.13",
-						"ttl" : 56
+						"dst" : "192.168.0.5",
+						"id" : 16225,
+						"src" : "142.250.169.120",
+						"ttl" : 53
 					},
-					"timestamp" : "1687237533.115710"
+					"timestamp" : "1693427440.795105"
 				},
-				"rtt_usec" : 41663,
+				"rtt_usec" : 20640,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 8
 					},
-					"timestamp" : "1687237533.74047",
+					"timestamp" : "1693427440.774465",
 					"udp" : 
 					{
 						"dport" : 33437,
@@ -2687,427 +1279,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "220-128-30-241.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10719,
-						"src" : "220.128.30.241",
-						"ttl" : 55
-					},
-					"timestamp" : "1687237533.109858"
-				},
-				"rtt_usec" : 24771,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 9
-					},
-					"timestamp" : "1687237533.85087",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "211-22-33-237.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10768,
-						"src" : "211.22.33.237",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237533.159152"
-				},
-				"rtt_usec" : 63250,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 10
-					},
-					"timestamp" : "1687237533.95902",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "223.120.2.53",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10769,
-						"src" : "223.120.2.53",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237533.154049"
-				},
-				"rtt_usec" : 47353,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 11
-					},
-					"timestamp" : "1687237533.106696",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "223.120.2.42",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10813,
-						"src" : "223.120.2.42",
-						"ttl" : 244
-					},
-					"timestamp" : "1687237533.187917"
-				},
-				"rtt_usec" : 70580,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 12
-					},
-					"timestamp" : "1687237533.117337",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "223.120.22.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10868,
-						"src" : "223.120.22.142",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237533.228974"
-				},
-				"rtt_usec" : 99972,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 13
-					},
-					"timestamp" : "1687237533.129002",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "221.183.55.106",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10871,
-						"src" : "221.183.55.106",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237533.234233"
-				},
-				"rtt_usec" : 93368,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 14
-					},
-					"timestamp" : "1687237533.140865",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "221.183.46.250",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10882,
-						"src" : "221.183.46.250",
-						"ttl" : 241
-					},
-					"timestamp" : "1687237533.240124"
-				},
-				"rtt_usec" : 88191,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 15
-					},
-					"timestamp" : "1687237533.151933",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "221.183.89.98",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10890,
-						"src" : "221.183.89.98",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237533.250933"
-				},
-				"rtt_usec" : 88497,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 16
-					},
-					"timestamp" : "1687237533.162436",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "221.183.49.138",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10921,
-						"src" : "221.183.49.138",
-						"ttl" : 239
-					},
-					"timestamp" : "1687237533.279049"
-				},
-				"rtt_usec" : 105976,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 17
-					},
-					"timestamp" : "1687237533.173073",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
-				"is_last" : false,
-				"name" : "39.156.27.1",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 10922,
-						"src" : "39.156.27.1",
-						"ttl" : 47
-					},
-					"timestamp" : "1687237533.273018"
-				},
-				"rtt_usec" : 88764,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 18
-					},
-					"timestamp" : "1687237533.184254",
-					"udp" : 
-					{
-						"dport" : 33437,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63438,
+				"flowhash" : 25519,
 				"is_last" : true,
 				"name" : "",
 				"received" : null,
@@ -3116,11 +1288,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 19
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 9
 					},
-					"timestamp" : "1687237533.195107",
+					"timestamp" : "1693427440.785082",
 					"udp" : 
 					{
 						"dport" : 33437,
@@ -3132,7 +1304,7 @@
 		"33438" : 
 		[
 			{
-				"flowhash" : 63439,
+				"flowhash" : 25520,
 				"is_last" : false,
 				"name" : "_gateway",
 				"nat_id" : 0,
@@ -3148,23 +1320,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 36328,
-						"src" : "192.168.43.59",
-						"ttl" : 64
+						"dst" : "192.168.0.5",
+						"id" : 6623,
+						"src" : "192.168.0.1",
+						"ttl" : 65
 					},
-					"timestamp" : "1687237533.336745"
+					"timestamp" : "1693427441.47341"
 				},
-				"rtt_usec" : 5562,
+				"rtt_usec" : 8091,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 1
 					},
-					"timestamp" : "1687237533.331183",
+					"timestamp" : "1693427441.39250",
 					"udp" : 
 					{
 						"dport" : 33438,
@@ -3174,175 +1346,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "10.159.65.128",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 0,
-						"src" : "10.159.65.128",
-						"ttl" : 253
-					},
-					"timestamp" : "1687237533.507958"
-				},
-				"rtt_usec" : 165742,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 2
-					},
-					"timestamp" : "1687237533.342216",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : true
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "10.159.67.55",
-				"nat_id" : 0,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11053,
-						"src" : "10.159.67.55",
-						"ttl" : 252
-					},
-					"timestamp" : "1687237533.377230"
-				},
-				"rtt_usec" : 23652,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 3
-					},
-					"timestamp" : "1687237533.353578",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "10.159.67.65",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11084,
-						"src" : "10.159.67.65",
-						"ttl" : 251
-					},
-					"timestamp" : "1687237533.405137"
-				},
-				"rtt_usec" : 40018,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 4
-					},
-					"timestamp" : "1687237533.365119",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "210-65-126-194.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11077,
-						"src" : "210.65.126.194",
-						"ttl" : 250
-					},
-					"timestamp" : "1687237533.399583"
-				},
-				"rtt_usec" : 23880,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 5
-					},
-					"timestamp" : "1687237533.375703",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
+				"flowhash" : 25520,
 				"is_last" : false,
 				"name" : "",
 				"received" : null,
@@ -3351,11 +1355,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 6
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 2
 					},
-					"timestamp" : "1687237533.386640",
+					"timestamp" : "1693427441.51879",
 					"udp" : 
 					{
 						"dport" : 33438,
@@ -3364,10 +1368,32 @@
 				}
 			},
 			{
-				"flowhash" : 63439,
+				"flowhash" : 25520,
 				"is_last" : false,
-				"name" : "tpdb-3031.hinet.net",
-				"nat_id" : 49607,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 3
+					},
+					"timestamp" : "1693427441.63945",
+					"udp" : 
+					{
+						"dport" : 33438,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25520,
+				"is_last" : false,
+				"name" : "pths-3311.hinet.net",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -3380,23 +1406,109 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 11111,
-						"src" : "220.128.24.106",
-						"ttl" : 246
+						"dst" : "192.168.0.5",
+						"id" : 0,
+						"src" : "168.95.50.10",
+						"ttl" : 253
 					},
-					"timestamp" : "1687237533.435638"
+					"timestamp" : "1693427441.87715"
 				},
-				"rtt_usec" : 38275,
+				"rtt_usec" : 11316,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 4
+					},
+					"timestamp" : "1693427441.76399",
+					"udp" : 
+					{
+						"dport" : 33438,
+						"sport" : 12345
+					}
+				},
+				"zerottl_forwarding_bug" : false
+			},
+			{
+				"flowhash" : 25520,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 5
+					},
+					"timestamp" : "1693427441.87190",
+					"udp" : 
+					{
+						"dport" : 33438,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25520,
+				"is_last" : false,
+				"name" : "",
+				"received" : null,
+				"rtt_usec" : null,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 6
+					},
+					"timestamp" : "1693427441.97805",
+					"udp" : 
+					{
+						"dport" : 33438,
+						"sport" : 12345
+					}
+				}
+			},
+			{
+				"flowhash" : 25520,
+				"is_last" : false,
+				"name" : "tyfo-3335.hinet.net",
+				"nat_id" : 0,
+				"received" : 
+				{
+					"icmp" : 
+					{
+						"code" : 11,
+						"description" : "TTL expired in transit",
+						"extensions" : [],
+						"mpls_labels" : [],
+						"type" : 0
+					},
+					"ip" : 
+					{
+						"dst" : "192.168.0.5",
+						"id" : 56127,
+						"src" : "220.128.8.13",
+						"ttl" : 250
+					},
+					"timestamp" : "1693427441.135140"
+				},
+				"rtt_usec" : 22621,
+				"sent" : 
+				{
+					"ip" : 
+					{
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 7
 					},
-					"timestamp" : "1687237533.397363",
+					"timestamp" : "1693427441.112519",
 					"udp" : 
 					{
 						"dport" : 33438,
@@ -3406,10 +1518,10 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63439,
+				"flowhash" : 25520,
 				"is_last" : false,
-				"name" : "220-128-1-13.hinet-ip.hinet.net",
-				"nat_id" : 49607,
+				"name" : "72.14.215.0",
+				"nat_id" : 0,
 				"received" : 
 				{
 					"icmp" : 
@@ -3422,23 +1534,23 @@
 					},
 					"ip" : 
 					{
-						"dst" : "192.168.43.242",
-						"id" : 11140,
-						"src" : "220.128.1.13",
-						"ttl" : 56
+						"dst" : "192.168.0.5",
+						"id" : 57017,
+						"src" : "72.14.215.0",
+						"ttl" : 54
 					},
-					"timestamp" : "1687237533.443809"
+					"timestamp" : "1693427441.140518"
 				},
-				"rtt_usec" : 35710,
+				"rtt_usec" : 14841,
 				"sent" : 
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
 						"ttl" : 8
 					},
-					"timestamp" : "1687237533.408099",
+					"timestamp" : "1693427441.125677",
 					"udp" : 
 					{
 						"dport" : 33438,
@@ -3448,469 +1560,7 @@
 				"zerottl_forwarding_bug" : false
 			},
 			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "220-128-30-233.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11171,
-						"src" : "220.128.30.233",
-						"ttl" : 55
-					},
-					"timestamp" : "1687237533.477820"
-				},
-				"rtt_usec" : 51331,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 9
-					},
-					"timestamp" : "1687237533.426489",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "211-22-33-237.hinet-ip.hinet.net",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11191,
-						"src" : "211.22.33.237",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237533.501937"
-				},
-				"rtt_usec" : 57907,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 10
-					},
-					"timestamp" : "1687237533.444030",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "223.120.2.53",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11208,
-						"src" : "223.120.2.53",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237533.519498"
-				},
-				"rtt_usec" : 63217,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 11
-					},
-					"timestamp" : "1687237533.456281",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "223.120.2.42",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11218,
-						"src" : "223.120.2.42",
-						"ttl" : 244
-					},
-					"timestamp" : "1687237533.524881"
-				},
-				"rtt_usec" : 57431,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 12
-					},
-					"timestamp" : "1687237533.467450",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "223.120.22.142",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11293,
-						"src" : "223.120.22.142",
-						"ttl" : 243
-					},
-					"timestamp" : "1687237533.585580"
-				},
-				"rtt_usec" : 103415,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 13
-					},
-					"timestamp" : "1687237533.482165",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "221.183.55.110",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11292,
-						"src" : "221.183.55.110",
-						"ttl" : 242
-					},
-					"timestamp" : "1687237533.579789"
-				},
-				"rtt_usec" : 86109,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 14
-					},
-					"timestamp" : "1687237533.493680",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "221.183.25.201",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11318,
-						"src" : "221.183.25.201",
-						"ttl" : 241
-					},
-					"timestamp" : "1687237533.598755"
-				},
-				"rtt_usec" : 93352,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 15
-					},
-					"timestamp" : "1687237533.505403",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "221.183.89.122",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11322,
-						"src" : "221.183.89.122",
-						"ttl" : 238
-					},
-					"timestamp" : "1687237533.605041"
-				},
-				"rtt_usec" : 87249,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 16
-					},
-					"timestamp" : "1687237533.517792",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "221.183.49.126",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11337,
-						"src" : "221.183.49.126",
-						"ttl" : 238
-					},
-					"timestamp" : "1687237533.622676"
-				},
-				"rtt_usec" : 93601,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 17
-					},
-					"timestamp" : "1687237533.529075",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "111.13.188.38",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11358,
-						"src" : "111.13.188.38",
-						"ttl" : 237
-					},
-					"timestamp" : "1687237533.635828"
-				},
-				"rtt_usec" : 94597,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 18
-					},
-					"timestamp" : "1687237533.541231",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
-				"is_last" : false,
-				"name" : "39.156.27.1",
-				"nat_id" : 49607,
-				"received" : 
-				{
-					"icmp" : 
-					{
-						"code" : 11,
-						"description" : "TTL expired in transit",
-						"extensions" : [],
-						"mpls_labels" : [],
-						"type" : 0
-					},
-					"ip" : 
-					{
-						"dst" : "192.168.43.242",
-						"id" : 11366,
-						"src" : "39.156.27.1",
-						"ttl" : 47
-					},
-					"timestamp" : "1687237533.647816"
-				},
-				"rtt_usec" : 94871,
-				"sent" : 
-				{
-					"ip" : 
-					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 19
-					},
-					"timestamp" : "1687237533.552945",
-					"udp" : 
-					{
-						"dport" : 33438,
-						"sport" : 12345
-					}
-				},
-				"zerottl_forwarding_bug" : false
-			},
-			{
-				"flowhash" : 63439,
+				"flowhash" : 25520,
 				"is_last" : true,
 				"name" : "",
 				"received" : null,
@@ -3919,11 +1569,11 @@
 				{
 					"ip" : 
 					{
-						"dst" : "39.156.66.10",
-						"src" : "192.168.43.242",
-						"ttl" : 20
+						"dst" : "8.8.8.8",
+						"src" : "192.168.0.5",
+						"ttl" : 9
 					},
-					"timestamp" : "1687237533.564022",
+					"timestamp" : "1693427441.137309",
 					"udp" : 
 					{
 						"dport" : 33438,

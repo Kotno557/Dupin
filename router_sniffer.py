@@ -91,6 +91,7 @@ def check_argv():
 def main(ip):
     global MAIN_TARGET
     MAIN_TARGET = ip
+
     myip = requests.get(
         'https://api.bigdatacloud.net/data/client-ip').json()['ipString']
     # 從命令列參數檢查目標 IP 位址
