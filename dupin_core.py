@@ -204,8 +204,8 @@ class DupinCleanSniffer:
             
 
 # test code
-# test = DupinPathSniff('nttu.edu.tw')
-# print(test.sniff_result)
-# testClean = DupinCleanSniffer(test.sniff_result)
-# print(testClean.clean_level_statistics)
-# print(testClean.detail_clean_level_list)
+test = DupinPathSniff('dublin-traceroute.net')
+print(test.sniff_result)
+testClean = DupinCleanSniffer(test.sniff_result)
+print(testClean.clean_level_statistics)
+print(testClean.detail_clean_level_list)
