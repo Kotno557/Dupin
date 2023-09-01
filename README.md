@@ -5,4 +5,13 @@
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
+#### REQUIREMENTS ####
+
+- Linux (tested on Ubuntu 22.04, but should work on most distributions)
+- Duplin-traceroute
+- Nmap
+- Config files from your OpenVPN network servers
+- OpenVPN client
+
+
 to be completed.
