@@ -50,7 +50,7 @@ class DupinPathSniff:
         traceroute_result: List[List[str]] = []
 
         # run dublin-traceroute
-        os.system(f'sudo dublin-traceroute -n 5 {self.targit_ip} > /dev/null')
+        os.system(f'sudo dublin-traceroute -n 3 -b {self.targit_ip} > /dev/null')
 
         # get result from trace.json
         trace_data: Set[str] = set()
