@@ -4,6 +4,7 @@ from typing import Dict, List, Union
 import sqlite3
 import socket
 import ipaddress
+import uvicorn
 
 
 VPN_NAT_ADDRESS = ipaddress.IPv4Network("104.44.0.0/16")
@@ -33,3 +34,6 @@ async def sniff_path(target_ip):
         return vpn_path_clean_info_sniff(target_ip)
     except socket.gaierror:
         return {"message": "IP address or URL not valid"}
+
+if __name__ == "__main__":
+    uvicorn.run("vpn_node_dupin:app", host="0.0.0.0", port=8000, reload=True)
