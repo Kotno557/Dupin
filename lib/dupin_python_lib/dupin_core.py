@@ -95,7 +95,7 @@ class DupinInfoSniffer:
         # first check for database
         self._local_database_cur.execute('SELECT * FROM info_record WHERE target_ip=?', (ip,))
         search_result: List[Tuple[Union[str, float]]] =  self._local_database_cur.fetchall()
-        if len(search_result) > 0 and time.time() - search_result[0][1] > 604800:
+        if len(search_result) > 0 and time.time() - search_result[0][1] < 604800:
             #print(f'get {ip} information from DB')
             # data available in database 
             isp = search_result[0][2]
