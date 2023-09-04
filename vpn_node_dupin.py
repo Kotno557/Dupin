@@ -20,13 +20,9 @@ def vpn_path_clean_info_sniff(target_url: str) -> Dict[int, int]:
 
 app = FastAPI()
 
-conn: sqlite3.Connection = sqlite3.connect('local_database.db')
-cur: sqlite3.Cursor = conn.cursor()
-
-
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Dupin Vpn Search Site"}
 
 @app.get('/sniff/{target_ip}')
 async def sniff_path(target_ip):
@@ -36,4 +32,7 @@ async def sniff_path(target_ip):
         return {"message": "IP address or URL not valid"}
 
 if __name__ == "__main__":
+    database_init()
+    conn: sqlite3.Connection = sqlite3.connect('local_database.db')
+    cur: sqlite3.Cursor = conn.cursor()
     uvicorn.run("vpn_node_dupin:app", host="0.0.0.0", port=8000, reload=True)
