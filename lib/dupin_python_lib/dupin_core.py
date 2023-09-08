@@ -9,6 +9,8 @@ import os
 import ipaddress
 import nmap
 
+import math
+
 class DupinPathSniffer:
     def __init__(self, targit_url: str) -> None:
         # init ip
@@ -35,7 +37,7 @@ class DupinPathSniffer:
         if len(results) < 1:
             return False
         
-        if (time.time() - results[0][2] < 86400):
+        if (time.time() - results[0][2] < 604800):
             self.sniff_result = json.loads(results[0][1])
             #print(f'get {self.targit_ip} path from DB')
             return True
@@ -106,7 +108,7 @@ class DupinInfoSniffer:
             # find isp
             if is_address_private == False:
                 lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
-                isp = lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
+                isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
             
             # find hdm
             hdm = self._sniff_ip_hdm(ip)
@@ -121,12 +123,13 @@ class DupinInfoSniffer:
         # save result to sqlite
         """
         對於公網IP 全部存在 公共的資料庫上 (暫定，目前先存在本地端資料庫即可)
-        if self._clean_table_name == 'default_table.json':
+        if self._clean_table_name == 'default_clean_table.json':
             # if this is use default table
             pass
         """
         if not get_by_database:
             self._local_database_cur.execute('INSERT OR REPLACE INTO info_record (target_ip, last_update_time, isp, hdm, os) VALUES (?, ?, ?, ?, ?)', (ip, time.time(), isp, hdm, os,))
+            self._local_database.commit()
 
 
     def _check_private_ip(self, ip: str) -> bool:
@@ -158,14 +161,13 @@ class DupinInfoSniffer:
 
 
 class DupinLevelGrader:
-    def __init__(self, info_sniffer: DupinInfoSniffer, clean_table_name: str = 'default_table.json') -> None:
+    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]], clean_table_name: str = 'default_clean_table.json') -> None:
         # return variable and clean table define
         self.path_clean_result: Dict[int, int] = {-1: 0, 0: 0, 1: 0, 2: 0, 3: 0}
         with open(clean_table_name, 'r') as clean_table_json:
             self._clean_table: Dict = json.load(clean_table_json)
 
         # grade every ip
-        info_sniffer_result: Dict[str, Tuple[str, str, str]] = info_sniffer.info_result
         for isp, hdm, os in info_sniffer_result.values():
             self.path_clean_result[self._count_clean_level(isp, hdm, os)] += 1
 
@@ -224,3 +226,84 @@ def database_init():
 
     cursor.close()
     conn.close()
+
+
+class DupinVchainConnecter:
+    def __init__(self, target_ip: str, vpn_table_name: str = 'default_vpn_table.json', clean_table_name: str = 'default_clean_table.json', weight_table_name: str = 'default_node_weight_table.json'):
+        # temp and result variable define
+        self.target_ip: str = target_ip
+        self.my_public_ip: str = requests.get('https://api.bigdatacloud.net/data/client-ip').json()['ipString']
+        self.clean_table_name: str = clean_table_name
+        with open(vpn_table_name) as vpn_node_json:
+            self.vpn_table: List[Dict[str,str]] = json.load(vpn_node_json)
+        with open(weight_table_name) as weight_table_json:
+            self.weight_table: Dict[int, int] = json.load(weight_table_json)
+        
+        # create node-node weight graph
+        self.vpn_node_graph: List[List[int]] = self._create_path_graph()
+        
+        # using Dijkstra algo to find weight smallest path
+        self.connection_path: List[int] = self._find_shortest_clean_path()
+
+        # VPN-chaining with weight smallest path !active by user using DupinVchainConnecter.connect()
+        
+        
+        
+    def _create_path_graph(self) -> List[List[int]]:
+        vpn_num: int = len(self.vpn_table) + 2 # local and target
+        weight_result: List = [[math.inf for _ in range(vpn_num)] for _ in range(vpn_num)]
+        for i in range(0, vpn_num - 1):
+            for j in range(i + 1, vpn_num):
+                while True:
+                    try:
+                        if i == 0:
+                            if j != vpn_num - 1:
+                                # weight_result[i][j] = j scan L
+                                print(f'http://{self.vpn_table[j - 1]["ip"]}:8000/sniff/{self.my_public_ip}...')
+                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[j - 1]["ip"]}:8000/sniff/{self.my_public_ip}', timeout = 5).json()
+                            else:
+                                # weight_result[i][j] = L scan D
+                                print('L -> R')
+                                weight_result[i][j] = DupinInfoSniffer(DupinPathSniffer(self.target_ip)).info_result
+                        else:
+                            if j != vpn_num - 1:
+                                # weight_result[i][j] = i scan j
+                                print(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.vpn_table[j - 1]["ip"]}')
+                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.vpn_table[j - 1]["ip"]}', timeout = 5).json()
+                            else:
+                                # weight_result[i][j] = i scan D
+                                print(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.target_ip}')
+                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.target_ip}', timeout = 5).json()
+                        
+                        weight_result[i][j] = DupinLevelGrader(weight_result[i][j], clean_table_name=self.clean_table_name).path_clean_result
+                        weight_result[i][j] = self._wight_transform(weight_result[i][j])
+                        weight_result[j][i] = weight_result[i][j]
+                        break
+                    except Exception as e:
+                        print(e)
+                        continue
+
+        print(weight_result)
+        """
+            [L, 1, 2, 3, 4, D]
+            [X, V, V, V, V, V]
+            [X, X, V, V, V, V]
+            [X, X, X, V, V, V]
+            [X, X, X, X, V, V]
+            [X, X, X, X, X, V]
+            [X, X, X, X, X, X]
+        """
+
+        return weight_result
+        
+
+    def _wight_transform(self, path_clean_result: Dict[int, int]) -> int:
+        path_wight: int = 0
+        for clean_level in path_clean_result:
+            if path_clean_result[str(clean_level)] > 0:
+                path_wight += self.weight_table[clean_level] * path_clean_result[clean_level]
+        return path_wight
+
+    def _find_shortest_clean_path(self):
+        pass
+

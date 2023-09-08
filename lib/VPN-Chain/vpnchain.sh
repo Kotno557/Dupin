@@ -5,10 +5,10 @@
 ##
 
 # Config array number is used for ordering chain
-config[1]=./vpn_node/client4.ovpn # ouput
-config[2]=./vpn_node/client3.ovpn
-config[3]=./vpn_node/client2.ovpn
-config[4]=./vpn_node/client1.ovpn # input
+config[1]= # ouput
+config[2]=
+config[3]=
+config[4]= # input
 
 verbose=0           # verbose level; from 0 to 6
 enable_firewall=0   # Block outgoing traffic except openvpn servers (HIGHLY RECOMMENDED)

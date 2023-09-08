@@ -1,0 +1,18 @@
+[
+    {
+        "ip": "172.172.14.216",
+        "ovpn_name": "node1.ovpn"
+    },
+    {
+        "ip": "20.196.195.89",
+        "ovpn_name": "node2.ovpn"
+    },
+    {
+        "ip": "20.240.244.123",
+        "ovpn_name": "node3.ovpn"
+    },
+    {
+        "ip": "4.235.88.129",
+        "ovpn_name": "node4.ovpn"
+    }
+]

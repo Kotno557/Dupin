@@ -1,0 +1,8 @@
+{
+    "//": "Please set the path node weights according to the format of { [-1 (dnger) | 0 (unknow) | 1 (os) | 2 (isp or hdm) | -1 (isp and os or hdm) ] : positive int}",
+    "-1": 10000,
+    "0": 10,
+    "1": 5,
+    "2": 3,
+    "3": 0 
+}
