@@ -237,7 +237,7 @@ class DupinVchainConnecter:
         with open(vpn_table_name) as vpn_node_json:
             self.vpn_table: List[Dict[str,str]] = json.load(vpn_node_json)
         with open(weight_table_name) as weight_table_json:
-            self.weight_table: Dict[int, int] = json.load(weight_table_json)
+            self.weight_table: Dict[str, int] = json.load(weight_table_json)
         
         # create node-node weight graph
         self.vpn_node_graph: List[List[int]] = self._create_path_graph()
@@ -259,8 +259,9 @@ class DupinVchainConnecter:
                         if i == 0:
                             if j != vpn_num - 1:
                                 # weight_result[i][j] = j scan L
-                                print(f'http://{self.vpn_table[j - 1]["ip"]}:8000/sniff/{self.my_public_ip}...')
-                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[j - 1]["ip"]}:8000/sniff/{self.my_public_ip}', timeout = 5).json()
+                                print(f'L -> {self.vpn_table[j - 1]["ip"]}')
+                                #weight_result[i][j] = requests.get(f'http://{self.vpn_table[j - 1]["ip"]}:8000/sniff/{self.my_public_ip}', timeout = 40).json()
+                                weight_result[i][j] = DupinInfoSniffer(DupinPathSniffer(self.vpn_table[j - 1]["ip"])).info_result
                             else:
                                 # weight_result[i][j] = L scan D
                                 print('L -> R')
@@ -269,19 +270,18 @@ class DupinVchainConnecter:
                             if j != vpn_num - 1:
                                 # weight_result[i][j] = i scan j
                                 print(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.vpn_table[j - 1]["ip"]}')
-                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.vpn_table[j - 1]["ip"]}', timeout = 5).json()
+                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.vpn_table[j - 1]["ip"]}', timeout = 40).json()
                             else:
                                 # weight_result[i][j] = i scan D
                                 print(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.target_ip}')
-                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.target_ip}', timeout = 5).json()
-                        
-                        weight_result[i][j] = DupinLevelGrader(weight_result[i][j], clean_table_name=self.clean_table_name).path_clean_result
-                        weight_result[i][j] = self._wight_transform(weight_result[i][j])
-                        weight_result[j][i] = weight_result[i][j]
+                                weight_result[i][j] = requests.get(f'http://{self.vpn_table[i - 1]["ip"]}:8000/sniff/{self.target_ip}', timeout = 40).json()
                         break
                     except Exception as e:
                         print(e)
                         continue
+                weight_result[i][j] = DupinLevelGrader(weight_result[i][j], clean_table_name=self.clean_table_name).path_clean_result
+                weight_result[i][j] = self._wight_transform(weight_result[i][j])
+                weight_result[j][i] = weight_result[i][j]
 
         print(weight_result)
         """
@@ -300,8 +300,8 @@ class DupinVchainConnecter:
     def _wight_transform(self, path_clean_result: Dict[int, int]) -> int:
         path_wight: int = 0
         for clean_level in path_clean_result:
-            if path_clean_result[str(clean_level)] > 0:
-                path_wight += self.weight_table[clean_level] * path_clean_result[clean_level]
+            if path_clean_result[clean_level] > 0:
+                path_wight += self.weight_table[str(clean_level)] * path_clean_result[clean_level]
         return path_wight
 
     def _find_shortest_clean_path(self):
