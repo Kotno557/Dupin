@@ -11,6 +11,8 @@ import nmap
 
 import math
 
+import networkx 
+
 class DupinPathSniffer:
     def __init__(self, targit_url: str) -> None:
         # init ip
@@ -24,7 +26,7 @@ class DupinPathSniffer:
         self.sniff_result: List[str]
 
         # use database then check result is already in it
-        if self._check_path_history_exsist() == False: # if path_history_exsist will check db and load to sniff_result
+        if self._check_path_history_exsist() == False: # if path_history_exsist then check db and load to sniff_result
             self.sniff_result = self._get_traceroute_result()
             self._save_sniff_result_to_local_database_and_result_json()
             
@@ -37,7 +39,7 @@ class DupinPathSniffer:
         if len(results) < 1:
             return False
         
-        if (time.time() - results[0][2] < 604800):
+        if (time.time() - results[0][2] < 1440):
             self.sniff_result = json.loads(results[0][1])
             #print(f'get {self.targit_ip} path from DB')
             return True
@@ -240,14 +242,12 @@ class DupinVchainConnecter:
             self.weight_table: Dict[str, int] = json.load(weight_table_json)
         
         # create node-node weight graph
-        self.vpn_node_graph: List[List[int]] = self._create_path_graph()
+        self.node_weight_graph: List[List[int]] = self._create_path_graph()
         
         # using Dijkstra algo to find weight smallest path
-        self.connection_path: List[int] = self._find_shortest_clean_path()
+        self.connection_path: List[int] = self._dijkstra_shortest_path(self.node_weight_graph)
 
         # VPN-chaining with weight smallest path !active by user using DupinVchainConnecter.connect()
-        
-        
         
     def _create_path_graph(self) -> List[List[int]]:
         vpn_num: int = len(self.vpn_table) + 2 # local and target
@@ -296,7 +296,6 @@ class DupinVchainConnecter:
 
         return weight_result
         
-
     def _wight_transform(self, path_clean_result: Dict[int, int]) -> int:
         path_wight: int = 0
         for clean_level in path_clean_result:
@@ -304,6 +303,18 @@ class DupinVchainConnecter:
                 path_wight += self.weight_table[str(clean_level)] * path_clean_result[clean_level]
         return path_wight
 
-    def _find_shortest_clean_path(self):
-        pass
+    def _dijkstra_shortest_path(self, weight_arr: List[List[int]]) -> Tuple[int, List[int]]:
+        n: int = len(weight_arr)
+        graph: networkx.Graph = networkx.Graph()
 
+        for i in range(n):
+            for j in range(i + 1, n):
+                graph.add_edge(i, j, weight=weight_arr[i][j])
+
+        shortest_path: List[int] = networkx.shortest_path(graph, source=0, target=n-1, weight='weight')
+        shortest_distance: int = networkx.shortest_path_length(graph, source=0, target=n-1, weight='weight')
+
+        return shortest_distance, shortest_path
+
+    def connect(self) -> None:
+        pass
