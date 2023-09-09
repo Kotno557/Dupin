@@ -1,16 +1,15 @@
 from typing import IO, Dict, Set, List, Tuple, Any, Union
+from datetime import datetime
 import requests
 import socket
 import json
 import time
 import sqlite3
 import os
-
+import subprocess
 import ipaddress
 import nmap
-
 import math
-
 import networkx 
 
 class DupinPathSniffer:
@@ -54,7 +53,7 @@ class DupinPathSniffer:
         traceroute_result: List[List[str]] = []
 
         # run dublin-traceroute
-        os.system(f'sudo dublin-traceroute -n 5 {self.targit_ip} -b > /dev/null')
+        os.system(f'sudo dublin-traceroute -n 3 {self.targit_ip} -b > /dev/null')
 
         # get result from trace.json
         trace_data: Set[str] = set()
@@ -198,38 +197,6 @@ class DupinLevelGrader:
             return 2 if isp_level == 1 else 0
         
 
-def database_init():
-
-    if os.path.isfile('local_database.db'):
-        return 
-
-    conn = sqlite3.connect('local_database.db')
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        CREATE TABLE info_record (
-            target_ip TEXT PRIMARY KEY,
-            last_update_time REAL,
-            isp TEXT,
-            hdm TEXT,
-            os TEXT
-        );
-    """)
-    conn.commit()
-
-    cursor.execute("""
-        CREATE TABLE path_record (
-            target_ip TEXT PRIMARY KEY,
-            path TEXT,
-            last_update_time REAL
-        );
-    """)
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-
 class DupinVchainConnecter:
     def __init__(self, target_ip: str, vpn_table_name: str = 'default_vpn_table.json', clean_table_name: str = 'default_clean_table.json', weight_table_name: str = 'default_node_weight_table.json'):
         # temp and result variable define
@@ -245,7 +212,9 @@ class DupinVchainConnecter:
         self.node_weight_graph: List[List[int]] = self._create_path_graph()
         
         # using Dijkstra algo to find weight smallest path
-        self.connection_path: List[int] = self._dijkstra_shortest_path(self.node_weight_graph)
+        self.connection_path: List[int]
+        self.connection_weight: int
+        self.connection_weight, self.connection_path = self._dijkstra_shortest_path(self.node_weight_graph)
 
         # VPN-chaining with weight smallest path !active by user using DupinVchainConnecter.connect()
         
@@ -317,4 +286,67 @@ class DupinVchainConnecter:
         return shortest_distance, shortest_path
 
     def connect(self) -> None:
-        pass
+        
+        # variable and VPN server table define
+        current_directory: str = os.getcwd()
+        path_len: int = len(self.connection_path)
+        with open('default_vpn_table.json') as default_vpn_table_json:
+            vpn_table: Dict[str, str] = json.load(default_vpn_table_json)
+        
+        # if path len <= 2, that means directly connection to target url is the best path
+        if path_len <= 2:
+            print("VPN connection does not provide a cleaner connection path; please connect directly to the target website")
+            return
+        
+        # esle then generate vpnchain.sh file
+        vpn_variable_setting: str = '#!/bin/bash\n'
+        for i in range(1, path_len - 1):
+            vpn_variable_setting += f'config[{path_len - 1 - i}]={current_directory}/{vpn_table[self.connection_path[i]]}'
+        connect_sh_file_name: str = f'{datetime.now().strftime("%Y%m%d%H%M%S")}_{self.target_ip.replace(".", "_")}_connect.sh'
+        with open('lib/VPN-Chain/vpnchain_template.txt') as template, open(f'lib/VPN-Chain/{connect_sh_file_name}', 'w') as connect_file:
+            connect_file.write(vpn_variable_setting)
+            for line in template:
+                connect_file.write(line)
+            
+        # connect by connection.sh file
+        subprocess.call('sudo ./vpnchain.sh', shell=True, cwd='lib/VPN-Chain')
+
+        # wait until user using CTRL+C to exist sh process
+        print('if want exit program please press CTRL+C keys again')
+        
+
+## Some Public fuction to asist all program
+
+def database_init():
+
+    if os.path.isfile('local_database.db'):
+        return 
+
+    conn = sqlite3.connect('local_database.db')
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE info_record (
+            target_ip TEXT PRIMARY KEY,
+            last_update_time REAL,
+            isp TEXT,
+            hdm TEXT,
+            os TEXT
+        );
+    """)
+    conn.commit()
+
+    cursor.execute("""
+        CREATE TABLE path_record (
+            target_ip TEXT PRIMARY KEY,
+            path TEXT,
+            last_update_time REAL
+        );
+    """)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+def connect_by_vpn_sh_file(file_name: str) -> None:
+    pass
