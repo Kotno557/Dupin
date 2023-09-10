@@ -38,7 +38,7 @@ class DupinPathSniffer:
         if len(results) < 1:
             return False
         
-        if (time.time() - results[0][2] < 1440):
+        if (time.time() - results[0][2] < 86400):
             self.sniff_result = json.loads(results[0][1])
             #print(f'get {self.targit_ip} path from DB')
             return True
@@ -301,7 +301,7 @@ class DupinVchainConnecter:
         # esle then generate vpnchain.sh file
         vpn_variable_setting: str = '#!/bin/bash\n'
         for i in range(1, path_len - 1):
-            vpn_variable_setting += f'config[{path_len - 1 - i}]={current_directory}/{vpn_table[self.connection_path[i]]}'
+            vpn_variable_setting += f'config[{path_len - 1 - i}]={current_directory}/vpn_node_ovpn_fold/{vpn_table[self.connection_path[i - 1]]["ovpn_name"]}\n'
         connect_sh_file_name: str = f'{datetime.now().strftime("%Y%m%d%H%M%S")}_{self.target_ip.replace(".", "_")}_connect.sh'
         with open('lib/VPN-Chain/vpnchain_template.txt') as template, open(f'lib/VPN-Chain/{connect_sh_file_name}', 'w') as connect_file:
             connect_file.write(vpn_variable_setting)
@@ -309,10 +309,9 @@ class DupinVchainConnecter:
                 connect_file.write(line)
             
         # connect by connection.sh file
-        subprocess.call('sudo ./vpnchain.sh', shell=True, cwd='lib/VPN-Chain')
+        subprocess.call(f'sudo chmod 777 ./{connect_sh_file_name}', shell=True, cwd='lib/VPN-Chain')
+        subprocess.call(f'sudo ./{connect_sh_file_name}', shell=True, cwd='lib/VPN-Chain')
 
-        # wait until user using CTRL+C to exist sh process
-        print('if want exit program please press CTRL+C keys again')
         
 
 ## Some Public fuction to asist all program

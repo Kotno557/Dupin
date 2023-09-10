@@ -1,14 +1,7 @@
 #!/bin/bash
-
-##
-## CONFIG SECTION:
-##
-
-# Config array number is used for ordering chain
-config[1]=/home/dyang/Dupin/vpn_node_ovpn_fold/node4.ovpn
-config[2]=/home/dyang/Dupin/vpn_node_ovpn_fold/node3.ovpn
-config[3]=/home/dyang/Dupin/vpn_node_ovpn_fold/node2.ovpn
-config[4]=/home/dyang/Dupin/vpn_node_ovpn_fold/node1.ovpn
+config[3]=/home/dyang/Dupin/node1.ovpn
+config[2]=/home/dyang/Dupin/node2.ovpn
+config[1]=/home/dyang/Dupin/node3.ovpn
 
 verbose=0           # verbose level; from 0 to 6
 enable_firewall=0   # Block outgoing traffic except openvpn servers (HIGHLY RECOMMENDED)
