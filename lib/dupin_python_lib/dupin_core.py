@@ -33,12 +33,12 @@ class DupinPathSniffer:
         self._local_database.close() 
             
     def _check_path_history_exsist(self) -> bool:
-        self._local_database_cur.execute("SELECT * FROM path_record WHERE target_ip=?", (self.targit_ip,))
+        self._local_database_cur.execute("SELECT * FROM path_record WHERE target_ip=? AND start_ip=?", (self.targit_ip, self.my_public_ip,))
         results: List[Tuple[str]] = self._local_database_cur.fetchall()
         if len(results) < 1:
             return False
         
-        if (time.time() - results[0][2] < 86400):
+        if (time.time() - results[0][2] < 604800):
             self.sniff_result = json.loads(results[0][1])
             #print(f'get {self.targit_ip} path from DB')
             return True
@@ -46,7 +46,7 @@ class DupinPathSniffer:
         return False
     
     def _save_sniff_result_to_local_database_and_result_json(self) -> None:
-        self._local_database_cur.execute("INSERT OR REPLACE INTO path_record (target_ip, path, last_update_time) VALUES (?, ?, ?)", (self.targit_ip, json.dumps(self.sniff_result), time.time(),))
+        self._local_database_cur.execute("INSERT OR REPLACE INTO path_record (target_ip, path, last_update_time, start_ip) VALUES (?, ?, ?, ?)", (self.targit_ip, json.dumps(self.sniff_result), time.time(), self.my_public_ip,))
         
     def _get_traceroute_result(self) -> List[str]:
         # declare vareable 
@@ -165,7 +165,7 @@ class DupinLevelGrader:
     def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]], clean_table_name: str = 'default_clean_table.json') -> None:
         # return variable and clean table define
         self.path_clean_result: Dict[int, int] = {-1: 0, 0: 0, 1: 0, 2: 0, 3: 0}
-        with open(clean_table_name, 'r') as clean_table_json:
+        with open(f'User-defined files/clean/{clean_table_name}', 'r') as clean_table_json:
             self._clean_table: Dict = json.load(clean_table_json)
 
         # grade every ip
@@ -198,14 +198,15 @@ class DupinLevelGrader:
         
 
 class DupinVchainConnecter:
-    def __init__(self, target_ip: str, vpn_table_name: str = 'default_vpn_table.json', clean_table_name: str = 'default_clean_table.json', weight_table_name: str = 'default_node_weight_table.json'):
+    def __init__(self, target_url: str, vpn_table_name: str = 'default_vpn_table.json', clean_table_name: str = 'default_clean_table.json', weight_table_name: str = 'default_node_weight_table.json'):
         # temp and result variable define
-        self.target_ip: str = target_ip
+        self.target_url: str = target_url
+        self.target_ip: str = socket.gethostbyname(target_url)
         self.my_public_ip: str = requests.get('https://api.bigdatacloud.net/data/client-ip').json()['ipString']
         self.clean_table_name: str = clean_table_name
-        with open(vpn_table_name) as vpn_node_json:
+        with open(f'User-defined files/vpn/{vpn_table_name}') as vpn_node_json:
             self.vpn_table: List[Dict[str,str]] = json.load(vpn_node_json)
-        with open(weight_table_name) as weight_table_json:
+        with open(f'User-defined files/weight/{weight_table_name}') as weight_table_json:
             self.weight_table: Dict[str, int] = json.load(weight_table_json)
         
         # create node-node weight graph
@@ -290,8 +291,6 @@ class DupinVchainConnecter:
         # variable and VPN server table define
         current_directory: str = os.getcwd()
         path_len: int = len(self.connection_path)
-        with open('default_vpn_table.json') as default_vpn_table_json:
-            vpn_table: Dict[str, str] = json.load(default_vpn_table_json)
         
         # if path len <= 2, that means directly connection to target url is the best path
         if path_len <= 2:
@@ -301,7 +300,7 @@ class DupinVchainConnecter:
         # esle then generate vpnchain.sh file
         vpn_variable_setting: str = '#!/bin/bash\n'
         for i in range(1, path_len - 1):
-            vpn_variable_setting += f'config[{path_len - 1 - i}]={current_directory}/vpn_node_ovpn_fold/{vpn_table[self.connection_path[i - 1]]["ovpn_name"]}\n'
+            vpn_variable_setting += f'config[{path_len - 1 - i}]={current_directory}/vpn_node_ovpn_fold/{self.vpn_table[self.connection_path[i - 1]]["ovpn_name"]}\n'
         connect_sh_file_name: str = f'{datetime.now().strftime("%Y%m%d%H%M%S")}_{self.target_ip.replace(".", "_")}_connect.sh'
         with open('lib/VPN-Chain/vpnchain_template.txt') as template, open(f'lib/VPN-Chain/{connect_sh_file_name}', 'w') as connect_file:
             connect_file.write(vpn_variable_setting)
@@ -337,9 +336,11 @@ def database_init():
 
     cursor.execute("""
         CREATE TABLE path_record (
-            target_ip TEXT PRIMARY KEY,
+            target_ip TEXT,
             path TEXT,
-            last_update_time REAL
+            last_update_time REAL,
+            start_ip TEXT,
+            UNIQUE(target_ip, start_ip)
         );
     """)
     conn.commit()

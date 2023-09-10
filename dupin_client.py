@@ -4,3 +4,5 @@ if __name__ == '__main__':
     a: DupinVchainConnecter = DupinVchainConnecter('kemono.party')
     a.connect()
 
+    # a = DupinPathSniffer('google.com')
+    # print()
