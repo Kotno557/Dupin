@@ -162,10 +162,10 @@ class DupinInfoSniffer:
 
 
 class DupinLevelGrader:
-    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]], clean_table_name: str = 'default_clean_table.json') -> None:
+    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]], clean_table_name: str = 'User-defined files/clean/default_clean_table.json') -> None:
         # return variable and clean table define
         self.path_clean_result: Dict[int, int] = {-1: 0, 0: 0, 1: 0, 2: 0, 3: 0}
-        with open(f'User-defined files/clean/{clean_table_name}', 'r') as clean_table_json:
+        with open(clean_table_name, 'r') as clean_table_json:
             self._clean_table: Dict = json.load(clean_table_json)
 
         # grade every ip
@@ -198,15 +198,15 @@ class DupinLevelGrader:
         
 
 class DupinVchainConnecter:
-    def __init__(self, target_url: str, vpn_table_name: str = 'default_vpn_table.json', clean_table_name: str = 'default_clean_table.json', weight_table_name: str = 'default_node_weight_table.json'):
+    def __init__(self, target_url: str, vpn_table_name: str = 'User-defined files/vpn/default_vpn_table.json', clean_table_name: str = 'User-defined files/clean/default_clean_table.json', weight_table_name: str = 'User-defined files/weight/default_node_weight_table.json'):
         # temp and result variable define
         self.target_url: str = target_url
         self.target_ip: str = socket.gethostbyname(target_url)
         self.my_public_ip: str = requests.get('https://api.bigdatacloud.net/data/client-ip').json()['ipString']
         self.clean_table_name: str = clean_table_name
-        with open(f'User-defined files/vpn/{vpn_table_name}') as vpn_node_json:
+        with open(vpn_table_name) as vpn_node_json:
             self.vpn_table: List[Dict[str,str]] = json.load(vpn_node_json)
-        with open(f'User-defined files/weight/{weight_table_name}') as weight_table_json:
+        with open(f'{weight_table_name}') as weight_table_json:
             self.weight_table: Dict[str, int] = json.load(weight_table_json)
         
         # create node-node weight graph
