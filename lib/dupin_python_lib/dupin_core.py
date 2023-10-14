@@ -80,7 +80,11 @@ class DupinInfoSniffer:
         self._local_database_cur: sqlite3.Cursor = self._local_database.cursor()
 
         # sniff every ip address
+        count = 1
+        node_len = len(travel_path)
         for ip in travel_path:
+            print(f'info scaning {ip} ({count}/{node_len})')
+            count += 1
             self._sniff_ip_info(ip)
 
         # write and close database
@@ -162,15 +166,26 @@ class DupinInfoSniffer:
 
 
 class DupinLevelGrader:
-    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]], clean_table_name: str = 'User-defined files/clean/default_clean_table.json') -> None:
+    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]],
+     clean_table_name: str = 'User-defined files/clean/default_clean_table.json',
+     weight_table_name: str = 'User-defined files/weight/default_node_weight_table.json') -> None:
         # return variable and clean table define
+        self.info_result = info_sniffer_result
+        self.weight_result = {}
         self.path_clean_result: Dict[int, int] = {-1: 0, 0: 0, 1: 0, 2: 0, 3: 0}
         with open(clean_table_name, 'r') as clean_table_json:
             self._clean_table: Dict = json.load(clean_table_json)
+        with open(weight_table_name, 'r') as weight_table_json:
+            self._weight_table: Dict = json.load(weight_table_json)
 
         # grade every ip
-        for isp, hdm, os in info_sniffer_result.values():
-            self.path_clean_result[self._count_clean_level(isp, hdm, os)] += 1
+        self.weight_sum: int = 0 
+        for ip in info_sniffer_result:
+            clean_level = self._count_clean_level(info_sniffer_result[ip][0], info_sniffer_result[ip][1], info_sniffer_result[ip][2])
+            self.path_clean_result[clean_level] += 1
+            self.weight_result[ip] = str(clean_level)
+            self.weight_sum += self._weight_table[str(clean_level)]
+   
 
 
 

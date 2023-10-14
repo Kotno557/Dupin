@@ -35,4 +35,4 @@ if __name__ == "__main__":
     database_init()
     conn: sqlite3.Connection = sqlite3.connect('local_database.db')
     cur: sqlite3.Cursor = conn.cursor()
-    uvicorn.run("vpn_node_dupin:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("dupin_vpn_server:app", host="0.0.0.0", port=8000, reload=True)
