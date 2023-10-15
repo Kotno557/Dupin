@@ -150,8 +150,9 @@ class DupinInfoSniffer:
                 if 'enterprise: ' in info:
                     brand = info[info.find('enterprise: ')+len('enterprise: '):]
             return brand
-        except:
-            # print('SNMP detect Failed')
+        except Exception as e:
+            print('SNMP detect Failed')
+            print(e)
             return ''
     
     def _sniff_ip_os(self, ip: str) -> str:
@@ -160,8 +161,9 @@ class DupinInfoSniffer:
         try:
             nm.scan(hosts=ip, arguments='-O', timeout=40, sudo=True)
             return nm[ip]['osmatch'][0]['osclass'][0]['vendor']
-        except:
-            # print('OS detect Failed')
+        except Exception as e:
+            print('OS detect Failed')
+            print(e)
             return ''
 
 
