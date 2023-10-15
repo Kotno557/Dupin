@@ -57,10 +57,10 @@ while [ -n "$disconnect" ]
       done
       if [ "$first" -eq "1" ]; then
 	    SHOW info "Chain is connected... Please check your IP to make sure."	Green
-	    SHOW info "Press CTRL+C to disconnect."	Green
       fi
       first=0
       sleep 2s
+      exit
 done
 
 }
@@ -137,8 +137,5 @@ SHOW info "Killing openvpn instances..."
 pkill openvpn
 sleep 5s
 SHOW info "Disconnected."
-if  [ $enable_firewall -gt 0 ]; then
-  SHOW info "Don't forget to flush firewall rules: \"sudo ./`basename $0` flush\""
-fi
 exit
 }

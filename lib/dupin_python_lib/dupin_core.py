@@ -116,9 +116,11 @@ class DupinInfoSniffer:
                 isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
             
             # find hdm
+            print("find hdm...")
             hdm = self._sniff_ip_hdm(ip)
 
             # find os 
+            print("find os...")
             os = self._sniff_ip_os(ip)
 
 

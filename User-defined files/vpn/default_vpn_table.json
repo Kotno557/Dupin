@@ -1,18 +1,6 @@
 [
     {
-        "ip": "4.227.131.11",
-        "ovpn_name": "node1.ovpn"
-    },
-    {
-        "ip": "20.0.1.135",
-        "ovpn_name": "node2.ovpn"
-    },
-    {
-        "ip": "20.188.29.199",
-        "ovpn_name": "node3.ovpn"
-    },
-    {
-        "ip": "20.203.155.116",
-        "ovpn_name": "node4.ovpn"
+        "ip": "20.243.18.130",
+        "ovpn_path": "/home/dyang/Dupin/vpn_node_ovpn_fold/VPN3.ovpn"
     }
 ]
