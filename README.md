@@ -8,10 +8,27 @@
 #### REQUIREMENTS ####
 
 - Linux (tested on Ubuntu 22.04, but should work on most distributions)
+- Python 3.10/up
 - Duplin-traceroute
 - Nmap
 - Config files from your OpenVPN network servers
 - OpenVPN client
 
 
+
+### VPN Set Up ###
+
+for dupin:
+
+    apt update
+    apt install [nmap, dublin-traceroute, pip]
+    git clone https://github.com/Kotno557/Dobie
+    cd Dobie
+    root$ python3 -m pip install -r requirement.txt
+
+for OpenVpn-server:
+    wget https://git.io/vpn -O openvpn-install.sh
+    (get the oven file to localhost)
+
 to be completed.
+

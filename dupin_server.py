@@ -1,5 +1,6 @@
 from lib.dupin_python_lib.dupin_core import DupinPathSniffer, DupinInfoSniffer, DupinLevelGrader, DupinVchainConnecter, database_init
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, UploadFile
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import uvicorn
 import sys
@@ -10,8 +11,10 @@ import requests
 import subprocess
 import time 
 
-class SniffItem(BaseModel):
-    target_url: str
+CLEAN_TABLE = {}
+VPN_TABLE = {}
+WEIGHT_TABLE = {}
+
 
 
 app = FastAPI()
@@ -19,7 +22,11 @@ app = FastAPI()
 # 只是個根目錄，確保這裡還活著
 @app.get('/')
 async def root():
-    return {"message": "Hello Dupin server Site, there is nothing."}
+    return {"info": "The site is alive Uwu"}
+
+# @app.post('/upload')
+# async def upload(files: list[UploadFile]):
+#     return {"filenames": [file.filename for file in files]}
 
 
 # 本地與目的地連線路徑探測
@@ -35,6 +42,7 @@ async def vpn_path_check(target_ip: str = '127.0.0.1',
 vpn_file_path: str = 'User-defined files/vpn/default_vpn_table.json',
 clean_table_path: str = 'User-defined files/clean/default_clean_table.json',
 weight_table_path: str = 'User-defined files/weight/default_node_weight_table.json'):
+
     with open(vpn_file_path, 'r') as vpn_file:
         vpn_list: List[Dict[str, str]] = json.load(vpn_file)
     
