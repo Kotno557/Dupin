@@ -57,6 +57,7 @@ class DupinPathSniffer:
 
         # get result from trace.json
         trace_data: Set[str] = set()
+        trace_data.discard(self.targit_ip)
         with open('trace.json', 'r') as dublin_result_json:
             dublin_result_json = json.load(dublin_result_json)
             # parse ip
@@ -171,17 +172,13 @@ class DupinInfoSniffer:
 
 class DupinLevelGrader:
     def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]],
-     clean_table_name: str = 'User-defined files/clean/default_clean_table.json',
-     weight_table_name: str = 'User-defined files/weight/default_node_weight_table.json') -> None:
+     clean_table: Dict, weight_table: Dict) -> None:
         # return variable and clean table define
         self.info_result = info_sniffer_result
         self.weight_result = {}
         self.path_clean_result: Dict[int, int] = {-1: 0, 0: 0, 1: 0, 2: 0, 3: 0}
-        with open(clean_table_name, 'r') as clean_table_json:
-            self._clean_table: Dict = json.load(clean_table_json)
-        with open(weight_table_name, 'r') as weight_table_json:
-            self._weight_table: Dict = json.load(weight_table_json)
-
+        self._clean_table: Dict = clean_table
+        self._weight_table: Dict = weight_table
         # grade every ip
         self.weight_sum: int = 0 
         for ip in info_sniffer_result:

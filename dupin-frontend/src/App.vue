@@ -1,22 +1,29 @@
 <script>
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LCircle } from "@vue-leaflet/vue-leaflet";
-import axios from 'axios';
-
+import { LMap, LTileLayer, LCircle, LMarker } from "@vue-leaflet/vue-leaflet";
+import { latLng } from "leaflet";
+import axios from "axios";
 
 export default {
   components: {
     LMap,
     LTileLayer,
-    LCircle
+    LCircle,
+    LMarker
   },
   data() {
     return {
       // for dupin
+      local_ip: "",
+      local_coord: latLng(0,0),
+      local_country: "",
+
       target_url: "",
       clean_table_path: "",
       vpn_table_path: "",
       weight_table_path: "",
+
+
 
       // for map drowing
       zoom: 3,
@@ -24,33 +31,55 @@ export default {
         center: [25.033671, 121.564427],
         radius: 4500,
         color: 'red'
-      }
+      },
+      ono: latLng(22.9908, 120.213)
     };
   },
   methods: {
-    target_detection(target_url){
-      
+    target_detection(){
+      axios.get(`http://localhost:8000/direct_path_check/?url=${this.target_url}`)
+        .then(function(response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     upload_file(type, event){
-      let formData = new FormData()
-      switch(type){
-        case 1: // ClEAN_TABLE
-          console.log("Clean_table");
-          formData.append("file", event.target.files[0])
-          break;
-        case 2: // VPN_TABEL
-          console.log("VPN" + event.target.files[0])
-          break;
-        case 3: // WEIGHT_TABLE
-          console.log("WEIGHT" + event.target.files[0])
-          break;
-        default:
-          console.log("ERROR!!")
-      }
+      let formData = new FormData();
+      formData.append("file", event.target.files[0])
+      axios.post(`http://localhost:8000/upload/${type}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
+  },
+  mounted(){
+    const vm = this;
+    axios.get("https://api.incolumitas.com/")
+      .then(function (response) {
+        console.log(response);
+        let res = response.data
+        vm.local_ip = res.ip;
+        console.log(vm.local_ip);
+        vm.local_coord = latLng(res["location"]["latitude"], res["location"]["longitude"]);
+        console.log(vm.local_coord);
+        vm.local_country = res["location"]["country"];
+        console.log(vm.local_country);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    
   }
 };
-
 </script>
 
 <template>
@@ -75,6 +104,9 @@ export default {
         </ul>
       </div>
     </nav>
+    <div class="bd-example m-3"> <!--Local info-->
+      <h1>Your current IP is: {{local_ip}}.  Coordination: {{local_coord}}.  Contry: {{local_country}}</h1>
+    </div>
     <div class="bd-example m-3"> <!--input area start-->
       <label for="formFile" class="form-label">
         CleanTable
@@ -92,17 +124,24 @@ export default {
         Which webpage would you like to browse. Simply enter the domain name part, such as: "google.com", "aws.amazon.com".
       </label>
       <input v-model="target_url" class="form-control" type="url" id="formFile">
-      <button v-on:click="upload_file" type="button" class="btn btn-primary mt-3">Detection</button>
+      <button v-on:click="target_detection" type="button" class="btn btn-primary mt-3">Detection</button>
     </div>
     <div class="bd-example m-3"> <!--detect map start-->
       <div class="map">
-        <l-map ref="map" v-model:zoom="zoom" :center="[25.033671, 121.564427]">
-          <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
-            name="OpenStreetMap"></l-tile-layer>
-          <l-circle :lat-lng="circle.center" :radius="circle.radius" :color="circle.color" />
-        </l-map>
+          <div style="height:600px; width:800px">
+            <l-map ref="map" v-model:zoom="zoom" :center="[25.033671, 121.564427]">
+              <l-tile-layer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                layer-type="base"
+                name="OpenStreetMap"
+              ></l-tile-layer>
+              <l-marker :lat-lng="ono">
+              </l-marker>
+            </l-map>
+          </div>
       </div>
     </div>
+
   </div> <!--body end-->
 </template>
 
@@ -124,11 +163,9 @@ export default {
   border: solid #4f4a4a;
   border-width: 1px;
   border-radius: 0.25rem;
+}
 
-
-
-  .map {
-    height: 360px;
-  }
+.map {
+  height: 600px;
 }
 </style>

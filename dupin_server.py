@@ -1,6 +1,7 @@
 from lib.dupin_python_lib.dupin_core import DupinPathSniffer, DupinInfoSniffer, DupinLevelGrader, DupinVchainConnecter, database_init
 from fastapi import FastAPI, Query, UploadFile
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 import sys
@@ -19,20 +20,44 @@ WEIGHT_TABLE = {}
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 # 只是個根目錄，確保這裡還活著
 @app.get('/')
 async def root():
     return {"info": "The site is alive Uwu"}
 
-# @app.post('/upload')
-# async def upload(files: list[UploadFile]):
-#     return {"filenames": [file.filename for file in files]}
-
+@app.post('/upload/{file_type}')
+async def upload(file_type: int, file: UploadFile):
+    global CLEAN_TABLE
+    global VPN_TABLE
+    global WEIGHT_TABLE
+    try:
+        file_content = await file.read()
+        json_data = json.loads(file_content)
+        if file_type == 1:
+            CLEAN_TABLE = json_data
+        if file_type == 2:
+            VPN_TABLE = json_data
+        if file_type == 3:
+            WEIGHT_TABLE = json_data
+        print(CLEAN_TABLE, VPN_TABLE, WEIGHT_TABLE)
+        return {"data": json_data}
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)
+    
 
 # 本地與目的地連線路徑探測
 @app.get('/direct_path_check')
 async def direct_path_check(url: str = '127.0.0.1'):
-    sniffer = DupinLevelGrader(DupinInfoSniffer(DupinPathSniffer(url)).info_result)
+    sniffer = DupinLevelGrader(DupinInfoSniffer(DupinPathSniffer(url)).info_result, CLEAN_TABLE, WEIGHT_TABLE)
     return {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
 
 # 本地與目的地連線路徑探測（VPN參與）
