@@ -56,9 +56,11 @@ async def upload(file_type: int, file: UploadFile):
 
 # 本地與目的地連線路徑探測
 @app.get('/direct_path_check')
-async def direct_path_check(url: str = '127.0.0.1'):
-    sniffer = DupinLevelGrader(DupinInfoSniffer(DupinPathSniffer(url)).info_result, CLEAN_TABLE, WEIGHT_TABLE)
-    return {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
+async def direct_path_check(url: str = 'goodinfo.tw'):
+    path_node = DupinPathSniffer(url)
+    target_ip = path_node.targit_ip
+    sniffer = DupinLevelGrader(DupinInfoSniffer(path_node).info_result, CLEAN_TABLE, WEIGHT_TABLE)
+    return {"target": target_ip, "info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
 
 # 本地與目的地連線路徑探測（VPN參與）
 # TO DO: 還要有推薦路徑資訊!!!
