@@ -1,4 +1,5 @@
 from lib.dupin_python_lib.dupin_core import DupinPathSniffer, DupinInfoSniffer, DupinLevelGrader, DupinVchainConnecter, database_init
+from lib.dupin_python_lib.dupin_tool import get_ip_coord, ip_level_convert
 from fastapi import FastAPI, Query, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -59,8 +60,24 @@ async def upload(file_type: int, file: UploadFile):
 async def direct_path_check(url: str = 'goodinfo.tw'):
     path_node = DupinPathSniffer(url)
     target_ip = path_node.targit_ip
+    target_coord: List[float, float] = get_ip_coord(target_ip)
     sniffer = DupinLevelGrader(DupinInfoSniffer(path_node).info_result, CLEAN_TABLE, WEIGHT_TABLE)
-    return {"target": target_ip, "info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
+    res: Dict = {
+        "target": {"ip": target_ip, "coord": target_coord}, 
+        "node": {}, 
+        "summary": {ip_level_convert(i): sniffer.path_clean_result[i] for i in range(-1, 4)},
+        "weight": sniffer.weight_sum
+        }
+    for key, value in sniffer.info_result.items():
+        res["node"][key] = {
+            "isp": value[0],
+            "hdm": value[1], 
+            "os": value[2], 
+            "level": ip_level_convert(sniffer.weight_result[key]), 
+            "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
+        }
+
+    return res
 
 # 本地與目的地連線路徑探測（VPN參與）
 # TO DO: 還要有推薦路徑資訊!!!

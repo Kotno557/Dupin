@@ -1,9 +1,10 @@
 <script>
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LCircle, LMarker, LPopup, LTooltip } from "@vue-leaflet/vue-leaflet";
-import { Point, latLng} from "leaflet";
+import { LMap, LTileLayer, LCircle, LMarker, LPopup, LTooltip, LPolyline } from "@vue-leaflet/vue-leaflet";
+import { Point, latLng } from "leaflet";
 import L from "leaflet";
 import axios from "axios";
+
 
 
 export default {
@@ -13,38 +14,47 @@ export default {
     LCircle,
     LMarker,
     LPopup,
-    LTooltip
+    LTooltip,
+    LPolyline
   },
   data() {
     return {
-      // for dupin
-      local_ip: null,
-      local_coord: latLng(0,0),
-      local_country: null,
+      direct_data: {
+        "local":{
+          "ip": null,
+          "coord": latLng(0,0),
+          "type": "local"
+        },
+        "target":{
+          "url": null,
+          "ip": null,
+          "coord": latLng(0,0),
+          "type": "target"
+        },
+        "line":{
+          "point": null,
+          "node": null,
+          "weight": null,
+          "summary": null,
+          "color": "red"
+        }
+      },
 
-      target_url: null,
-      target_ip: null,
-      target_coord: latLng(0,0),
-
-      clean_table_path: null,
-      vpn_table_path: null,
-      weight_table_path: null,
-
-      direct_path_result: null,
-
-      // for map drowing
       zoom: 5,
     };
   },
   methods: {
     target_detection(){
       const vm = this;
-      axios.get(`http://localhost:8000/direct_path_check/?url=${this.target_url}`)
+      axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
         .then(function(response) {
           console.log(response);
-          vm.direct_path_result = response.data;
-          vm.target_ip = response.data["target"]
-          vm.target_coord = vm.getCoord(vm.target_ip)
+          vm.direct_data.target.ip = response.data["target"]["ip"]
+          vm.direct_data.target.coord = latLng(response.data["target"]["coord"])
+          vm.direct_data.line.point = [vm.direct_data.local.coord, vm.direct_data.target.coord]
+          vm.direct_data.line.node = response.data["node"]
+          vm.direct_data.line.weight = response.data["weight"]
+          vm.direct_data.line.summary = response.data["summary"]
         })
         .catch(function (error) {
           console.log(error);
@@ -98,8 +108,7 @@ export default {
     },
     getCoord(ip){
       const vm = this;
-      let coord = null
-      axios.get("https://api.incolumitas.com/")
+      axios.get(`https://api.incolumitas.com/?q${ip}`)
         .then(function (response) {
           let res = response.data
           return latLng(res["location"]["latitude"], res["location"]["longitude"]);
@@ -111,18 +120,15 @@ export default {
   },
   mounted(){
     const vm = this;
-    axios.get("https://api.incolumitas.com/")
+    axios.get("https://api.ipify.org?format=json")
       .then(function (response) {
-        console.log(response);
-        let res = response.data
-        vm.local_ip = res.ip;
-        console.log(vm.local_ip);
-        vm.local_coord = latLng(res["location"]["latitude"], res["location"]["longitude"]);
-        console.log(vm.local_coord);
+        vm.direct_data.local.ip = response.data["ip"];
       })
       .catch(function (error) {
         console.log(error);
       });
+
+    vm.direct_data.local["coord"] = vm.getCoord(vm.direct_data.local.ip)
     
   }
 };
@@ -151,7 +157,8 @@ export default {
       </div>
     </nav>
     <div class="bd-example m-3"> <!--Local info-->
-      <h1>Your current IP is: {{local_ip}}.  Coordination: {{local_coord}}.  Contry: {{local_country}}</h1>
+      <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
+      <p>Debugger: {{direct_data}} </p>
     </div>
     <div class="bd-example m-3"> <!--input area start-->
       <label for="formFile" class="form-label">
@@ -169,28 +176,45 @@ export default {
       <label for="formFile" class="form-label mt-3">
         Which webpage would you like to browse. Simply enter the domain name part, such as: "google.com", "aws.amazon.com".
       </label>
-      <input v-model="target_url" class="form-control" type="url" id="formFile">
+      <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile">
       <button v-on:click="target_detection" type="button" class="btn btn-primary mt-3">Detection</button>
     </div>
     <div class="bd-example m-3"> <!--detect map start-->
       <div class="map">
           <div style="height:600px; width:800px">
-            <l-map ref="map" v-model:zoom="zoom" :center="local_coord">
+            <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
               <l-tile-layer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 layer-type="base"
                 name="OpenStreetMap"
               ></l-tile-layer>
-              <l-marker v-if="local_ip != null" :lat-lng="local_coord" :icon="getIcon('local')">
+              <l-marker v-if="direct_data.local.ip" :lat-lng="direct_data.local.coord" :icon="getIcon(direct_data.local.type)">
                 <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
                   you
                 </l-tooltip>
               </l-marker>
-              <l-marker v-if="target_ip != null" :lat-lng="target_coord" :icon="getIcon('target')">
+              <l-marker v-if="direct_data.target.ip" :lat-lng="direct_data.target.coord" :icon="getIcon(direct_data.target.type)" >
                 <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
-                  {{target_url}}
+                  {{direct_data.target.url}}
                 </l-tooltip>
               </l-marker>
+              <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="direct_data.line.color" >
+                <l-tooltip :options="{ permanent: true, interactive: true}" >
+                  <span class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                    {{direct_data.line.weight}}
+                  </span>
+                  <l-popup>
+                    <div @click="true">
+                      I am a popup
+                      <p v-show="showParagraph">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+                        sed pretium nisl, ut sagittis sapien. Sed vel sollicitudin nisi.
+                        Donec finibus semper metus id malesuada.
+                      </p>
+                    </div>
+                  </l-popup>
+                </l-tooltip>
+              </l-polyline>
             </l-map>
           </div>
       </div>

@@ -31,6 +31,8 @@ class DupinPathSniffer:
             
         self._local_database.commit()
         self._local_database.close() 
+
+        self.sniff_result.sort()
             
     def _check_path_history_exsist(self) -> bool:
         self._local_database_cur.execute("SELECT * FROM path_record WHERE target_ip=? AND start_ip=?", (self.targit_ip, self.my_public_ip,))
@@ -57,7 +59,6 @@ class DupinPathSniffer:
 
         # get result from trace.json
         trace_data: Set[str] = set()
-        trace_data.discard(self.targit_ip)
         with open('trace.json', 'r') as dublin_result_json:
             dublin_result_json = json.load(dublin_result_json)
             # parse ip
@@ -66,6 +67,7 @@ class DupinPathSniffer:
                     if j['received'] != None:
                         trace_data.add(j['received']['ip']['src'])
         os.remove('trace.json')
+        trace_data.discard(self.targit_ip)
 
         return list(trace_data)
         
@@ -171,7 +173,7 @@ class DupinInfoSniffer:
 
 
 class DupinLevelGrader:
-    def __init__(self, info_sniffer_result: Dict[str, Tuple[str, str, str]],
+    def __init__(self, info_sniffer_result: Dict[str, Tuple[str]],
      clean_table: Dict, weight_table: Dict) -> None:
         # return variable and clean table define
         self.info_result = info_sniffer_result
