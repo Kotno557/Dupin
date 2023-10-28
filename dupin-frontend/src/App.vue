@@ -5,7 +5,9 @@ import { Point, latLng } from "leaflet";
 import L from "leaflet";
 import axios from "axios";
 
+import {Modal} from "bootstrap"
 
+let modal;
 
 export default {
   components: {
@@ -39,26 +41,36 @@ export default {
           "color": "red"
         }
       },
-
+      modal_data: {
+        "switch": false,
+        "title": null,
+        "data": null
+      },
       zoom: 5,
     };
   },
   methods: {
-    target_detection(){
-      const vm = this;
-      axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
-        .then(function(response) {
-          console.log(response);
-          vm.direct_data.target.ip = response.data["target"]["ip"]
-          vm.direct_data.target.coord = latLng(response.data["target"]["coord"])
-          vm.direct_data.line.point = [vm.direct_data.local.coord, vm.direct_data.target.coord]
-          vm.direct_data.line.node = response.data["node"]
-          vm.direct_data.line.weight = response.data["weight"]
-          vm.direct_data.line.summary = response.data["summary"]
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    async target_detection(){
+      try{
+        var dupin_result = await axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
+        this.direct_data.target.ip = dupin_result.data["target"]["ip"]
+        this.direct_data.line.node = dupin_result.data["node"]
+        this.direct_data.line.weight = dupin_result.data["weight"]
+        this.direct_data.line.summary = dupin_result.data["summary"]
+      }
+      catch(error){
+        console.log(error)
+      }
+      
+      try{
+        var ipinfo_result = await axios.get(`https://ipinfo.io/${this.direct_data.target.ip}/json?token=6c37228d8bfabd`)
+        this.direct_data.target.coord = latLng(ipinfo_result.data["loc"].split(",").map(Number))
+        this.direct_data.line.point = [this.direct_data.local.coord, this.direct_data.target.coord]
+      }
+      catch(error){
+        console.log(error)
+      }
+
     },
     upload_file(type, event){
       let formData = new FormData();
@@ -106,30 +118,24 @@ export default {
       });
       return icon
     },
-    getCoord(ip){
-      const vm = this;
-      axios.get(`https://api.incolumitas.com/?q${ip}`)
-        .then(function (response) {
-          let res = response.data
-          return latLng(res["location"]["latitude"], res["location"]["longitude"]);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    showModal(start, end, data){
+      this.modal_data.title = `Path ${start} → ${end}`
+      this.modal_data.data = data
+
+      modal.show()
     }
   },
   mounted(){
     const vm = this;
-    axios.get("https://api.ipify.org?format=json")
+    axios.get(`https://ipinfo.io/json?token=6c37228d8bfabd`)
       .then(function (response) {
-        vm.direct_data.local.ip = response.data["ip"];
+        vm.direct_data.local.ip = response.data["ip"]
+        vm.direct_data.local.coord = latLng(response.data["loc"].split(",").map(Number))
       })
       .catch(function (error) {
         console.log(error);
       });
-
-    vm.direct_data.local["coord"] = vm.getCoord(vm.direct_data.local.ip)
-    
+    modal = new Modal(document.getElementById("staticBackdrop"))
   }
 };
 </script>
@@ -200,23 +206,72 @@ export default {
               </l-marker>
               <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="direct_data.line.color" >
                 <l-tooltip :options="{ permanent: true, interactive: true}" >
-                  <span class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                  <span @click="showModal(direct_data.local.ip, direct_data.target.ip, direct_data.line.node)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
                     {{direct_data.line.weight}}
                   </span>
-                  <l-popup>
-                    <div @click="true">
-                      I am a popup
-                      <p v-show="showParagraph">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                        sed pretium nisl, ut sagittis sapien. Sed vel sollicitudin nisi.
-                        Donec finibus semper metus id malesuada.
-                      </p>
-                    </div>
-                  </l-popup>
                 </l-tooltip>
               </l-polyline>
             </l-map>
           </div>
+      </div>
+    </div>
+      
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+      Launch static backdrop modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">
+              {{modal_data.title}}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td>IP</td>
+                  <td>Level</td>
+                  <td>Weight</td>
+                  <td>hdm</td>
+                  <td>isp</td>
+                  <td>os</td>
+                </tr>
+              </thead>
+            </table>
+            <tbody>
+              <tr v-for="key in Object.keys(modal_data.data)">
+                <td>
+                  {{key}}
+                </td>
+                <td>
+                  {{modal_data.data[key].level}}
+                </td>
+                <td>
+                  {{modal_data.data[key].single_weight}}
+                </td>
+                <td>
+                  {{modal_data.data[key].hdm}}
+                </td>
+                <td>
+                  {{modal_data.data[key].isp}}
+                </td>
+                <td>
+                  {{modal_data.data[key].os}}
+                </td>
+              </tr>
+            </tbody>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
       </div>
     </div>
 
