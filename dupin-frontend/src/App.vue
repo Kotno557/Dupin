@@ -44,7 +44,15 @@ export default {
       modal_data: {
         "switch": false,
         "title": null,
-        "data": null
+        "data": {}
+      },
+      vpn_data: {
+        "server": {
+          "name": null,
+          "ip": null,
+          "coord": null
+        },
+        "path": {}
       },
       zoom: 5,
     };
@@ -61,7 +69,6 @@ export default {
       catch(error){
         console.log(error)
       }
-      
       try{
         var ipinfo_result = await axios.get(`https://ipinfo.io/${this.direct_data.target.ip}/json?token=6c37228d8bfabd`)
         this.direct_data.target.coord = latLng(ipinfo_result.data["loc"].split(",").map(Number))
@@ -70,6 +77,8 @@ export default {
       catch(error){
         console.log(error)
       }
+    },
+    async vpn_detection(){
 
     },
     upload_file(type, event){
@@ -119,7 +128,7 @@ export default {
       return icon
     },
     showModal(start, end, data){
-      this.modal_data.title = `Path ${start} → ${end}`
+      this.modal_data.title = `Path Detection: ${start} → ${end}, Weight ${this.modal_data.data.weight}`
       this.modal_data.data = data
 
       modal.show()
@@ -167,63 +176,100 @@ export default {
       <p>Debugger: {{direct_data}} </p>
     </div>
     <div class="bd-example m-3"> <!--input area start-->
-      <label for="formFile" class="form-label">
-        CleanTable
-      </label>
-      <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(1, $event)">
-      <label for="formFile" class="form-label mt-3">
-        VPN Table
-      </label>
-      <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(2, $event)">
-      <label for="formFile" class="form-label mt-3">
-        WeightTable
-      </label>
-      <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(3, $event)">
-      <label for="formFile" class="form-label mt-3">
-        Which webpage would you like to browse. Simply enter the domain name part, such as: "google.com", "aws.amazon.com".
-      </label>
-      <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile">
-      <button v-on:click="target_detection" type="button" class="btn btn-primary mt-3">Detection</button>
+      <form class="row g-3">
+        <div class="col-md-4">
+          <label for="formFile" class="form-label">
+            *CleanTable
+          </label>
+          <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(1, $event)">
+        </div>
+        <div class="col-md-4">
+          <label for="formFile" class="form-label">
+            *VPN Table:
+          </label>
+          <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(2, $event)">
+        </div>
+        <div class="col-md-4">
+          <label for="formFile" class="form-label">
+            *WeightTable:
+          </label>
+          <input class="form-control" type="file" id="formFile" accept="application/JSON" @change="upload_file(3, $event)">
+        </div>
+        <div class="col-md-8">
+          <label for="formFile" class="form-label">
+            *Which webpage would you like to browse. Simply enter the domain name part:
+          </label>
+          <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile" placeholder="'google.com', 'aws.amazon.com', 'microsoft.com', and etc.">
+        </div>
+        <div class="col-md-4">
+          <label for="formFile" class="form-label">
+            IPinfo token (optional):
+          </label>
+          <input class="form-control" type="text" placeholder="6c3********abd">
+        </div>
+        <div class="col-md-12">
+          <button v-on:click="target_detection" type="button" class="btn btn-primary mt-3">Detection</button>
+        </div>
+      </form>
     </div>
+
     <div class="bd-example m-3"> <!--detect map start-->
-      <div class="map">
-          <div style="height:600px; width:800px">
-            <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
-              <l-tile-layer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                layer-type="base"
-                name="OpenStreetMap"
-              ></l-tile-layer>
-              <l-marker v-if="direct_data.local.ip" :lat-lng="direct_data.local.coord" :icon="getIcon(direct_data.local.type)">
-                <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
-                  you
-                </l-tooltip>
-              </l-marker>
-              <l-marker v-if="direct_data.target.ip" :lat-lng="direct_data.target.coord" :icon="getIcon(direct_data.target.type)" >
-                <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
-                  {{direct_data.target.url}}
-                </l-tooltip>
-              </l-marker>
-              <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="direct_data.line.color" >
-                <l-tooltip :options="{ permanent: true, interactive: true}" >
-                  <span @click="showModal(direct_data.local.ip, direct_data.target.ip, direct_data.line.node)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
-                    {{direct_data.line.weight}}
-                  </span>
-                </l-tooltip>
-              </l-polyline>
-            </l-map>
+      <div class="row g-1">
+        <div class="col">
+          <div class="map">
+            <div style="height:600px; width:800px">
+              <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
+                <l-tile-layer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  layer-type="base"
+                  name="OpenStreetMap"
+                ></l-tile-layer>
+                <l-marker v-if="direct_data.local.ip" :lat-lng="direct_data.local.coord" :icon="getIcon(direct_data.local.type)">
+                  <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
+                    you
+                  </l-tooltip>
+                </l-marker>
+                <l-marker v-if="direct_data.target.ip" :lat-lng="direct_data.target.coord" :icon="getIcon(direct_data.target.type)" >
+                  <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
+                    {{direct_data.target.url}}
+                  </l-tooltip>
+                </l-marker>
+                <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="direct_data.line.color" >
+                  <l-tooltip :options="{ permanent: true, interactive: true}" >
+                    <span @click="showModal(direct_data.local.ip, direct_data.target.ip, direct_data.line.node)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                      {{direct_data.line.weight}}
+                    </span>
+                  </l-tooltip>
+                </l-polyline>
+              </l-map>
+            </div>
           </div>
+        </div>
+        <div class="col">
+          <div class="h-100 w-100 d-flex align-items-center justify-content-center">
+            <button class="btn btn-primary">>VPN 路線偵測></button>
+          </div>
+        </div>
+        <div class="col">
+          <div class="map">
+            <div style="height:600px; width:800px">
+              <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
+                <l-tile-layer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  layer-type="base"
+                  name="OpenStreetMap"
+                ></l-tile-layer>
+              </l-map>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-      
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-      Launch static backdrop modal
-    </button>
+    
 
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
@@ -232,44 +278,28 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <table class="table table-striped">
+            <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
-                  <td>IP</td>
-                  <td>Level</td>
-                  <td>Weight</td>
-                  <td>hdm</td>
-                  <td>isp</td>
-                  <td>os</td>
+                  <th scope="col" v-for="head in ['IP', 'Level', 'Weight', 'hdm', 'isp', 'os']">
+                    <strong>
+                      {{head}}
+                    </strong>
+                  </th>
                 </tr>
               </thead>
+              <tbody>
+                <tr v-for="key in Object.keys(modal_data.data)">
+                  <td v-for="item in [key, modal_data.data[key].level, modal_data.data[key].single_weight, modal_data.data[key].hdm, modal_data.data[key].isp, modal_data.data[key].os]">
+                    {{ item !== "" ? item : "N/A" }}
+                  </td>
+                </tr>
+              </tbody>
             </table>
-            <tbody>
-              <tr v-for="key in Object.keys(modal_data.data)">
-                <td>
-                  {{key}}
-                </td>
-                <td>
-                  {{modal_data.data[key].level}}
-                </td>
-                <td>
-                  {{modal_data.data[key].single_weight}}
-                </td>
-                <td>
-                  {{modal_data.data[key].hdm}}
-                </td>
-                <td>
-                  {{modal_data.data[key].isp}}
-                </td>
-                <td>
-                  {{modal_data.data[key].os}}
-                </td>
-              </tr>
-            </tbody>
+            
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Understood</button>
           </div>
         </div>
       </div>
