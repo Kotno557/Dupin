@@ -82,35 +82,31 @@ async def direct_path_check(url: str = 'goodinfo.tw'):
 # 本地與目的地連線路徑探測（VPN參與）
 # TO DO: 還要有推薦路徑資訊!!!
 @app.get('/vpn_path_check')
-async def vpn_path_check(target_ip: str = '127.0.0.1', 
-vpn_file_path: str = 'User-defined files/vpn/default_vpn_table.json',
-clean_table_path: str = 'User-defined files/clean/default_clean_table.json',
-weight_table_path: str = 'User-defined files/weight/default_node_weight_table.json'):
-
-    with open(vpn_file_path, 'r') as vpn_file:
-        vpn_list: List[Dict[str, str]] = json.load(vpn_file)
+async def vpn_path_check(target_url: str):
     
-    res: Dict = {"localhost": {}, target_ip: {}}
-    for i in range(0, len(vpn_list)):
-        now_ip: str = vpn_list[i]["ip"]
+    res: Dict = {"localhost": {}}
+    for i in range(0, len(VPN_TABLE)):
+        now_ip: str = VPN_TABLE[i]["ip"]
         res[now_ip] = {}
-        for j in range(i + 1, len(vpn_list) + 1):
-            next_ip: str = vpn_list[j]["ip"] if j < len(vpn_list) else target_ip
+        for j in range(i + 1, len(VPN_TABLE) + 1):
+            next_ip: str = VPN_TABLE[j]["ip"] if j < len(VPN_TABLE) else target_url
             while True:
                 try:
-                    sniffer: DupinLevelGrader = DupinLevelGrader(requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json(), clean_table_path, weight_table_path)
+                    sniffer: DupinLevelGrader = DupinLevelGrader(requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json(), CLEAN_TABLE, WEIGHT_TABLE)
                     break
                 except Exception as e:
                     print(e)
                     continue
             res[now_ip][next_ip] = {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
-            res[next_ip][now_ip] = res[now_ip][next_ip]
+            if next_ip != target_url:
+                res[next_ip][now_ip] = res[now_ip][next_ip]
     
-    for i in range(0, len(vpn_list) + 1):
-        next_ip: str = vpn_list[i]["ip"] if i < len(vpn_list) else target_ip
-        sniffer: DupinLevelGrader = DupinLevelGrader(DupinInfoSniffer(DupinPathSniffer(next_ip)).info_result, clean_table_path, weight_table_path)
+    for i in range(0, len(VPN_TABLE) + 1):
+        next_ip: str = VPN_TABLE[i]["ip"] if i < len(VPN_TABLE) else target_url
+        sniffer: DupinLevelGrader = DupinLevelGrader(DupinInfoSniffer(DupinPathSniffer(next_ip)).info_result, CLEAN_TABLE, WEIGHT_TABLE)
         res["localhost"][next_ip] = {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
-        res[next_ip]["localhost"] = res["localhost"][next_ip]
+        if next_ip != target_url:
+            res[next_ip]["localhost"] = res["localhost"][next_ip]
 
     return res
 

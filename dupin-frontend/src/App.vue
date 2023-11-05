@@ -52,13 +52,20 @@ export default {
           "ip": null,
           "coord": null
         },
-        "path": {}
+        "path": {},
+        "interactive": {
+          "now": null,
+          "select": null
+        }
       },
-      zoom: 5,
+      local_zoom: 5,
+      vpn_zoom: 5,
+      loading: false
     };
   },
   methods: {
     async target_detection(){
+      this.loading = true
       try{
         var dupin_result = await axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
         this.direct_data.target.ip = dupin_result.data["target"]["ip"]
@@ -77,9 +84,18 @@ export default {
       catch(error){
         console.log(error)
       }
+      this.loading = false
     },
     async vpn_detection(){
-
+      this.loading = true
+      try{
+        var dupin_vpn_result = await axios.get(`http://localhost:8000/vpn_path_check/?target_url=${this.direct_data.target.url}`)
+        this.vpn_data.path = dupin_vpn_result.data
+      }
+      catch(error) {
+        console.log(error)
+      }
+      this.loading = false
     },
     upload_file(type, event){
       let formData = new FormData();
@@ -174,6 +190,7 @@ export default {
     <div class="bd-example m-3"> <!--Local info-->
       <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
       <p>Debugger: {{direct_data}} </p>
+      <p>{{vpn_data}}</p>
     </div>
     <div class="bd-example m-3"> <!--input area start-->
       <form class="row g-3">
@@ -218,7 +235,7 @@ export default {
         <div class="col">
           <div class="map">
             <div style="height:600px; width:800px">
-              <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
+              <l-map ref="map" v-model:zoom="local_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   layer-type="base"
@@ -247,13 +264,13 @@ export default {
         </div>
         <div class="col">
           <div class="h-100 w-100 d-flex align-items-center justify-content-center">
-            <button class="btn btn-primary">>VPN 路線偵測></button>
+            <button class="btn btn-primary" @click="vpn_detection">>VPN 路線偵測></button>
           </div>
         </div>
         <div class="col">
           <div class="map">
             <div style="height:600px; width:800px">
-              <l-map ref="map" v-model:zoom="zoom" :center="direct_data.local.coord">
+              <l-map ref="map" v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   layer-type="base"
@@ -306,6 +323,14 @@ export default {
     </div>
 
   </div> <!--body end-->
+
+  <div id="dimScreen" v-if="loading">
+    <div class="h-100 w-100 d-flex align-items-center justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -330,5 +355,21 @@ export default {
 
 .map {
   height: 600px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0px;
+}
+
+#dimScreen
+{
+    width: 100%;
+    height: 100%;
+    background:rgba(255,255,205,0.5);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
 }
 </style>

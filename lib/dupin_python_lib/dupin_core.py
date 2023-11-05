@@ -51,8 +51,6 @@ class DupinPathSniffer:
         self._local_database_cur.execute("INSERT OR REPLACE INTO path_record (target_ip, path, last_update_time, start_ip) VALUES (?, ?, ?, ?)", (self.targit_ip, json.dumps(self.sniff_result), time.time(), self.my_public_ip,))
         
     def _get_traceroute_result(self) -> List[str]:
-        # declare vareable 
-        traceroute_result: List[List[str]] = []
 
         # run dublin-traceroute
         os.system(f'sudo dublin-traceroute -n 3 {self.targit_ip} -b > /dev/null')
@@ -64,11 +62,9 @@ class DupinPathSniffer:
             # parse ip
             for i in dublin_result_json['flows']:
                 for j in dublin_result_json['flows'][i]:
-                    if j['received'] != None:
+                    if j['received'] != None and j['received'] != self.targit_ip:
                         trace_data.add(j['received']['ip']['src'])
         os.remove('trace.json')
-        trace_data.discard(self.targit_ip)
-
         return list(trace_data)
         
         
