@@ -47,16 +47,11 @@ export default {
         "data": {}
       },
       vpn_data: {
-        "server": {
-          "name": null,
-          "ip": null,
-          "coord": null
-        },
         "path": {},
-        "interactive": {
-          "now": null,
-          "select": null
-        }
+        "show_path": {},
+        "vpn_node": {}, // 2023/11/06 here
+        "select": [],
+        "now": null
       },
       local_zoom: 5,
       vpn_zoom: 5,

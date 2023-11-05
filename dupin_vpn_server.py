@@ -18,8 +18,7 @@ def vpn_path_clean_info_sniff(target_url: str) -> Dict[int, int]:
             temp.append(ip)
     path_sniffer.sniff_result : List[str] = temp #開啟VPN內部節點忽略
     info_sniffer: DupinInfoSniffer = DupinInfoSniffer(path_sniffer)
-    info_sniffer.info_result["ip"] = path_sniffer.targit_ip
-    return info_sniffer.info_result
+    return {"path": info_sniffer.info_result, "target_ip": info_sniffer.info_result["ip"]}
 
 
 

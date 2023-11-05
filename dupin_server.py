@@ -92,12 +92,13 @@ async def vpn_path_check(target_url: str):
             next_ip: str = VPN_TABLE[j]["ip"] if j < len(VPN_TABLE) else target_url
             while True:
                 try:
-                    sniffer: DupinLevelGrader = DupinLevelGrader(requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json(), CLEAN_TABLE, WEIGHT_TABLE)
+                    temp = requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json()
+                    sniffer: DupinLevelGrader = DupinLevelGrader(requests.get(temp["path"], CLEAN_TABLE, WEIGHT_TABLE))
                     break
                 except Exception as e:
                     print(e)
                     continue
-            res[now_ip][next_ip] = {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum}
+            res[now_ip][next_ip] = {"info": sniffer.info_result, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": temp["ip"]}
             if next_ip != target_url:
                 res[next_ip][now_ip] = res[now_ip][next_ip]
     
