@@ -1,5 +1,7 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 import requests
+import ipaddress
+import socket
 
 def get_ip_coord(ip: str) -> List[float]:
     lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
@@ -23,3 +25,7 @@ def ip_level_convert(level: str|int) -> str:
             3: "SAFE"
         }
     return table[level]
+
+def check_private_ip(ip: str) -> bool:
+    ip_obj: Union[ipaddress.IPv4Address, ipaddress.IPv6Address] = ipaddress.ip_address(ip)
+    return ip_obj.is_private

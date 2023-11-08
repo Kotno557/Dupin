@@ -49,7 +49,7 @@ export default {
       vpn_data: {
         "path": {},
         "show_path": {},
-        "vpn_node": {}, // 2023/11/06 here
+        "node": {},
         "select": [],
         "now": null
       },
@@ -86,12 +86,65 @@ export default {
       try{
         var dupin_vpn_result = await axios.get(`http://localhost:8000/vpn_path_check/?target_url=${this.direct_data.target.url}`)
         this.vpn_data.path = dupin_vpn_result.data
+
+        this.vpn_data.now = "localhost"
+        this.vpn_data.node["localhost"] = {
+          "name" : `localhost(${this.direct_data.local.ip})`,
+          "coord": this.direct_data.local.coord,
+          "type": this.direct_data.local.type
+        }
+        this.vpn_data.node[`${this.direct_data.target.url}`] = {
+          "name" : `${this.direct_data.target.url}`,
+          "coord": this.direct_data.target.coord,
+          "type": this.direct_data.target.type
+        }
+        // node view data
+        for (const [key, value] of Object.entries(this.vpn_data.path)) {
+          if (key != "localhost") {
+            var ipinfo_result = await axios.get(`https://ipinfo.io/${key}/json?token=6c37228d8bfabd`)
+            var vpn_name = `VPN${key}`
+            var lag = latLng(ipinfo_result.data["loc"].split(",").map(Number))
+            this.vpn_data.node[key] = {
+              "name": vpn_name,
+              "ip": key,
+              "coord": lag,
+              "type": "enable",
+              "show": true
+            }
+          }
+        }
+        
+        // for edge
+        for (const [key, value] of Object.entries(this.vpn_data.path)) {
+          if (key != "localhost") {
+            this.vpn_data.show_path[key] = {}
+            for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
+              this.vpn_data.show_path[key][key2] = {
+                "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
+                "color": "#B6B6B6",
+                "weight": value2.path_weight,
+                "data": value2.info,
+              }
+            }
+          }
+        }
       }
       catch(error) {
         console.log(error)
       }
       this.loading = false
     },
+    update_now (node_now) {
+      console.log("click"+node_now)
+      if (node_now == this.direct_data.target.url) {
+        alert("select finish!!")
+        //TO Do
+        return
+      }
+      this.vpn_data.select.push(node_now)
+      this.vpn_data.node[node_now].type = "disable"
+      //this.vpn_data.show_path[]
+    },  
     upload_file(type, event){
       let formData = new FormData();
       formData.append("file", event.target.files[0])
@@ -125,8 +178,8 @@ export default {
       let icon_url = {
         "local": "green",
         "target": "red",
-        "select": "blue",
-        "unchoose": "grey",
+        "disable": "blue",
+        "enable": "grey",
         "recommend": "gold"
       }
       let icon = new L.Icon({
@@ -139,11 +192,11 @@ export default {
       return icon
     },
     showModal(start, end, data){
-      this.modal_data.title = `Path Detection: ${start} → ${end}, Weight ${this.modal_data.data.weight}`
+      this.modal_data.title = `Path Detection: ${start} → ${end}, Weight ${this.direct_data.line.weight}`
       this.modal_data.data = data
 
       modal.show()
-    }
+    },
   },
   mounted(){
     const vm = this;
@@ -186,6 +239,7 @@ export default {
       <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
       <p>Debugger: {{direct_data}} </p>
       <p>{{vpn_data}}</p>
+      <p> {{modal_data}} </p>
     </div>
     <div class="bd-example m-3"> <!--input area start-->
       <form class="row g-3">
@@ -230,7 +284,7 @@ export default {
         <div class="col">
           <div class="map">
             <div style="height:600px; width:800px">
-              <l-map ref="map" v-model:zoom="local_zoom" :center="direct_data.local.coord">
+              <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   layer-type="base"
@@ -265,12 +319,33 @@ export default {
         <div class="col">
           <div class="map">
             <div style="height:600px; width:800px">
-              <l-map ref="map" v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
+              <l-map v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   layer-type="base"
                   name="OpenStreetMap"
                 ></l-tile-layer>
+                <l-marker v-for="(item, key, index) in vpn_data.node" :lat-lng="item.coord" :icon="getIcon(item.type)" @click="update_now(key)">
+                  <l-tooltip :options="{ permanent: true, direction: 'bottom'}">
+                    {{item.name}}
+                  </l-tooltip>
+                </l-marker>
+                <template v-for="(item, key) in vpn_data.show_path">
+                  <l-polyline v-for="(item2, key2) in item" :lat-lngs="item2.points" :color="item2.color">
+                    <l-tooltip :options="{ permanent: true, interactive: true}" >
+                      <span @click="showModal(key, key2, item2.data)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                        {{item2.weight}}
+                      </span>
+                    </l-tooltip>
+                    <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="'#B6B6B6'" >
+                      <l-tooltip :options="{ permanent: true, interactive: true}" >
+                        <span @click="showModal(direct_data.local.ip, direct_data.target.ip, direct_data.line.node)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                          {{direct_data.line.weight}}
+                        </span>
+                      </l-tooltip>
+                    </l-polyline>
+                  </l-polyline>
+                </template>
               </l-map>
             </div>
           </div>

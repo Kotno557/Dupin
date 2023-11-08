@@ -32,7 +32,6 @@ class DupinPathSniffer:
         self._local_database.commit()
         self._local_database.close() 
 
-        self.sniff_result.sort()
             
     def _check_path_history_exsist(self) -> bool:
         self._local_database_cur.execute("SELECT * FROM path_record WHERE target_ip=? AND start_ip=?", (self.targit_ip, self.my_public_ip,))
@@ -64,6 +63,7 @@ class DupinPathSniffer:
                 for j in dublin_result_json['flows'][i]:
                     if j['received'] != None and j['received'] != self.targit_ip:
                         trace_data.add(j['received']['ip']['src'])
+         
         os.remove('trace.json')
         return list(trace_data)
         
@@ -92,7 +92,6 @@ class DupinInfoSniffer:
 
     def _sniff_ip_info(self, ip: str) -> None:
         # variable define
-        is_address_private: bool = self._check_private_ip(ip)
         isp: str = ''
         hdm: str
         os: str
@@ -110,9 +109,8 @@ class DupinInfoSniffer:
             get_by_database = True
         else:
             # find isp
-            if is_address_private == False:
-                lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
-                isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
+            lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
+            isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
             
             # find hdm
             print("find hdm...")
