@@ -313,7 +313,19 @@ export default {
         </div>
         <div class="col">
           <div class="h-100 w-100 d-flex align-items-center justify-content-center">
-            <button class="btn btn-primary" @click="vpn_detection">>VPN 路線偵測></button>
+            <div class="d-flex flex-column align-items-center">
+              <div>
+                <button class="btn btn-primary" @click="vpn_detection">>VPN detect></button>
+              </div>
+              <div>
+                Path selector:  
+              </div>
+              <div>
+                <button class="btn btn-warning">↩</button>
+                <button class="btn btn-success">✔</button>
+                <button class="btn btn-warning">↺</button>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col">
