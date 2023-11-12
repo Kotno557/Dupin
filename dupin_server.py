@@ -107,8 +107,7 @@ async def vpn_path_check(target_url: str):
                     "level": ip_level_convert(sniffer.weight_result[key]), 
                     "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
                 }
-            if next_ip != target_url:
-                res[next_ip][now_ip] = res[now_ip][next_ip]
+            
     
     for i in range(0, len(VPN_TABLE) + 1):
         next_ip: str = VPN_TABLE[i]["ip"] if i < len(VPN_TABLE) else target_url
@@ -123,8 +122,7 @@ async def vpn_path_check(target_url: str):
                 "level": ip_level_convert(sniffer.weight_result[key]), 
                 "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
             }
-        if next_ip != target_url:
-            res[next_ip]["localhost"] = res["localhost"][next_ip]
+        
 
     return res
 

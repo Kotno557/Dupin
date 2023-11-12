@@ -116,15 +116,13 @@ export default {
         
         // for edge
         for (const [key, value] of Object.entries(this.vpn_data.path)) {
-          if (key != "localhost") {
-            this.vpn_data.show_path[key] = {}
-            for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
-              this.vpn_data.show_path[key][key2] = {
-                "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
-                "color": "#B6B6B6",
-                "weight": value2.path_weight,
-                "data": value2.info,
-              }
+          this.vpn_data.show_path[key] = {}
+          for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
+            this.vpn_data.show_path[key][key2] = {
+              "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
+              "color": "#B6B6B6",
+              "weight": value2.path_weight,
+              "data": value2.info,
             }
           }
         }
@@ -134,17 +132,29 @@ export default {
       }
       this.loading = false
     },
-    update_now (node_now) {
-      console.log("click"+node_now)
-      if (node_now == this.direct_data.target.url) {
-        alert("select finish!!")
+    update_now (node_new) {
+      console.log("click"+node_new)
+      if (node_new == this.direct_data.target.url) {
+        alert("this is the end !!")
         //TO Do
         return
       }
-      this.vpn_data.select.push(node_now)
-      this.vpn_data.node[node_now].type = "disable"
+      this.vpn_data.select.push(node_new)
+      this.vpn_data.node[node_new].type = "disable"
       //this.vpn_data.show_path[]
-    },  
+    },
+    redo(){
+      console.log("back")
+      let last = this.vpn_data.select[this.vpn_data.select.length - 1]
+      this.vpn_data.node[last].type = "enable"
+      this.vpn_data.select.pop()
+    },
+    path_clear(){
+      while (this.vpn_data.select.length > 0){
+        this.redo()
+      }
+    },
+
     upload_file(type, event){
       let formData = new FormData();
       formData.append("file", event.target.files[0])
@@ -321,9 +331,9 @@ export default {
                 Path selector:  
               </div>
               <div>
-                <button class="btn btn-warning">↩</button>
-                <button class="btn btn-success">✔</button>
-                <button class="btn btn-warning">↺</button>
+                <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="redo()">↩</button>
+                <button class="btn btn-success" :disabled="vpn_data.select.length <= 0" @click="connect()">✔</button>
+                <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="path_clear()">↺</button>
               </div>
             </div>
           </div>
