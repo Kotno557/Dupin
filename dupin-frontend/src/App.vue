@@ -55,7 +55,8 @@ export default {
       },
       local_zoom: 5,
       vpn_zoom: 5,
-      loading: false
+      loading: false,
+      p_disconnect: false
     };
   },
   methods: {
@@ -131,6 +132,49 @@ export default {
         console.log(error)
       }
       this.loading = false
+      alert("The VPN path scan has been completed. Please click on the grey VPN coordinates to determine the connection path. \nThe yellow path represents the shortest weighted path for your reference. Once you have made your selection, please click on the 🔗 button to initiate the connection.")
+    },
+    async connect(){
+      this.loading = true
+      let success = false
+      try{
+        axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
+        setInterval(function(){
+          console.log("waiting 20 sec to connect...")
+        }, 20000)
+      }
+      catch(e){
+        console.log(e)
+      }
+      // var vm = this
+      // setTimeout(async function () {
+      //   let c_ip = vm.direct_data.local.ip
+      //   while (c_ip == vm.direct_data.local.ip) {
+      //     c_ip = (await axios.get('https://api64.ipify.org?format=json')).data["ip"]
+      //   }
+      //   alert(`New connection has been established.\n localip from ${vm.direct_data.local.ip} → ${c_ip}`)
+      //   success = true
+      // }, 20000)
+      if (success == false){
+        alert("Chain is connected... Please check your IP to make sure.")
+      }
+      this.disconnect = true
+      this.loading = false
+    }, 
+    async disconnect() {
+      this.loading = true
+      try{
+        await axios.get("http://localhost:8000/disconnect")
+      }
+      catch(e){
+        console.log(e)
+      }
+      setTimeout(function () {
+        console.log("wating 5 sec...")
+      }, 5000)
+      this.loading = false
+      alert("The connection data has been stored in the history. If you want to connect directly with the same settings, please go to the connection history")
+      location.reload()
     },
     update_now (node_new) {
       console.log("click"+node_new)
@@ -332,7 +376,8 @@ export default {
               </div>
               <div>
                 <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="redo()">↩</button>
-                <button class="btn btn-success" :disabled="vpn_data.select.length <= 0" @click="connect()">✔</button>
+                <button v-if="p_disconnect == false" class="btn btn-success" :disabled="vpn_data.select.length <= 0" @click="connect()">🔗</button>
+                <button v-if="p_disconnect == true" class="btn btn-danger" :disabled="vpn_data.select.length <= 0" @click="disconnect()">🔗</button>
                 <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="path_clear()">↺</button>
               </div>
             </div>

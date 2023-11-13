@@ -133,13 +133,11 @@ async def vpn_path_check(target_url: str):
 # 輸出：
 # 1. 本地到目的端的傳輸路徑、個節點設備資訊與整條路的權重 JSON
 # 2. VPN節點介入的所有兩兩路徑的傳輸路徑個節點設備資訊與各路徑的權重, 還有，最小權重路徑（最乾淨路徑）資訊 JSON
-@app.get('/make_connect_file')
-async def make_connect_file(target_ip, vpn_file_path: str = 'User-defined files/vpn/default_vpn_table.json', path_list: List[str] = Query(None)):
-    with open(vpn_file_path, 'r') as vpn_file:
-        vpn_list: List[Dict[str, str]] = json.load(vpn_file)
-    
+@app.post('/connect')
+async def connect(target_url: str, path_list: List[str]):
+    ip_now: str = requests.get('https://checkip.amazonaws.com').text.strip()
     for i in range(0, len(path_list)):
-        for item in vpn_list:
+        for item in VPN_TABLE:
             if item["ip"] == path_list[i]:
                 path_list[i] = item["ovpn_path"]
     
@@ -148,21 +146,16 @@ async def make_connect_file(target_ip, vpn_file_path: str = 'User-defined files/
     for i in range(len(path_list) - 1, -1, -1):
         vpn_variable_setting += f"config[{num}]={path_list[i]}\n"
         num += 1
-    connect_sh_file_name: str = f'{time.strftime("%Y%m%d-%H%M%S")}_{target_ip.replace(".", "_")}_connect.sh'
-    with open('lib/VPN-Chain/vpnchain_template.txt') as template, open(f'lib/VPN-Chain/{connect_sh_file_name}', 'w') as connect_file:
+    print(f"target = {target_url}, from = {ip_now}, path = {path_list}, time = {time.strftime('%Y%m%d-%H%M%S')}")
+    with open('lib/VPN-Chain/vpnchain_template.txt') as template, open(f'lib/VPN-Chain/connect.sh', 'w') as connect_file:
         connect_file.write(vpn_variable_setting)
         for line in template:
             connect_file.write(line)
 
-    subprocess.call(f'chmod 777 ./{connect_sh_file_name}', shell=True, cwd='lib/VPN-Chain')
-    return {"msg": "ok", "file": connect_sh_file_name}
+    subprocess.call(f'sudo chmod 777 ./connect.sh', shell=True, cwd='lib/VPN-Chain')
 
-
-@app.get('/connect')
-async def connect(file_name: str = None):
-    # 因為我們確保連線檔案都是在上一個函式中建立的，所以這邊用檔名即可
     try:
-        subprocess.call(f'./{file_name}', shell=True, cwd='lib/VPN-Chain')
+        subprocess.call(f'sudo ./connect.sh', shell=True, cwd='lib/VPN-Chain')
     except Exception as e:
         print(e+"!!!!")
     
@@ -173,7 +166,7 @@ async def connect(file_name: str = None):
 @app.get('/disconnect')
 async def disconnect():
     try:
-        subprocess.call(f'./disconnect.sh', shell=True, cwd='lib/VPN-Chain')
+        subprocess.call(f'sudo ./disconnect.sh', shell=True, cwd='lib/VPN-Chain')
     except Exception as e:
         print(e)
         return {"error": str(e)}
