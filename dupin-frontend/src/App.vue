@@ -24,13 +24,13 @@ export default {
       direct_data: {
         "local":{
           "ip": null,
-          "coord": latLng(0,0),
+          "coord": [0,0],
           "type": "local"
         },
         "target":{
           "url": null,
           "ip": null,
-          "coord": latLng(0,0),
+          "coord": [0,0],
           "type": "target"
         },
         "line":{
@@ -62,25 +62,39 @@ export default {
   methods: {
     async target_detection(){
       this.loading = true
+
+      var dupin_result
+      var ipinfo_result
       try{
-        var dupin_result = await axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
+        dupin_result = await axios.get(`http://localhost:8000/direct_path_check/?url=${this.direct_data.target.url}`)
         this.direct_data.target.ip = dupin_result.data["target"]["ip"]
+        
+        ipinfo_result = await axios.get(`https://ipinfo.io/${this.direct_data.target.ip}/json?token=6c37228d8bfabd`)
+      
+        this.direct_data.target.coord = ipinfo_result.data["loc"].split(",").map(Number)
         this.direct_data.line.node = dupin_result.data["node"]
         this.direct_data.line.weight = dupin_result.data["weight"]
         this.direct_data.line.summary = dupin_result.data["summary"]
+        
+        console.log("some path test...:")
+        var path_save = [this.direct_data.local.coord]
+        console.log("first node", path_save)
+
+        path_save = path_save.concat(dupin_result.data["draw_path"])
+        console.log(dupin_result.data["draw_path"])
+        console.log("add path", path_save)
+
+        path_save.push(this.direct_data.target.coord)
+        console.log("add last", path_save)
+
+        this.direct_data.line.point = path_save
+        
+        this.loading = false
       }
       catch(error){
         console.log(error)
+        // Handle the error, for example, set default values or show an error message.
       }
-      try{
-        var ipinfo_result = await axios.get(`https://ipinfo.io/${this.direct_data.target.ip}/json?token=6c37228d8bfabd`)
-        this.direct_data.target.coord = latLng(ipinfo_result.data["loc"].split(",").map(Number))
-        this.direct_data.line.point = [this.direct_data.local.coord, this.direct_data.target.coord]
-      }
-      catch(error){
-        console.log(error)
-      }
-      this.loading = false
     },
     async vpn_detection(){
       this.loading = true
@@ -214,20 +228,6 @@ export default {
           console.log(error);
         });
     },
-    isLocalInfoAlready(){
-      if(this.local_ip != null && this.local_coord != latLng(0,0) && this.local_country != null){
-        return true
-      }
-      return false
-    },
-    isTargetInfoAlready(){
-      console.log("check")
-      console.log(this.target_ip, this.target_coord)
-      if(this.target_ip != null && this.target_coord != latLng(0,0)){
-        return true
-      }
-      return false
-    },
     getIcon(type) {
       let icon_url = {
         "local": "green",
@@ -257,7 +257,7 @@ export default {
     axios.get(`https://ipinfo.io/json?token=6c37228d8bfabd`)
       .then(function (response) {
         vm.direct_data.local.ip = response.data["ip"]
-        vm.direct_data.local.coord = latLng(response.data["loc"].split(",").map(Number))
+        vm.direct_data.local.coord = response.data["loc"].split(",").map(Number)
       })
       .catch(function (error) {
         console.log(error);
@@ -337,7 +337,7 @@ export default {
       <div class="row g-1">
         <div class="col">
           <div class="map">
-            <div style="height:600px; width:800px">
+            <div style="height:600px; width:1800px">
               <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

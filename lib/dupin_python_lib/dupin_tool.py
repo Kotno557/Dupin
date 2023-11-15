@@ -4,8 +4,11 @@ import ipaddress
 import socket
 
 def get_ip_coord(ip: str) -> List[float]:
-    lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
-    return [lookup_info["location"]["latitude"], lookup_info["location"]["longitude"]]
+    lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
+    try:
+        return (lookup_info["location"]["latitude"], lookup_info["location"]["longitude"])
+    except KeyError:
+        return None
 
 def ip_level_convert(level: str|int) -> str:
     if type(level) == str:

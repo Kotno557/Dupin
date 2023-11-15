@@ -1,4 +1,5 @@
 from typing import IO, Dict, Set, List, Tuple, Any, Union
+from lib.dupin_python_lib.dupin_tool import get_ip_coord
 from datetime import datetime
 import requests
 import socket
@@ -23,6 +24,7 @@ class DupinPathSniffer:
         self._local_database: sqlite3.Connection = sqlite3.connect('local_database.db')
         self._local_database_cur: sqlite3.Cursor = self._local_database.cursor()
         self.sniff_result: List[str]
+        self.draw_path: List[List[float]]
 
         # use database then check result is already in it
         if self._check_path_history_exsist() == False: # if path_history_exsist then check db and load to sniff_result
@@ -39,15 +41,16 @@ class DupinPathSniffer:
         if len(results) < 1:
             return False
         
-        if (time.time() - results[0][2] < 604800):
+        if (time.time() - results[0][2] < math.inf):
             self.sniff_result = json.loads(results[0][1])
-            #print(f'get {self.targit_ip} path from DB')
+            self.draw_path = json.loads(results[0][4])
+            print(f'get {self.targit_ip} path from DB')
             return True
 
         return False
     
     def _save_sniff_result_to_local_database_and_result_json(self) -> None:
-        self._local_database_cur.execute("INSERT OR REPLACE INTO path_record (target_ip, path, last_update_time, start_ip) VALUES (?, ?, ?, ?)", (self.targit_ip, json.dumps(self.sniff_result), time.time(), self.my_public_ip,))
+        self._local_database_cur.execute("INSERT OR REPLACE INTO path_record (target_ip, path, last_update_time, start_ip, draw_path ) VALUES (?, ?, ?, ?, ?)", (self.targit_ip, json.dumps(self.sniff_result), time.time(), self.my_public_ip, json.dumps(self.draw_path)))
         
     def _get_traceroute_result(self) -> List[str]:
 
@@ -56,14 +59,24 @@ class DupinPathSniffer:
 
         # get result from trace.json
         trace_data: Set[str] = set()
+
+        path: List[List[str]] = []
+
         with open('trace.json', 'r') as dublin_result_json:
             dublin_result_json = json.load(dublin_result_json)
             # parse ip
             for i in dublin_result_json['flows']:
+                path.append([])
                 for j in dublin_result_json['flows'][i]:
                     if j['received'] != None and j['received'] != self.targit_ip:
+                        path[-1].append(j['received']['ip']['src'])
                         trace_data.add(j['received']['ip']['src'])
-         
+                print(path[-1])
+
+        self.draw_path: List[Tuple[float]] = list(filter(lambda coord: coord != None, list(dict.fromkeys(map(get_ip_coord, max(path, key=len))))))
+        self.draw_path = list(map(list, self.draw_path))
+        
+        print(self.draw_path)
         os.remove('trace.json')
         return list(trace_data)
         
@@ -100,8 +113,8 @@ class DupinInfoSniffer:
         # first check for database
         self._local_database_cur.execute('SELECT * FROM info_record WHERE target_ip=?', (ip,))
         search_result: List[Tuple[Union[str, float]]] =  self._local_database_cur.fetchall()
-        if len(search_result) > 0 and time.time() - search_result[0][1] < 604800:
-            #print(f'get {ip} information from DB')
+        if len(search_result) > 0 and time.time() - search_result[0][1] < 10604800:
+            print(f'get {ip} information from DB')
             # data available in database 
             isp = search_result[0][2]
             hdm = search_result[0][3]
@@ -109,7 +122,7 @@ class DupinInfoSniffer:
             get_by_database = True
         else:
             # find isp
-            lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}').json()
+            lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
             isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
             
             # find hdm
@@ -158,7 +171,7 @@ class DupinInfoSniffer:
         # using nmap -O get os
         nm: nmap.PortScanner = nmap.PortScanner()
         try:
-            nm.scan(hosts=ip, arguments='-O', timeout=40, sudo=True)
+            nm.scan(hosts=ip, arguments='-O --osscan-guess', timeout=40, sudo=True)
             return nm[ip]['osmatch'][0]['osclass'][0]['vendor']
         except Exception as e:
             print('OS detect Failed')
@@ -352,6 +365,7 @@ def database_init():
             path TEXT,
             last_update_time REAL,
             start_ip TEXT,
+            draw_path TEXT,
             UNIQUE(target_ip, start_ip)
         );
     """)

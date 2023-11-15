@@ -45,11 +45,13 @@ async def upload(file_type: int, file: UploadFile):
         json_data = json.loads(file_content)
         if file_type == 1:
             CLEAN_TABLE = json_data
+            print("update CLEAN_TABLE")
         if file_type == 2:
             VPN_TABLE = json_data
+            print("update VPN_TABLE")
         if file_type == 3:
             WEIGHT_TABLE = json_data
-        print(CLEAN_TABLE, VPN_TABLE, WEIGHT_TABLE)
+            print("update WEIGHT_TABLE")        
         return {"data": json_data}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
@@ -57,7 +59,7 @@ async def upload(file_type: int, file: UploadFile):
 
 # 本地與目的地連線路徑探測
 @app.get('/direct_path_check')
-async def direct_path_check(url: str = 'goodinfo.tw'):
+async def direct_path_check(url: str):
     path_node = DupinPathSniffer(url)
     target_ip = path_node.targit_ip
     target_coord: List[float, float] = get_ip_coord(target_ip)
@@ -66,15 +68,16 @@ async def direct_path_check(url: str = 'goodinfo.tw'):
         "target": {"ip": target_ip, "coord": target_coord}, 
         "node": {}, 
         "summary": {ip_level_convert(i): sniffer.path_clean_result[i] for i in range(-1, 4)},
-        "weight": sniffer.weight_sum
-        }
+        "weight": sniffer.weight_sum,
+        "draw_path" : path_node.draw_path
+    }
     for key, value in sniffer.info_result.items():
         res["node"][key] = {
             "isp": value[0],
             "hdm": value[1], 
             "os": value[2], 
             "level": ip_level_convert(sniffer.weight_result[key]), 
-            "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
+            "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
         }
 
     return res
@@ -92,35 +95,37 @@ async def vpn_path_check(target_url: str):
             next_ip: str = VPN_TABLE[j]["ip"] if j < len(VPN_TABLE) else target_url
             while True:
                 try:
-                    temp = requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json()
-                    sniffer: DupinLevelGrader = DupinLevelGrader(temp["path"], CLEAN_TABLE, WEIGHT_TABLE)
+                    path_sniffer = requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json()
+                    sniffer: DupinLevelGrader = DupinLevelGrader(path_sniffer["path"], CLEAN_TABLE, WEIGHT_TABLE)
                     break
                 except Exception as e:
                     print(e)
                     continue
-            res[now_ip][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": temp["target_ip"]}
+            res[now_ip][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": path_sniffer["target_ip"]}
             for key, value in sniffer.info_result.items():
                 res[now_ip][next_ip]["info"][key] = {
                     "isp": value[0],
                     "hdm": value[1], 
                     "os": value[2], 
                     "level": ip_level_convert(sniffer.weight_result[key]), 
-                    "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
+                    "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
+                    "draw_path": path_sniffer["draw_path"]
                 }
             
-    
+    # for localhost
     for i in range(0, len(VPN_TABLE) + 1):
         next_ip: str = VPN_TABLE[i]["ip"] if i < len(VPN_TABLE) else target_url
-        temp = DupinPathSniffer(next_ip)
-        sniffer: DupinLevelGrader = DupinLevelGrader(DupinInfoSniffer(temp).info_result, CLEAN_TABLE, WEIGHT_TABLE)
-        res["localhost"][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": temp.targit_ip}
+        path_sniffer = DupinPathSniffer(next_ip)
+        sniffer: DupinLevelGrader = DupinLevelGrader(DupinInfoSniffer(path_sniffer).info_result, CLEAN_TABLE, WEIGHT_TABLE)
+        res["localhost"][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": path_sniffer.targit_ip}
         for key, value in sniffer.info_result.items():
             res["localhost"][next_ip]["info"][key] = {
                 "isp": value[0],
                 "hdm": value[1], 
                 "os": value[2], 
                 "level": ip_level_convert(sniffer.weight_result[key]), 
-                "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
+                "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
+                "draw_path": path_sniffer.draw_path
             }
         
 
