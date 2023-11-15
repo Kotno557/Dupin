@@ -1,14 +1,14 @@
-[
-    {
-        "ip": "20.84.80.216",
+{
+    "20.84.80.216": {
+        "name": "VPN1",
         "ovpn_path": "/home/dyang/Dobie/vpn_node_ovpn_fold/VPN1.ovpn"
     },
-    {
-        "ip": "20.199.51.125",
+    "20.199.51.125": {
+        "name": "VPN2",
         "ovpn_path": "/home/dyang/Dobie/vpn_node_ovpn_fold/VPN2.ovpn"
     },
-    {
-        "ip": "74.226.208.130",
+    "74.226.208.130": {
+        "name": "VPN3",
         "ovpn_path": "/home/dyang/Dobie/vpn_node_ovpn_fold/VPN3.ovpn"
     }
-]
+}

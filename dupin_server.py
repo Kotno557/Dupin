@@ -45,15 +45,16 @@ async def upload(file_type: int, file: UploadFile):
         json_data = json.loads(file_content)
         if file_type == 1:
             CLEAN_TABLE = json_data
-            print("update CLEAN_TABLE")
+            print("[INFO] dupin_server.upload: Upload CLEAN_TABLE")
         if file_type == 2:
             VPN_TABLE = json_data
-            print("update VPN_TABLE")
+            print("[INFO] dupin_server.upload: Upload VPN_TABLE")
         if file_type == 3:
             WEIGHT_TABLE = json_data
-            print("update WEIGHT_TABLE")        
+            print("[INFO] dupin_server.upload: Upload WEIGHT_TABLE")
         return {"data": json_data}
     except Exception as e:
+        print(f"[ERROR] dupin_server.upload: {str(e)}")
         return JSONResponse(content={"error": str(e)}, status_code=400)
     
 
@@ -86,13 +87,15 @@ async def direct_path_check(url: str):
 # TO DO: 還要有推薦路徑資訊!!!
 @app.get('/vpn_path_check')
 async def vpn_path_check(target_url: str):
-    
     res: Dict = {"localhost": {}}
-    for i in range(0, len(VPN_TABLE)):
-        now_ip: str = VPN_TABLE[i]["ip"]
+
+    vpn_table_keys = list(VPN_TABLE.keys())
+    table_len = len(vpn_table_keys)
+    for i in range(0, table_len):
+        now_ip: str = vpn_table_keys[i]
         res[now_ip] = {}
-        for j in range(i + 1, len(VPN_TABLE) + 1):
-            next_ip: str = VPN_TABLE[j]["ip"] if j < len(VPN_TABLE) else target_url
+        for j in range(i + 1, table_len + 1):
+            next_ip: str = vpn_table_keys[j] if j < table_len else target_url
             while True:
                 try:
                     path_sniffer = requests.get(f'http://{now_ip}:8000/sniff/{next_ip}', timeout = 40).json()
@@ -101,23 +104,36 @@ async def vpn_path_check(target_url: str):
                 except Exception as e:
                     print(e)
                     continue
-            res[now_ip][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": path_sniffer["target_ip"]}
+                except KeyboardInterrupt:
+                    break
+            res[now_ip][next_ip] = {
+                "info": {},
+                "level": sniffer.weight_result, 
+                "path_weight": sniffer.weight_sum, 
+                "target_ip": path_sniffer["target_ip"],
+                "draw_path": path_sniffer["draw_path"]
+            }
             for key, value in sniffer.info_result.items():
                 res[now_ip][next_ip]["info"][key] = {
                     "isp": value[0],
                     "hdm": value[1], 
                     "os": value[2], 
                     "level": ip_level_convert(sniffer.weight_result[key]), 
-                    "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
-                    "draw_path": path_sniffer["draw_path"]
+                    "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
                 }
             
     # for localhost
-    for i in range(0, len(VPN_TABLE) + 1):
-        next_ip: str = VPN_TABLE[i]["ip"] if i < len(VPN_TABLE) else target_url
+    for i in range(0, table_len + 1):
+        next_ip: str = vpn_table_keys[i] if i < table_len else target_url
         path_sniffer = DupinPathSniffer(next_ip)
         sniffer: DupinLevelGrader = DupinLevelGrader(DupinInfoSniffer(path_sniffer).info_result, CLEAN_TABLE, WEIGHT_TABLE)
-        res["localhost"][next_ip] = {"info": {}, "level": sniffer.weight_result, "path_weight": sniffer.weight_sum, "target_ip": path_sniffer.targit_ip}
+        res["localhost"][next_ip] = {
+            "info": {}, 
+            "level": sniffer.weight_result, 
+            "path_weight": sniffer.weight_sum, 
+            "target_ip": path_sniffer.targit_ip,
+            "draw_path": path_sniffer["draw_path"]
+        }
         for key, value in sniffer.info_result.items():
             res["localhost"][next_ip]["info"][key] = {
                 "isp": value[0],
@@ -142,9 +158,11 @@ async def vpn_path_check(target_url: str):
 async def connect(target_url: str, path_list: List[str]):
     ip_now: str = requests.get('https://checkip.amazonaws.com').text.strip()
     for i in range(0, len(path_list)):
-        for item in VPN_TABLE:
-            if item["ip"] == path_list[i]:
-                path_list[i] = item["ovpn_path"]
+        try:
+            path_list[i] = VPN_TABLE[path_list[i]]["ovpn_path"]
+        except KeyError:
+            print("[ERROR] dupin_server.py:connect: Request IP of VPN not in VPN_TABLE")
+            return {"mag": "ERROR"}
     
     vpn_variable_setting: str = '#!/bin/bash\n'
     num = 1
@@ -183,7 +201,10 @@ async def disconnect():
 async def get_brand_list():
     pass
 
-
+@app.get('/ip')
+async def ip():
+    ip: str = requests.get('https://checkip.amazonaws.com').text.strip()
+    return {"ip": ip}
 
 if __name__ == "__main__":
     database_init()

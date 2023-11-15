@@ -50,7 +50,7 @@ export default {
         "path": {},
         "show_path": {},
         "node": {},
-        "select": [],
+        "select": [] /*["20.84.80.216","20.199.51.125","74.226.208.130"]*/,
         "now": null
       },
       local_zoom: 5,
@@ -75,19 +75,7 @@ export default {
         this.direct_data.line.node = dupin_result.data["node"]
         this.direct_data.line.weight = dupin_result.data["weight"]
         this.direct_data.line.summary = dupin_result.data["summary"]
-        
-        console.log("some path test...:")
-        var path_save = [this.direct_data.local.coord]
-        console.log("first node", path_save)
-
-        path_save = path_save.concat(dupin_result.data["draw_path"])
-        console.log(dupin_result.data["draw_path"])
-        console.log("add path", path_save)
-
-        path_save.push(this.direct_data.target.coord)
-        console.log("add last", path_save)
-
-        this.direct_data.line.point = path_save
+        this.direct_data.line.point = dupin_result.data["draw_path"]
         
         this.loading = false
       }
@@ -118,11 +106,10 @@ export default {
           if (key != "localhost") {
             var ipinfo_result = await axios.get(`https://ipinfo.io/${key}/json?token=6c37228d8bfabd`)
             var vpn_name = `VPN${key}`
-            var lag = latLng(ipinfo_result.data["loc"].split(",").map(Number))
             this.vpn_data.node[key] = {
               "name": vpn_name,
               "ip": key,
-              "coord": lag,
+              "coord": ipinfo_result.data["loc"].split(",").map(Number),
               "type": "enable",
               "show": true
             }
@@ -134,7 +121,7 @@ export default {
           this.vpn_data.show_path[key] = {}
           for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
             this.vpn_data.show_path[key][key2] = {
-              "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
+              "points": value2.draw_path,
               "color": "#B6B6B6",
               "weight": value2.path_weight,
               "data": value2.info,
@@ -149,31 +136,46 @@ export default {
       alert("The VPN path scan has been completed. Please click on the grey VPN coordinates to determine the connection path. \nThe yellow path represents the shortest weighted path for your reference. Once you have made your selection, please click on the 🔗 button to initiate the connection.")
     },
     async connect(){
+      function delay(milliseconds){
+        return new Promise(resolve => {
+          setTimeout(resolve, milliseconds);
+        });
+      }
       this.loading = true
-      let success = false
       try{
-        axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
-        setInterval(function(){
-          console.log("waiting 20 sec to connect...")
-        }, 20000)
+        await axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
       }
       catch(e){
-        console.log(e)
+        console.log("there is a catch of 500 ERR")
+        await delay(20000)
+        console.log("delay 20sec")
+        
+        var ip_now 
+        var p = 0
+        do{
+          try{
+            p += 1
+            ip_now = (await axios.get("http://localhost:8000/ip/")).data["ip"]
+            console.log(ip_now, "vs", this.direct_data.local.ip)
+            await delay(5000)
+          }
+          catch(e){
+            console.log(e)
+          }
+        }while(ip_now == this.direct_data.local.ip && p <= 3)
+        
+        if (p > 3){
+          alert(`The connection fail, please check the backend log to get more info`)
+        }
+        else{
+          this.p_disconnect = true
+          alert(`New connection has been established.\n\n
+          IP of loacal from:\n\n
+          ${this.direct_data.local.ip} → ${ip_now}\n\n
+          Enjoy Your Clean Connection Uwu`)
+        }
+        this.loading = false
       }
-      // var vm = this
-      // setTimeout(async function () {
-      //   let c_ip = vm.direct_data.local.ip
-      //   while (c_ip == vm.direct_data.local.ip) {
-      //     c_ip = (await axios.get('https://api64.ipify.org?format=json')).data["ip"]
-      //   }
-      //   alert(`New connection has been established.\n localip from ${vm.direct_data.local.ip} → ${c_ip}`)
-      //   success = true
-      // }, 20000)
-      if (success == false){
-        alert("Chain is connected... Please check your IP to make sure.")
-      }
-      this.disconnect = true
-      this.loading = false
     }, 
     async disconnect() {
       this.loading = true
