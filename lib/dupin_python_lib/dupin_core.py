@@ -1,5 +1,5 @@
 from typing import IO, Dict, Set, List, Tuple, Any, Union
-from lib.dupin_python_lib.dupin_tool import get_ip_coord
+from lib.dupin_python_lib.dupin_tool import get_ip_coord, VPN_NAT_ADDRESS
 from datetime import datetime
 import requests
 import socket
@@ -98,7 +98,11 @@ class DupinInfoSniffer:
         for ip in travel_path:
             print(f'info scaning {ip} ({count}/{node_len})')
             count += 1
-            self._sniff_ip_info(ip)
+            try:
+                self._sniff_ip_info(ip)
+            except KeyboardInterrupt:
+                print("[INFO] dupin_core.py.DupinInfoSniffer.__init__: User Ctrl+C Interrupt")
+                break
 
         # write and close database
         self._local_database.commit()
@@ -122,17 +126,27 @@ class DupinInfoSniffer:
             os = search_result[0][4]
             get_by_database = True
         else:
-            # find isp
-            lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
-            isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
-            
-            # find hdm
-            print("find hdm...")
-            hdm = self._sniff_ip_hdm(ip)
+            is_vpn_provider_ip: bool = False
+            for zone in VPN_NAT_ADDRESS:
+                if ipaddress.IPv4Address(ip) in zone:
+                    isp = VPN_NAT_ADDRESS[zone]["isp"]
+                    hdm = VPN_NAT_ADDRESS[zone]["hdm"]
+                    os = VPN_NAT_ADDRESS[zone]["os"]
+                    print("This is a IP of trust VPN provider")
+                    is_vpn_provider_ip = True
 
-            # find os 
-            print("find os...")
-            os = self._sniff_ip_os(ip)
+            if is_vpn_provider_ip != True:
+                # find isp
+                lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
+                isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
+                
+                # find hdm
+                print("find hdm...")
+                hdm = self._sniff_ip_hdm(ip)
+
+                # find os 
+                print("find os...")
+                os = self._sniff_ip_os(ip)
 
 
         # save result to info_result

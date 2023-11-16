@@ -339,7 +339,7 @@ export default {
       <div class="row g-1">
         <div class="col">
           <div class="map">
-            <div style="height:600px; width:1800px">
+            <div style="height:600px; width:800px">
               <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

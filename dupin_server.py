@@ -132,7 +132,7 @@ async def vpn_path_check(target_url: str):
             "level": sniffer.weight_result, 
             "path_weight": sniffer.weight_sum, 
             "target_ip": path_sniffer.targit_ip,
-            "draw_path": path_sniffer["draw_path"]
+            "draw_path": path_sniffer.draw_path
         }
         for key, value in sniffer.info_result.items():
             res["localhost"][next_ip]["info"][key] = {
