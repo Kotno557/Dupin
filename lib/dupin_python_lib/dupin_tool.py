@@ -4,9 +4,9 @@ import ipaddress
 import socket
 
 def get_ip_coord(ip: str) -> List[float]:
-    lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
+    lookup_info: Dict = requests.get(f'https://ipinfo.io/{ip}/json?token=6c37228d8bfabd').json()
     try:
-        return (lookup_info["location"]["latitude"], lookup_info["location"]["longitude"])
+        return tuple(lookup_info["loc"].split(','))
     except KeyError:
         print(f"[ERROR] dupin_tool.py.get_ip_coord: {lookup_info}")
         print(ip)

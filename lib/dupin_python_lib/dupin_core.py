@@ -61,18 +61,18 @@ class DupinPathSniffer:
         trace_data: Set[str] = set()
 
         
-        path: List[List[str]] = [self.my_public_ip]
+        path: List[List[str]] = []
         with open('trace.json', 'r') as dublin_result_json:
             dublin_result_json = json.load(dublin_result_json)
             # parse ip
             for i in dublin_result_json['flows']:
-                path.append([])
+                path.append([self.my_public_ip])
                 for j in dublin_result_json['flows'][i]:
-                    if j['received'] != None and j['received'] != self.targit_ip:
+                    if j['received'] != None and j['received']['ip']['src'] != self.targit_ip:
                         path[-1].append(j['received']['ip']['src'])
                         trace_data.add(j['received']['ip']['src'])
+                path[-1].append(self.targit_ip)
                 print(path[-1])
-        path.append(self.targit_ip)
 
         self.draw_path: List[Tuple[float]] = list(filter(lambda coord: coord != None, list(dict.fromkeys(map(get_ip_coord, max(path, key=len))))))
         self.draw_path = list(map(list, self.draw_path))
