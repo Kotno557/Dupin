@@ -8,7 +8,7 @@ import uvicorn
 
 def vpn_path_clean_info_sniff(target_url: str) -> Dict[int, int]:
     path_sniffer: DupinPathSniffer = DupinPathSniffer(target_url)
-    info_sniffer: DupinInfoSniffer = DupinInfoSniffer(path_sniffer.sniff_result)
+    info_sniffer: DupinInfoSniffer = DupinInfoSniffer(path_sniffer)
     return {"path": info_sniffer.info_result, "target_ip": path_sniffer.targit_ip, "draw_path": path_sniffer.draw_path}
 
 
