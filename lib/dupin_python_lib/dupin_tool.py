@@ -9,6 +9,7 @@ def get_ip_coord(ip: str) -> List[float]:
         return (lookup_info["location"]["latitude"], lookup_info["location"]["longitude"])
     except KeyError:
         print(f"[ERROR] dupin_tool.py.get_ip_coord: {lookup_info}")
+        print(ip)
         return None
 
 def ip_level_convert(level: str|int) -> str:
