@@ -1,13 +1,16 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LMarker, LPopup, LTooltip, LPolyline } from "@vue-leaflet/vue-leaflet";
-import { Point, latLng } from "leaflet";
 import L from "leaflet";
 import axios from "axios";
 
 import {Modal} from "bootstrap"
 
 let modal;
+let welcon_modal
+let clean_modal
+let vpn_modal
+let weight_modal
 
 export default {
   components: {
@@ -53,6 +56,23 @@ export default {
         "select": [] /*["20.84.80.216","20.199.51.125","74.226.208.130"]*/,
         "now": null
       },
+      cleantable:{
+        all_table: null,
+        res:{
+          "hdm":{
+            "clean": [],
+            "unclean": []
+          },
+          "isp":{
+            "clean": [],
+            "unclean": []
+          }
+        },
+        isp:{
+          focus: "",
+          show: {}
+        }
+      },
       local_zoom: 5,
       vpn_zoom: 5,
       loading: false,
@@ -85,6 +105,35 @@ export default {
       }
     },
     async vpn_detection(){
+      function findForth(n, top, bottom) {
+        // 確保 top <= bottom
+        if (top > bottom) {
+          [top, bottom] = [bottom, top];
+        }
+
+        // 計算每一等份的範圍
+        const range = (bottom - top + 1) / 4;
+
+        // 計算 n 在哪個等份
+        const interval = Math.floor((n - top) / range) + 1;
+
+        if (interval == 1){
+          return "#008000"
+        }
+        else if (interval == 2){
+          return "#FFFF00"
+        }
+        else if (interval == 3){
+          return "#FFA500"
+        }
+        else if (interval == 4){
+          return "#FF0000"
+        }
+        else{
+          return "#B6B6B6"
+        }
+      }
+
       this.loading = true
       try{
         var dupin_vpn_result = await axios.get(`http://localhost:8000/vpn_path_check/?target_url=${this.direct_data.target.url}`)
@@ -117,15 +166,26 @@ export default {
         }
         
         // for edge
+        var max_weight = Number.MIN_SAFE_INTEGER
+        var min_weight = Number.MAX_SAFE_INTEGER
+        for (const [key, value] of Object.entries(this.vpn_data.path)) {
+          for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
+            max_weight = Math.max(max_weight, value2.path_weight)
+            min_weight = Math.min(min_weight, value2.path_weight)
+          }
+        }
+        console.log("color", max_weight, min_weight)
         for (const [key, value] of Object.entries(this.vpn_data.path)) {
           this.vpn_data.show_path[key] = {}
-          for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {
+          for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {            
             this.vpn_data.show_path[key][key2] = {
-              "points": value2.draw_path,
-              "color": "#B6B6B6",
+              // "points": value2.draw_path,
+              "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
+              "color": findForth(value2.path_weight, max_weight, min_weight),
               "weight": value2.path_weight,
               "data": value2.info,
             }
+
           }
         }
       }
@@ -194,9 +254,7 @@ export default {
     },
     update_now (node_new) {
       console.log("click"+node_new)
-      if (node_new == this.direct_data.target.url) {
-        alert("this is the end !!")
-        //TO Do
+      if (node_new === this.direct_data.target.url || node_new === "localhost") {
         return
       }
       this.vpn_data.select.push(node_new)
@@ -253,6 +311,15 @@ export default {
 
       modal.show()
     },
+    startWelcome(){
+      clean_modal.show()
+    },
+    startVPNTable(){
+      vpn_modal.show()
+    },
+    startWeightTable(){
+      weight_modal.show()
+    }
   },
   mounted(){
     const vm = this;
@@ -265,6 +332,26 @@ export default {
         console.log(error);
       });
     modal = new Modal(document.getElementById("staticBackdrop"))
+    welcon_modal = new Modal(document.getElementById("welcom_modal"))
+    clean_modal = new Modal(document.getElementById("CleanTable"))
+    vpn_modal = new Modal(document.getElementById("VPNTable"))
+    weight_modal = new Modal(document.getElementById("WeightTable"))
+    welcon_modal.show()
+    axios.get(`http://localhost:8000/brand_list`)
+      .then(function (response) {
+        vm.cleantable.all_table = response.data
+        console.log(`[INFO] Get brand_list hdm size = ${vm.cleantable.all_table.hdm.length}, isp size = ${Object.keys(vm.cleantable.all_table.isp).length}`)
+        console.log(vm.cleantable.all_table)
+        for(let key of Object.keys(vm.cleantable.all_table["isp"])){
+          vm.cleantable.isp.show[key] = []
+          for(let provider of vm.cleantable.all_table["isp"][key]){
+            vm.cleantable.isp.show[key].push({"name": provider, "checked": false})
+          }
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 };
 </script>
@@ -272,7 +359,7 @@ export default {
 <template>
   <div class="bg"> <!--body start-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3"> <!--navbar start-->
-      <a class="navbar-brand" href="#"><i class="fa fa-bars"></i> <!-- 这里使用了Font Awesome的bars图标 --> Brand</a>
+      <a class="navbar-brand" href="#"><i class="fa fa-bars"></i> <!-- 这里使用了Font Awesome的bars图标 --> Dupin</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -280,13 +367,13 @@ export default {
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="#">CleanTable</a>
+            <a class="nav-link" href="#" @click="startWelcome">CleanTable</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">VPN Table</a>
+            <a class="nav-link" href="#" @click="startVPNTable">VPN Table</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">WeightTable</a>
+            <a class="nav-link" href="#" @click="startWeightTable">WeightTable</a>
           </li>
         </ul>
       </div>
@@ -294,8 +381,9 @@ export default {
     <div class="bd-example m-3"> <!--Local info-->
       <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
       <p>Debugger: {{direct_data}} </p>
-      <p>{{vpn_data}}</p>
+      <p> {{vpn_data}} </p>
       <p> {{modal_data}} </p>
+      <p> Clean Table: </p>
     </div>
     <div class="bd-example m-3"> <!--input area start-->
       <form class="row g-3">
@@ -406,13 +494,6 @@ export default {
                         {{item2.weight}}
                       </span>
                     </l-tooltip>
-                    <l-polyline v-if="direct_data.line.point" :lat-lngs="direct_data.line.point" :color="'#B6B6B6'" >
-                      <l-tooltip :options="{ permanent: true, interactive: true}" >
-                        <span @click="showModal(direct_data.local.ip, direct_data.target.ip, direct_data.line.node)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
-                          {{direct_data.line.weight}}
-                        </span>
-                      </l-tooltip>
-                    </l-polyline>
                   </l-polyline>
                 </template>
               </l-map>
@@ -423,9 +504,9 @@ export default {
     </div>
     
 
-    <!-- Modal -->
+    <!-- Info Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel">
@@ -460,9 +541,144 @@ export default {
         </div>
       </div>
     </div>
+    <!--Info end-->
+    
+    <!-- Welcom Modal -->
+    <div class="modal" id="welcom_modal" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title">Welcome to Dupin Clean Connecter</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h5>First-time user?</h5><br>
+            <h5>If so, please use our setup wizard to create your user config file.</h5><br>
+            <h5>Already have a profile, you can choose "Ignore" botton.</h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ignore</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startWelcome">Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Welcom end -->
 
-  </div> <!--body end-->
+    <!-- CleanTable -->
+    <div class="modal fade" id="CleanTable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="staticBackdropLabel">
+              Create Clean Table:
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col">
+                <h5> Step1: Select ISP Table</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <div class="list-group">
+                  <div class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+                    <span>Contry:</span>
+                    <div class="custom-control custom-checkbox">
+                      <label class="custom-control-label" for="selectAll">►</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="list-group custom-list-group">
+                  <template v-if="cleantable.all_table !== null">
+                    <button v-for="contry in Object.keys(cleantable.all_table['isp'])" @click="cleantable.isp.focus = contry" type="button" class="list-group-item list-group-item-action">
+                      <input class="form-check-input me-1" type="checkbox" value="">
+                      {{contry}}
+                    </button>
+                  </template>
+                </div>
+              </div>
+              <div class="col-md-10">
+                <div class="list-group">
+                  <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
+                    <span>ISP Provider:</span>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="selectAll">
+                      <label class="custom-control-label" for="selectAll">Select All</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="list-group custom-list-group">
+                  <template v-if="cleantable.isp.focus !== ''">                    
+                    <label v-for="item in cleantable.isp.show[cleantable.isp.focus]" class="list-group-item">
+                      <input class="form-check-input me-1" type="checkbox" :checked="item.checked">
+                      {{item.name}}
+                    </label>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Use Default config</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startVPNTable">Next→Set VPN Table</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--body end-->
 
+    <!-- VPN Table -->
+    <div class="modal fade" id="VPNTable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="staticBackdropLabel">
+              VPN Table 
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            test
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startWeightTable">> Set VPN Table</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- VPN Table end-->
+
+    <!-- WeightTable -->
+    <div class="modal fade" id="WeightTable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="staticBackdropLabel">
+              Weight Table 
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            test
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--body end-->
+
+
+  </div> 
+  
+
+  <!--loading-->
   <div id="dimScreen" v-if="loading">
     <div class="h-100 w-100 d-flex align-items-center justify-content-center">
       <div class="spinner-border" role="status">
@@ -470,6 +686,7 @@ export default {
       </div>
     </div>
   </div>
+  <!--loading end-->
 </template>
 
 <style scoped>
@@ -511,4 +728,9 @@ html, body {
     left: 0px;
     z-index: 1000;
 }
+
+.custom-list-group {
+      max-height: 400px; /* 設定最大高度 */
+      overflow-y: auto; /* 啟用垂直滾動條 */
+    }
 </style>

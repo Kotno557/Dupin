@@ -40,6 +40,11 @@ VPN_NAT_ADDRESS = {
     ipaddress.IPv4Network("104.44.0.0/16") : {
         "isp": "Microsoft Corporation",
         "hdm": "ciscoSystems",
-        "os": "Cisco Systems Inc"
+        "os": "Cisco"
+    },
+    ipaddress.IPv4Network("13.104.0.0/14") : {
+        "isp": "Microsoft Corporation",
+        "hdm": "ciscoSystems",
+        "os": "Cisco"
     }
 }

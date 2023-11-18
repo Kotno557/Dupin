@@ -11,6 +11,7 @@
     "axios": "^1.5.1",
     "bootstrap": "^5.3.2",
     "bootstrap-vue": "^2.23.1",
+    "leaflet-polylineoffset": "^1.1.1",
     "vue": "^3.3.4"
   },
   "devDependencies": {

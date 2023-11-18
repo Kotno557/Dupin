@@ -1,7 +1,7 @@
 #!/bin/bash
-config[1]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN3.ovpn
-config[2]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN2.ovpn
-config[3]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN1.ovpn
+config[1]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN2.ovpn
+config[2]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN1.ovpn
+config[3]=/home/dyang/Dobie/vpn_node_ovpn_fold/VPN3.ovpn
 verbose=0           # verbose level; from 0 to 6
 enable_firewall=0   # Block outgoing traffic except openvpn servers (HIGHLY RECOMMENDED)
 block_ipv6=0

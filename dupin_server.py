@@ -102,10 +102,12 @@ async def vpn_path_check(target_url: str):
                     sniffer: DupinLevelGrader = DupinLevelGrader(path_sniffer["path"], CLEAN_TABLE, WEIGHT_TABLE)
                     break
                 except Exception as e:
-                    print(e)
-                    continue
-                except KeyboardInterrupt:
-                    break
+                    if e.__str__() == "Expecting value: line 1 column 1 (char 0)":
+                        print("[ERROR] dupin_server.py.vpn_path_check: VPN server can not connect")
+                        break
+                    else:
+                        print(f"[INFO] dupin_server.py.vpn_path_check: Waiting {now_ip} return resault")
+                        continue
             res[now_ip][next_ip] = {
                 "info": {},
                 "level": sniffer.weight_result, 
@@ -198,8 +200,11 @@ async def disconnect():
 
 # 輸出：所有廠牌列表，包括國家資訊
 @app.get('/brand_list')
-async def get_brand_list():
-    pass
+async def brand_list():
+    with open('lib/dupin_python_lib/cleaTable.json','r') as table:
+        res = json.load(table)
+
+    return res
 
 @app.get('/ip')
 async def ip():
