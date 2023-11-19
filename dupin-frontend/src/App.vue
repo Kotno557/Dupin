@@ -71,6 +71,27 @@ export default {
         isp:{
           focus: "",
           show: {}
+        },
+        hdm:{
+          focus: "",
+          show: {}
+        }
+      },
+      vpntable:{
+        res: {},
+        input: {
+          ip: null,
+          name: null,
+          path: null
+        }
+      },
+      weighttable:{
+        res: {
+          "-1": null,
+          "0": null,
+          "1": null,
+          "2": null,
+          "3": null,
         }
       },
       local_zoom: 5,
@@ -314,13 +335,181 @@ export default {
     startWelcome(){
       clean_modal.show()
     },
-    startVPNTable(){
+    startVPNTable(fromHome= true ){
+      let vm = this
+      function download(fileName) {
+          // 創建 Blob 對象
+          var file = new Blob([JSON.stringify(vm.cleantable.res)], { type: 'application/json' });
+
+          // 創建 Blob URL
+          var blobUrl = window.URL.createObjectURL(file);
+
+          // 創建新視窗，用於顯示 "Save As..." 對話框
+          var a = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          // 設定新視窗的 URL 為 Blob URL
+          a.href = blobUrl;
+          a.download = fileName;
+
+          // 觸發點擊事件以顯示 "Save As..." 對話框
+          a.click();
+
+          // 刪除創建的元素和 Blob URL，以避免內存洩漏
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobUrl);
+      }
+      if (fromHome === false) {
+        download('UserCleanTable.json')
+      }
+      
+      
       vpn_modal.show()
     },
-    startWeightTable(){
+    startWeightTable(fromHome = true){
+      let vm = this
+      function download(fileName) {
+          // 創建 Blob 對象
+          var file = new Blob([JSON.stringify(vm.vpntable.res)], { type: 'application/json' });
+
+          // 創建 Blob URL
+          var blobUrl = window.URL.createObjectURL(file);
+
+          // 創建新視窗，用於顯示 "Save As..." 對話框
+          var a = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          // 設定新視窗的 URL 為 Blob URL
+          a.href = blobUrl;
+          a.download = fileName;
+
+          // 觸發點擊事件以顯示 "Save As..." 對話框
+          a.click();
+
+          // 刪除創建的元素和 Blob URL，以避免內存洩漏
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobUrl);
+      }
+      if (fromHome == false) {
+        download('UserVPNTable.json')
+      }
       weight_modal.show()
+    },
+    weight_done(){
+      let vm = this
+      function download(fileName) {
+          // 創建 Blob 對象
+          var file = new Blob([JSON.stringify(vm.weighttable.res)], { type: 'application/json' });
+
+          // 創建 Blob URL
+          var blobUrl = window.URL.createObjectURL(file);
+
+          // 創建新視窗，用於顯示 "Save As..." 對話框
+          var a = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          // 設定新視窗的 URL 為 Blob URL
+          a.href = blobUrl;
+          a.download = fileName;
+
+          // 觸發點擊事件以顯示 "Save As..." 對話框
+          a.click();
+
+          // 刪除創建的元素和 Blob URL，以避免內存洩漏
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobUrl);
+      }
+      download('UserWeightTable.json')
+      vm.weighttable.res["-1"] = null
+      vm.weighttable.res["0"] = null
+      vm.weighttable.res["1"] = null
+      vm.weighttable.res["2"] = null
+      vm.weighttable.res["3"] = null
+    },
+    check_isp_alone(name, event, raw_value = null){
+      let value = (event !== undefined)? event.target.value : raw_value
+      this.cleantable.isp.show[this.cleantable.isp.focus].list[name] = value
+
+      if (value === "Don't care" || value === "Clean"){
+        let danger_index = this.cleantable.res.isp.unclean.indexOf(name)
+        if (danger_index !== -1){
+          this.cleantable.res.isp.unclean.splice(danger_index, 1)
+          this.cleantable.isp.show[this.cleantable.isp.focus].danger_counter -= 1
+        }
+        if (value === "Clean" && this.cleantable.res.isp.clean.indexOf(name) === -1){
+          this.cleantable.res.isp.clean.push(name)
+          this.cleantable.isp.show[this.cleantable.isp.focus].clean_counter += 1
+        }
+      }
+      if (value === "Don't care" || value === "Danger"){
+        let clean_index = this.cleantable.res.isp.clean.indexOf(name)
+        if (clean_index !== -1){
+          this.cleantable.res.isp.clean.splice(clean_index, 1)
+          this.cleantable.isp.show[this.cleantable.isp.focus].clean_counter -= 1
+        }
+        if (value === "Danger" && this.cleantable.res.isp.unclean.indexOf(name) === -1){
+          this.cleantable.res.isp.unclean.push(name)
+          this.cleantable.isp.show[this.cleantable.isp.focus].danger_counter += 1
+        }
+      }        
+    },
+    check_isp_all(type){
+      for (let provider of Object.keys(this.cleantable.isp.show[this.cleantable.isp.focus].list)) {
+        this.check_isp_alone(provider, undefined, type)
+      }
+    },
+    check_hdm_alone(name, event, raw_value = null){
+      let value = (event !== undefined)? event.target.value : raw_value
+      this.cleantable.hdm.show[this.cleantable.hdm.focus].list[name] = value
+
+      if (value === "Don't care" || value === "Clean"){
+        let danger_index = this.cleantable.res.hdm.unclean.indexOf(name)
+        if (danger_index !== -1){
+          this.cleantable.res.hdm.unclean.splice(danger_index, 1)
+          this.cleantable.hdm.show[this.cleantable.hdm.focus].danger_counter -= 1
+        }
+        if (value === "Clean" && this.cleantable.res.hdm.clean.indexOf(name) === -1){
+          this.cleantable.res.hdm.clean.push(name)
+          this.cleantable.hdm.show[this.cleantable.hdm.focus].clean_counter += 1
+        }
+      }
+      if (value === "Don't care" || value === "Danger"){
+        let clean_index = this.cleantable.res.hdm.clean.indexOf(name)
+        if (clean_index !== -1){
+          this.cleantable.res.hdm.clean.splice(clean_index, 1)
+          this.cleantable.hdm.show[this.cleantable.hdm.focus].clean_counter -= 1
+        }
+        if (value === "Danger" && this.cleantable.res.hdm.unclean.indexOf(name) === -1){
+          this.cleantable.res.hdm.unclean.push(name)
+          this.cleantable.hdm.show[this.cleantable.hdm.focus].danger_counter += 1
+        }
+      }        
+    },
+    check_hdm_all(type){
+      for (let provider of Object.keys(this.cleantable.hdm.show[this.cleantable.hdm.focus].list)) {
+        this.check_hdm_alone(provider, undefined, type)
+      }
+    },
+    add_vpn_node(){
+      if (this.vpntable.input.ip === null || this.vpntable.input.name === null || this.vpntable.input.path === null){
+        alert("Please ensure that the fields are filled in correctly")
+      }
+      else{
+        this.vpntable.res[this.vpntable.input.ip] = {"name": this.vpntable.input.name, "ovpn_path": this.vpntable.input.path}
+        this.vpntable.input.ip = null
+        this.vpntable.input.name = null
+        this.vpntable.input.path = null
+      }
+    },
+    delet_vpn_node(ip){
+      delete this.vpntable.res[ip]
     }
+   
   },
+  
   mounted(){
     const vm = this;
     axios.get(`https://ipinfo.io/json?token=6c37228d8bfabd`)
@@ -343,9 +532,15 @@ export default {
         console.log(`[INFO] Get brand_list hdm size = ${vm.cleantable.all_table.hdm.length}, isp size = ${Object.keys(vm.cleantable.all_table.isp).length}`)
         console.log(vm.cleantable.all_table)
         for(let key of Object.keys(vm.cleantable.all_table["isp"])){
-          vm.cleantable.isp.show[key] = []
+          vm.cleantable.isp.show[key] = {list: {}, clean_counter: 0, danger_counter: 0}
           for(let provider of vm.cleantable.all_table["isp"][key]){
-            vm.cleantable.isp.show[key].push({"name": provider, "checked": false})
+            vm.cleantable.isp.show[key].list[provider] = "Don't care"
+          }
+        }
+        for(let key of Object.keys(vm.cleantable.all_table["hdm"])){
+          vm.cleantable.hdm.show[key] = {list: {}, clean_counter: 0, danger_counter: 0}
+          for(let provider of vm.cleantable.all_table["hdm"][key]){
+            vm.cleantable.hdm.show[key].list[provider] = "Don't care"
           }
         }
       })
@@ -359,7 +554,7 @@ export default {
 <template>
   <div class="bg"> <!--body start-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3"> <!--navbar start-->
-      <a class="navbar-brand" href="#"><i class="fa fa-bars"></i> <!-- 这里使用了Font Awesome的bars图标 --> Dupin</a>
+      <span class="navbar-brand" href="#"><i class="fa fa-bars"></i> <!-- 这里使用了Font Awesome的bars图标 --> Dupin</span>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -409,7 +604,10 @@ export default {
           <label for="formFile" class="form-label">
             *Which webpage would you like to browse. Simply enter the domain name part:
           </label>
-          <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile" placeholder="'google.com', 'aws.amazon.com', 'microsoft.com', and etc.">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon3">https://</span>
+            <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile" placeholder="google.com, aws.amazon.com', microsoft.com, and etc.">
+          </div>
         </div>
         <div class="col-md-4">
           <label for="formFile" class="form-label">
@@ -554,7 +752,7 @@ export default {
           <div class="modal-body">
             <h5>First-time user?</h5><br>
             <h5>If so, please use our setup wizard to create your user config file.</h5><br>
-            <h5>Already have a profile, you can choose "Ignore" botton.</h5>
+            <h5>Already haved it? You can press "Ignore" botton.</h5>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ignore</button>
@@ -576,12 +774,13 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+            <!-- Step 1 ISP Selecter -->
             <div class="row">
               <div class="col">
                 <h5> Step1: Select ISP Table</h5>
               </div>
             </div>
-            <div class="row">
+            <div class="row border p-1">
               <div class="col-md-2">
                 <div class="list-group">
                   <div class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
@@ -593,10 +792,16 @@ export default {
                 </div>
                 <div class="list-group custom-list-group">
                   <template v-if="cleantable.all_table !== null">
-                    <button v-for="contry in Object.keys(cleantable.all_table['isp'])" @click="cleantable.isp.focus = contry" type="button" class="list-group-item list-group-item-action">
-                      <input class="form-check-input me-1" type="checkbox" value="">
+                    <button v-for="contry in Object.keys(cleantable.all_table['isp'])" @click="cleantable.isp.focus = contry" type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                      <div>
                       {{contry}}
-                    </button>
+                      </div>
+                      <div>
+                        <span v-if="cleantable.isp.show[contry].clean_counter > 0" class="badge bg-success rounded-pill">{{ cleantable.isp.show[contry].clean_counter }}</span>
+                        <span v-if="cleantable.isp.show[contry].danger_counter > 0" class="badge bg-danger rounded-pill">{{ cleantable.isp.show[contry].danger_counter }}</span>
+                      </div>
+                      </button>
+                    
                   </template>
                 </div>
               </div>
@@ -605,26 +810,115 @@ export default {
                   <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
                     <span>ISP Provider:</span>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="selectAll">
-                      <label class="custom-control-label" for="selectAll">Select All</label>
+                      
+                      <template v-if="cleantable.isp.focus !== ''">
+                        <label class="custom-control-label mx-2" for="selectAll">Select All ISP Provider  </label>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                          <button @click="check_isp_all('Clean')" class="btn btn-success">Clean</button>
+                          <button @click="check_isp_all('Don\'t care')" class="btn btn-light">Don't care</button>
+                          <button @click="check_isp_all('Danger')" class="btn btn-danger">Danger</button>
+                        </div>
+                      </template>
                     </div>
                   </div>
                 </div>
                 <div class="list-group custom-list-group">
                   <template v-if="cleantable.isp.focus !== ''">                    
-                    <label v-for="item in cleantable.isp.show[cleantable.isp.focus]" class="list-group-item">
-                      <input class="form-check-input me-1" type="checkbox" :checked="item.checked">
-                      {{item.name}}
+                    <label v-for="provider in Object.keys(cleantable.isp.show[cleantable.isp.focus].list) " class="list-group-item">
+                      <select class="form-select-sm" v-bind:value="cleantable.isp.show[cleantable.isp.focus].list[provider]" @change="check_isp_alone(provider, $event)">
+                        <option value="Clean" >Clean</option>
+                        <option value="Danger" >Danger</option>
+                        <option value="Don't care">Don't care</option>
+                      </select>
+                      {{provider}}
                     </label>
                   </template>
                 </div>
               </div>
             </div>
+            <!-- /Step 1 ISP Selecter -->
+
+            <!-- Step 2 HDM Selecter -->
+            <div class="row mt-4">
+              <div class="col">
+                <h5> Step2: Select Hardware/OS Equipment Brand Table</h5>
+              </div>
+            </div>
+            <div class="row border p-1">
+              <div class="col-md-2">
+                <div class="list-group">
+                  <div class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+                    <span>Category:</span>
+                    <div class="custom-control custom-checkbox">
+                      <label class="custom-control-label" for="selectAll">►</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="list-group custom-list-group">
+                  <template v-if="cleantable.all_table !== null">
+                    <button v-for="category in Object.keys(cleantable.all_table['hdm'])" @click="cleantable.hdm.focus = category" type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                      <div>
+                      {{category}}
+                      </div>
+                      <div>
+                        <span v-if="cleantable.hdm.show[category].clean_counter > 0" class="badge bg-success rounded-pill">{{ cleantable.hdm.show[category].clean_counter }}</span>
+                        <span v-if="cleantable.hdm.show[category].danger_counter > 0" class="badge bg-danger rounded-pill">{{ cleantable.hdm.show[category].danger_counter }}</span>
+                      </div>
+                      </button>
+                    
+                  </template>
+                </div>
+              </div>
+              <div class="col-md-10">
+                <div class="list-group">
+                  <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
+                    <span>Hardware/OS Provider:</span>
+                    <div class="custom-control custom-checkbox">
+                      
+                      <template v-if="cleantable.hdm.focus !== ''">
+                        <label class="custom-control-label mx-2" for="selectAll">Select All Hardware/OS Provider  </label>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                          <button @click="check_hdm_all('Clean')" class="btn btn-success">Clean</button>
+                          <button @click="check_hdm_all('Don\'t care')" class="btn btn-light">Don't care</button>
+                          <button @click="check_hdm_all('Danger')" class="btn btn-danger">Danger</button>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+                <div class="list-group custom-list-group">
+                  <template v-if="cleantable.hdm.focus !== ''">                    
+                    <label v-for="provider in Object.keys(cleantable.hdm.show[cleantable.hdm.focus].list) " class="list-group-item">
+                      <select class="form-select-sm" v-bind:value="cleantable.hdm.show[cleantable.hdm.focus].list[provider]" @change="check_hdm_alone(provider, $event)">
+                        <option value="Clean" >Clean</option>
+                        <option value="Danger" >Danger</option>
+                        <option value="Don't care">Don't care</option>
+                      </select>
+                      {{provider}}
+                    </label>
+                  </template>
+                </div>
+              </div>
+            </div>
+            <div class="row border p-1 mt-5">
+              <p>
+                <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                  Debug Use: res Data ►
+                </button>
+              </p>
+              <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                  {{ cleantable.res }}
+                </div>
+              </div>
+              <p></p>
+            </div>
+            <!-- /Step 2 HDM Selecter -->
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Use Default config</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startVPNTable">Next→Set VPN Table</button>
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Get Default config</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startVPNTable(false)">Save and Next→Set VPN Table</button>
           </div>
         </div>
       </div>
@@ -637,16 +931,86 @@ export default {
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title" id="staticBackdropLabel">
-              VPN Table 
+              Create VPN Table 
             </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            test
+            <!-- Input Area -->
+            <div>
+              <form class="row g-3">
+                <div class="col-md-12">
+                  <h5>Add a VPN Node:</h5>
+                </div>
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">IP</span>
+                    <input v-model="vpntable.input.ip" class="form-control" placeholder="e.g. 223.138.2.119">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">Name</span>
+                    <input v-model="vpntable.input.name" class="form-control" placeholder="e.g. VPN_Japan">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon3">ovpn file Path</span>
+                    <input v-model="vpntable.input.path" class="form-control" placeholder="Input absolute path">
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="input-group mb-3">
+                    <button class="btn btn-primary" @click="add_vpn_node">Add VPN Node</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /Input Area -->
+            <div class="mt-3">
+              <h5>
+                VPN Table:
+              </h5>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="col-md-1">IP</th>
+                    <th scope="col" class="col-md-1">Name</th>
+                    <th scope="col" class="col-md-3">oven file path</th>
+                    <th scope="col" class="col-md-1">Operate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="ip in Object.keys(vpntable.res)">
+                    <th scope="row">{{ ip }}</th>
+                    <td>{{ vpntable.res[ip]["name"] }}</td>
+                    <td>{{ vpntable.res[ip]["ovpn_path"] }}</td>
+                    <td>
+                      <button class="btn btn-danger" @click="delet_vpn_node(ip)">Delete</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row border p-1 mt-5">
+            <p>
+              <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Debug Use: VPN res Table ►
+              </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <p>{{ vpntable.res }}</p>
+                <p>{{ vpntable.input }}</p>
+              </div>
+            </div>
+            <p></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startWeightTable">> Set VPN Table</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startWeightTable(false)">> Set VPN Table</button>
           </div>
         </div>
       </div>
@@ -659,15 +1023,68 @@ export default {
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title" id="staticBackdropLabel">
-              Weight Table 
+              Create Weight Table:
             </h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            test
+            <h5>
+              Input weights:
+            </h5>
+            <p>
+              Please note that weights should be input as positive integers, including 0.<br>
+              Lower weights indicate higher safety.
+            </p>
+            <form class="row g-3">
+              <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-danger">DANGER</span>
+                  <input v-model="weighttable.res['-1']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-secondary">UNKNOW</span>
+                  <input v-model="weighttable.res['0']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-warning">LOW</span>
+                  <input v-model="weighttable.res['1']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-primary" >PASSABLE</span>
+                  <input v-model="weighttable.res['2']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="input-group input-group-lg">
+                  <span class="input-group-text bg-success" >SAFE</span>
+                  <input v-model="weighttable.res['3']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+                </div>
+              </div>
+            </form>
           </div>
+          <div class="row border p-1 mt-5">
+            <p>
+              <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Debug Use: Weight res Table ►
+              </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <p>{{ weighttable.res }}</p>
+              </div>
+            </div>
+            <p></p>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="weight_done(fromHome=false)">Save and Done</button>
           </div>
         </div>
       </div>
