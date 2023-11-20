@@ -624,6 +624,10 @@ export default {
     <div class="bd-example m-3"> <!--detect map start-->
       <div class="row g-1">
         <div class="col">
+          <div class="d-flex">
+            <h5>Direct Scan:</h5>
+            <span>(test)</span>
+          </div>
           <div class="map">
             <div style="height:600px; width:800px">
               <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
@@ -672,6 +676,10 @@ export default {
           </div>
         </div>
         <div class="col">
+          <div class="d-flex">
+            <h5>VPN Scan:</h5>
+            <span>danger</span>
+          </div>
           <div class="map">
             <div style="height:600px; width:800px">
               <l-map v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
@@ -713,10 +721,11 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
+
             <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
-                  <th scope="col" v-for="head in ['IP', 'Level', 'Weight', 'hdm', 'isp', 'os']">
+                  <th scope="col" v-for="head in ['IP', 'Level', 'Weight', 'Hardware', 'ISP', 'OS', 'Country']">
                     <strong>
                       {{head}}
                     </strong>
@@ -725,7 +734,7 @@ export default {
               </thead>
               <tbody>
                 <tr v-for="key in Object.keys(modal_data.data)">
-                  <td v-for="item in [key, modal_data.data[key].level, modal_data.data[key].single_weight, modal_data.data[key].hdm, modal_data.data[key].isp, modal_data.data[key].os]">
+                  <td v-for="item in [key, modal_data.data[key].level, modal_data.data[key].single_weight, modal_data.data[key].hdm, modal_data.data[key].isp, modal_data.data[key].os, modal_data.data[key].country]">
                     {{ item !== "" ? item : "N/A" }}
                   </td>
                 </tr>

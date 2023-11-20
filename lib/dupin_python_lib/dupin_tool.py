@@ -3,6 +3,8 @@ import requests
 import ipaddress
 import socket
 
+IPINFO_ACCESS_TOKEN = '6c37228d8bfabd'
+
 def get_ip_coord(ip: str) -> List[float]:
     lookup_info: Dict = requests.get(f'https://ipinfo.io/{ip}/json?token=6c37228d8bfabd').json()
     try:
@@ -35,6 +37,7 @@ def check_private_ip(ip: str) -> bool:
     ip_obj: Union[ipaddress.IPv4Address, ipaddress.IPv6Address] = ipaddress.ip_address(ip)
     return ip_obj.is_private
 
+    
 
 VPN_NAT_ADDRESS = {
     ipaddress.IPv4Network("104.44.0.0/16") : {

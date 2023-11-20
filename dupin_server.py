@@ -77,6 +77,7 @@ async def direct_path_check(url: str):
             "isp": value[0],
             "hdm": value[1], 
             "os": value[2], 
+            "country": value[3],
             "level": ip_level_convert(sniffer.weight_result[key]), 
             "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
         }

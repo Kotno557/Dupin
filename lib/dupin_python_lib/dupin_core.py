@@ -1,5 +1,5 @@
 from typing import IO, Dict, Set, List, Tuple, Any, Union
-from lib.dupin_python_lib.dupin_tool import get_ip_coord, VPN_NAT_ADDRESS
+from lib.dupin_python_lib.dupin_tool import get_ip_coord, check_private_ip, VPN_NAT_ADDRESS 
 from datetime import datetime
 import requests
 import socket
@@ -86,7 +86,7 @@ class DupinInfoSniffer:
     def __init__(self, path_sniffer: DupinPathSniffer) -> None:
         # define I/O variable
         travel_path: List[str] = path_sniffer.sniff_result
-        self.info_result: Dict[str, Tuple[str, str, str]] = {}
+        self.info_result: Dict[str, Tuple[str, str, str, str]] = {}
 
         # init database
         self._local_database: sqlite3.Connection = sqlite3.connect('local_database.db')
@@ -96,7 +96,7 @@ class DupinInfoSniffer:
         count = 1
         node_len = len(travel_path)
         for ip in travel_path:
-            print(f'info scaning {ip} ({count}/{node_len})')
+            print(f'[INFO] dupin_core.py.DupinInfoSniffer: info scaning {ip} ({count}/{node_len})')
             count += 1
             try:
                 self._sniff_ip_info(ip)
@@ -113,17 +113,19 @@ class DupinInfoSniffer:
         isp: str = ''
         hdm: str
         os: str
+        country: str = ''
         get_by_database: bool = False
         
         # first check for database
         self._local_database_cur.execute('SELECT * FROM info_record WHERE target_ip=?', (ip,))
         search_result: List[Tuple[Union[str, float]]] =  self._local_database_cur.fetchall()
         if len(search_result) > 0 and time.time() - search_result[0][1] < 10604800:
-            print(f'get {ip} information from DB')
+            print(f'[INFO] dupin_core.py.DupinInfoSniffer: get {ip} information from DB')
             # data available in database 
             isp = search_result[0][2]
             hdm = search_result[0][3]
             os = search_result[0][4]
+            country = search_result[0][5]
             get_by_database = True
         else:
             is_vpn_provider_ip: bool = False
@@ -132,25 +134,30 @@ class DupinInfoSniffer:
                     isp = VPN_NAT_ADDRESS[zone]["isp"]
                     hdm = VPN_NAT_ADDRESS[zone]["hdm"]
                     os = VPN_NAT_ADDRESS[zone]["os"]
-                    print("This is a IP of trust VPN provider")
+                    country = requests.get(f"http://ip-api.com/json/{ip}").json()["country"]
+                    print("[INFO] dupin_core.py.DupinInfoSniffer: This is a IP of trust VPN provider")
                     is_vpn_provider_ip = True
 
             if is_vpn_provider_ip != True:
-                # find isp
-                lookup_info: Dict = requests.get(f'https://api.incolumitas.com/?q={ip}&key=c3624c8ec4978dec').json()
-                isp = '' if ('company' not in lookup_info and 'asn' not in lookup_info) else lookup_info['company']['name'] if lookup_info['asn'] == None else lookup_info['asn']['org']
-                
+                if check_private_ip(ip) != True:
+                    lookup_info: Dict = requests.get(f"http://ip-api.com/json/{ip}").json()
+                    # find isp
+                    isp = lookup_info["isp"]
+                    
+                    # find contry
+                    country = lookup_info["country"]
+
                 # find hdm
-                print("find hdm...")
+                print("[INFO] dupin_core.py.DupinInfoSniffer: find hdm...")
                 hdm = self._sniff_ip_hdm(ip)
 
                 # find os 
-                print("find os...")
+                print("[INFO] dupin_core.py.DupinInfoSniffer: find os...")
                 os = self._sniff_ip_os(ip)
 
 
         # save result to info_result
-        self.info_result[ip] = (isp, hdm, os)
+        self.info_result[ip] = (isp, hdm, os, country)
 
         # save result to sqlite
         """
@@ -160,7 +167,7 @@ class DupinInfoSniffer:
             pass
         """
         if not get_by_database:
-            self._local_database_cur.execute('INSERT OR REPLACE INTO info_record (target_ip, last_update_time, isp, hdm, os) VALUES (?, ?, ?, ?, ?)', (ip, time.time(), isp, hdm, os,))
+            self._local_database_cur.execute('INSERT OR REPLACE INTO info_record (target_ip, last_update_time, isp, hdm, os, country) VALUES (?, ?, ?, ?, ?, ?)', (ip, time.time(), isp, hdm, os, country))
             self._local_database.commit()
 
 
@@ -172,14 +179,14 @@ class DupinInfoSniffer:
         # using nmap --script=snmp-info get hdm
         nm: nmap.PortScanner = nmap.PortScanner()
         try:
-            nm.scan(hosts=ip, arguments='-sU -sV -p 161 --script=snmp-info', timeout=15, sudo=True)
+            nm.scan(hosts=ip, arguments='-sU -sV -p 161 --script=snmp-info', timeout=25, sudo=True)
             for info in nm[ip]['udp'][161]['script']['snmp-info'].split('\n '):
                 if 'enterprise: ' in info:
                     brand = info[info.find('enterprise: ')+len('enterprise: '):]
             return brand
         except Exception as e:
-            print('SNMP detect Failed')
-            print(e)
+            print('[INFO] dupin_core.py.DupinInfoSniffer: SNMP Not Available')
+            # print(e)
             return ''
     
     def _sniff_ip_os(self, ip: str) -> str:
@@ -189,8 +196,8 @@ class DupinInfoSniffer:
             nm.scan(hosts=ip, arguments='-O --osscan-guess', timeout=40, sudo=True)
             return nm[ip]['osmatch'][0]['osclass'][0]['vendor']
         except Exception as e:
-            print('OS detect Failed')
-            print(e)
+            print('[INFO] dupin_core.py.DupinInfoSniffer: OS Not Available')
+            # print(e)
             return ''
 
 
@@ -369,7 +376,8 @@ def database_init():
             last_update_time REAL,
             isp TEXT,
             hdm TEXT,
-            os TEXT
+            os TEXT,
+            country TEXT
         );
     """)
     conn.commit()
