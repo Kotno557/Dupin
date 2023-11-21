@@ -13,15 +13,15 @@
 - Nmap
 - Config files from your OpenVPN network servers
 - OpenVPN client
+- net-tools
 
 
-
-### VPN Set Up ###
+### Set Up ###
 
 for dupin:
 
     apt update
-    apt install [nmap, dublin-traceroute, pip]
+    apt install nmap dublin-traceroute pip
     git clone https://github.com/Kotno557/Dobie
     cd Dobie
     root$ python3 -m pip install -r requirement.txt

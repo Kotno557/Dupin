@@ -41,7 +41,7 @@ export default {
           "node": null,
           "weight": null,
           "summary": null,
-          "color": "red"
+          "color": "blue"
         }
       },
       modal_data: {
@@ -185,7 +185,7 @@ export default {
             }
           }
         }
-        
+        console.log(this.vpn_data.path)
         // for edge
         var max_weight = Number.MIN_SAFE_INTEGER
         var min_weight = Number.MAX_SAFE_INTEGER
@@ -200,15 +200,18 @@ export default {
           this.vpn_data.show_path[key] = {}
           for (const [key2, value2] of Object.entries(this.vpn_data.path[key])) {            
             this.vpn_data.show_path[key][key2] = {
-              // "points": value2.draw_path,
-              "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord],
+              "points": value2.draw_path, //show reflect
+              // "points": [this.vpn_data.node[key].coord, this.vpn_data.node[key2].coord], show direct
               "color": findForth(value2.path_weight, max_weight, min_weight),
               "weight": value2.path_weight,
               "data": value2.info,
+              "show": true
             }
 
           }
         }
+
+        console.log("show_path", this.vpn_data.show_path)
       }
       catch(error) {
         console.log(error)
@@ -275,7 +278,7 @@ export default {
     },
     update_now (node_new) {
       console.log("click"+node_new)
-      if (node_new === this.direct_data.target.url || node_new === "localhost") {
+      if (node_new === this.direct_data.target.url || node_new === "localhost" || this.vpn_data.node[node_new].type === "disable") {
         return
       }
       this.vpn_data.select.push(node_new)
@@ -575,10 +578,9 @@ export default {
     </nav>
     <div class="bd-example m-3"> <!--Local info-->
       <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
-      <p>Debugger: {{direct_data}} </p>
-      <p> {{vpn_data}} </p>
-      <p> {{modal_data}} </p>
-      <p> Clean Table: </p>
+      <p>Debugger: {{vpn_data.path}} </p>
+      <!-- <p> {{vpn_data.path.}} </p> -->
+      <!-- <p> {{modal_data}} </p> -->
     </div>
     <div class="bd-example m-3"> <!--input area start-->
       <form class="row g-3">
@@ -605,8 +607,9 @@ export default {
             *Which webpage would you like to browse. Simply enter the domain name part:
           </label>
           <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon3">https://</span>
-            <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile" placeholder="google.com, aws.amazon.com', microsoft.com, and etc.">
+            <span class="input-group-text" id="basic-addon3">http(s)://</span>
+            <input v-model="direct_data.target.url" class="form-control" type="url" id="formFile" placeholder="google.com, aws.amazon.com, microsoft.com, and etc.">
+            <span class="input-group-text" id="basic-addon3">/path/file</span>
           </div>
         </div>
         <div class="col-md-4">
@@ -624,10 +627,7 @@ export default {
     <div class="bd-example m-3"> <!--detect map start-->
       <div class="row g-1">
         <div class="col">
-          <div class="d-flex">
-            <h5>Direct Scan:</h5>
-            <span>(test)</span>
-          </div>
+          <h5>▼ Direct Scan</h5>
           <div class="map">
             <div style="height:600px; width:800px">
               <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
@@ -672,14 +672,20 @@ export default {
                 <button v-if="p_disconnect == true" class="btn btn-danger" :disabled="vpn_data.select.length <= 0" @click="disconnect()">🔗</button>
                 <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="path_clear()">↺</button>
               </div>
+              <span>
+                VPN chain select:
+              </span>
+              <span v-if="vpn_data.select.length == 0">
+                None
+              </span>
+              <ul v-else class="list-group list-group-numbered" style="max-height: 150px; overflow-y: auto;">
+                <li v-for="vpn in vpn_data.select" class="list-group-item py-0"><small>{{vpn}}</small></li>
+              </ul>
             </div>
           </div>
         </div>
         <div class="col">
-          <div class="d-flex">
-            <h5>VPN Scan:</h5>
-            <span>danger</span>
-          </div>
+          <h5> ▼ VPN Scan</h5>
           <div class="map">
             <div style="height:600px; width:800px">
               <l-map v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
@@ -694,16 +700,65 @@ export default {
                   </l-tooltip>
                 </l-marker>
                 <template v-for="(item, key) in vpn_data.show_path">
-                  <l-polyline v-for="(item2, key2) in item" :lat-lngs="item2.points" :color="item2.color">
-                    <l-tooltip :options="{ permanent: true, interactive: true}" >
-                      <span @click="showModal(key, key2, item2.data)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
-                        {{item2.weight}}
-                      </span>
-                    </l-tooltip>
-                  </l-polyline>
+                  <template v-for="(item2, key2) in item">
+                    <l-polyline v-if="item2.show" :lat-lngs="item2.points" :color="item2.color">
+                      <l-tooltip :options="{ permanent: true, interactive: true}" >
+                        <span @click="showModal(key, key2, item2.data)" class="border border-primary rounded fs-6" :title="JSON.stringify(direct_data.line.summary,null, 4)">
+                          {{item2.weight}}
+                        </span>
+                      </l-tooltip>
+                    </l-polyline>
+                  </template>
                 </template>
               </l-map>
             </div>
+          </div>
+          <div class="d-flex">
+            <span class="mx-2">
+              (Danger
+              <span style="color:#FF0000;">■</span>
+              <span style="color:#B6B6B6;">■</span>
+              <span style="color:#FFA500;">■</span>
+              <span style="color:#FFFF00;">■</span>
+              <span style="color:#008000;">■</span>
+              Safe)
+            </span>
+            <span class="mx-2">
+              <button class="btn btn-info btn-sm py-0">Select least weight path </button>
+            </span>
+          </div>
+          
+          <div v-if="vpn_data.show_path['localhost'] !== undefined">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th v-for="(ip, index) in ['localhost'].concat(Object.keys(vpn_data.show_path['localhost']))">{{ ip }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(ip, i) in ['localhost'].concat(Object.keys(vpn_data.show_path['localhost']))">
+                  <th scope="row">{{ip}}</th>
+                  <td v-for="(ip2, j) in ['localhost'].concat(Object.keys(vpn_data.show_path['localhost']))">
+                    <span v-if="i == j">X</span>
+                    <span v-else-if="i>j">
+                      <!-- {{ ip2 }} {{ ip }} {{ vpn_data.show_path[ip2][ip]['show'] }} -->
+                      <input type="checkbox" v-model="vpn_data.show_path[ip2][ip]['show']">
+                      
+                      <span :style="{'color': vpn_data.show_path[ip2][ip]['color']}"> ⬤</span>
+                      {{vpn_data.show_path[ip2][ip]['weight']}}
+                    </span>
+                    <span v-else>
+                      <!-- {{ ip }} {{ ip2 }} {{ vpn_data.show_path[ip][ip2]['show'] }} -->
+                      <input type="checkbox" v-model="vpn_data.show_path[ip][ip2]['show']">
+                      
+                      <span :style="{'color': vpn_data.show_path[ip][ip2]['color']}"> ⬤</span>
+                      {{vpn_data.show_path[ip][ip2]['weight']}}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -721,7 +776,6 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-
             <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
@@ -759,9 +813,11 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <h5>First-time user?</h5><br>
-            <h5>If so, please use our setup wizard to create your user config file.</h5><br>
-            <h5>Already haved it? You can press "Ignore" botton.</h5>
+            <div class="card p-4">
+              <h5 class="mb-4">First-time user?</h5>
+              <h5 class="mb-4">If so, please use our setup wizard to create your user config file.</h5>
+              <h5>Already have it? You can press the "Ignore" button.</h5>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ignore</button>
@@ -786,7 +842,7 @@ export default {
             <!-- Step 1 ISP Selecter -->
             <div class="row">
               <div class="col">
-                <h5> Step1: Select ISP Table</h5>
+                <h5> • Set ISP Trust Level</h5>
               </div>
             </div>
             <div class="row border p-1">
@@ -817,11 +873,11 @@ export default {
               <div class="col-md-10">
                 <div class="list-group">
                   <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                    <span>ISP Provider:</span>
+                    <span>ISP</span>
                     <div class="custom-control custom-checkbox">
                       
                       <template v-if="cleantable.isp.focus !== ''">
-                        <label class="custom-control-label mx-2" for="selectAll">Select All ISP Provider  </label>
+                        <label class="custom-control-label mx-2" for="selectAll">Select All ISP </label>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                           <button @click="check_isp_all('Clean')" class="btn btn-success">Clean</button>
                           <button @click="check_isp_all('Don\'t care')" class="btn btn-light">Don't care</button>
@@ -850,7 +906,7 @@ export default {
             <!-- Step 2 HDM Selecter -->
             <div class="row mt-4">
               <div class="col">
-                <h5> Step2: Select Hardware/OS Equipment Brand Table</h5>
+                <h5>• Step2: Select Hardware/OS Equipment Brand Table</h5>
               </div>
             </div>
             <div class="row border p-1">
@@ -881,11 +937,11 @@ export default {
               <div class="col-md-10">
                 <div class="list-group">
                   <div class="list-group-item list-group-item-dark d-flex justify-content-between align-items-center">
-                    <span>Hardware/OS Provider:</span>
+                    <span>Hardware/OS</span>
                     <div class="custom-control custom-checkbox">
                       
                       <template v-if="cleantable.hdm.focus !== ''">
-                        <label class="custom-control-label mx-2" for="selectAll">Select All Hardware/OS Provider  </label>
+                        <label class="custom-control-label mx-2" for="selectAll">Select All Hardware/OS Brand </label>
                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                           <button @click="check_hdm_all('Clean')" class="btn btn-success">Clean</button>
                           <button @click="check_hdm_all('Don\'t care')" class="btn btn-light">Don't care</button>
@@ -1088,7 +1144,6 @@ export default {
                 <p>{{ weighttable.res }}</p>
               </div>
             </div>
-            <p></p>
           </div>
 
           <div class="modal-footer">

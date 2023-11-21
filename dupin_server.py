@@ -92,6 +92,7 @@ async def vpn_path_check(target_url: str):
 
     vpn_table_keys = list(VPN_TABLE.keys())
     table_len = len(vpn_table_keys)
+    sniffer: DupinLevelGrader = None
     for i in range(0, table_len):
         now_ip: str = vpn_table_keys[i]
         res[now_ip] = {}
@@ -120,7 +121,8 @@ async def vpn_path_check(target_url: str):
                 res[now_ip][next_ip]["info"][key] = {
                     "isp": value[0],
                     "hdm": value[1], 
-                    "os": value[2], 
+                    "os": value[2],
+                    "country": value[3],
                     "level": ip_level_convert(sniffer.weight_result[key]), 
                     "single_weight": sniffer._weight_table[sniffer.weight_result[key]]
                 }
@@ -142,6 +144,7 @@ async def vpn_path_check(target_url: str):
                 "isp": value[0],
                 "hdm": value[1], 
                 "os": value[2], 
+                "country": value[3],
                 "level": ip_level_convert(sniffer.weight_result[key]), 
                 "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
                 "draw_path": path_sniffer.draw_path

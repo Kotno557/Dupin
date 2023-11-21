@@ -1,5 +1,6 @@
 {
     "edu": [
-        "www.uni-lj.si"
+        {"name": "盧比安納大學", "url": "www.uni-lj.si", "country": "斯洛維尼亞"},
+        {"name": "河北东方学院", "url": "www.hbdfxy.cn", "country": "中國"}
     ]
 }
