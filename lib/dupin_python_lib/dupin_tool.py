@@ -1,7 +1,7 @@
 from typing import List, Dict, Union
 import requests
 import ipaddress
-import socket
+import networkx
 
 IPINFO_ACCESS_TOKEN = '6c37228d8bfabd'
 
@@ -38,6 +38,36 @@ def check_private_ip(ip: str) -> bool:
     return ip_obj.is_private
 
     
+def shortest_path(vpn_resault: Dict, target_url: str) -> List[str]:
+    graph: networkx.Graph = networkx.Graph()
+    for ip in vpn_resault:
+        for ip2 in vpn_resault[ip]:
+            graph.add_edge(ip, ip2, weight=vpn_resault[ip][ip2]["path_weight"])
+
+    return {
+        "shortest_path": networkx.shortest_path(graph, source="localhost", target=target_url, weight='weight'),
+        "shortest_distance": networkx.shortest_path_length(graph, source="localhost", target=target_url, weight='weight'),
+    }
+
+def clean_table_parser(clean_table: Dict) -> Dict :
+    res = {
+        "hdm":{
+            "clean": [],
+            "unclean": []
+        },
+        "isp":{
+            "clean": [],
+            "unclean": []
+        }
+    }
+
+    for type in clean_table:
+        for clean in clean_table[type]:
+            for coun_cate in clean_table[type][clean]:
+                for item in clean_table[type][clean][coun_cate]:
+                    res[type][clean].append(item)
+
+    return res
 
 VPN_NAT_ADDRESS = {
     ipaddress.IPv4Network("104.44.0.0/16") : {

@@ -3,6 +3,8 @@ import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LMarker, LPopup, LTooltip, LPolyline } from "@vue-leaflet/vue-leaflet";
 import L from "leaflet";
 import axios from "axios";
+import default_clean_table from '../../User-defined files/clean/default_clean_table.json';
+
 
 import {Modal} from "bootstrap"
 
@@ -54,18 +56,20 @@ export default {
         "show_path": {},
         "node": {},
         "select": [] /*["20.84.80.216","20.199.51.125","74.226.208.130"]*/,
-        "now": null
+        "now": null,
+        "shortest_info": {},
+        "show_all": false
       },
       cleantable:{
         all_table: null,
         res:{
           "hdm":{
-            "clean": [],
-            "unclean": []
+            "clean": {},
+            "unclean": {}
           },
           "isp":{
-            "clean": [],
-            "unclean": []
+            "clean": {},
+            "unclean": {}
           }
         },
         isp:{
@@ -97,7 +101,9 @@ export default {
       local_zoom: 5,
       vpn_zoom: 5,
       loading: false,
-      p_disconnect: false
+      p_disconnect: false,
+
+      default_clean_table
     };
   },
   methods: {
@@ -158,7 +164,8 @@ export default {
       this.loading = true
       try{
         var dupin_vpn_result = await axios.get(`http://localhost:8000/vpn_path_check/?target_url=${this.direct_data.target.url}`)
-        this.vpn_data.path = dupin_vpn_result.data
+        this.vpn_data.path = dupin_vpn_result.data["res"]
+        this.vpn_data.shortest_info = dupin_vpn_result.data["shortest_info"]
 
         this.vpn_data.now = "localhost"
         this.vpn_data.node["localhost"] = {
@@ -175,7 +182,7 @@ export default {
         for (const [key, value] of Object.entries(this.vpn_data.path)) {
           if (key != "localhost") {
             var ipinfo_result = await axios.get(`https://ipinfo.io/${key}/json?token=6c37228d8bfabd`)
-            var vpn_name = `VPN${key}`
+            var vpn_name = `VPN(${key})`
             this.vpn_data.node[key] = {
               "name": vpn_name,
               "ip": key,
@@ -207,7 +214,6 @@ export default {
               "data": value2.info,
               "show": true
             }
-
           }
         }
 
@@ -217,7 +223,16 @@ export default {
         console.log(error)
       }
       this.loading = false
-      alert("The VPN path scan has been completed. Please click on the grey VPN coordinates to determine the connection path. \nThe yellow path represents the shortest weighted path for your reference. Once you have made your selection, please click on the 🔗 button to initiate the connection.")
+      alert(`The VPN path scan has been completed.
+
+      Please click on the grey VPN coordinates to determine the connection path.
+
+      When you have confirm your selection, please press the ${"green 🔗 button".fontcolor("green")} to start the VPN-chaining connection.
+
+      Onece you want to disconnect, press the ${"red 🔗 button".fontcolor("red")} to termination the connection.
+
+      If you don't see any coordinates on the VPN map, please check for error messages on the backend terminal.
+      `)
     },
     async connect(){
       function delay(milliseconds){
@@ -296,7 +311,30 @@ export default {
         this.redo()
       }
     },
+    select_shortest_path(){
+      this.path_clear()
+      
+      // let all path show = false
+      let vm = this
+      let ip_list = ['localhost'].concat(Object.keys(this.vpn_data.show_path['localhost']))
+      ip_list.forEach(function (ip, i) {
+        ip_list.forEach(function (ip2, j) {
+          if(i < j){
+            vm.vpn_data.show_path[ip][ip2]["show"] = false
+          }
+        })
+      })
 
+      // select shortest path in select array and let shortest path show = true
+      for(let i = 0, j = 1; j < this.vpn_data.shortest_info["shortest_path"].length; i+=1, j+=1){
+        this.update_now(this.vpn_data.shortest_info["shortest_path"][j])
+        this.vpn_data.show_path[this.vpn_data.shortest_info["shortest_path"][i]][this.vpn_data.shortest_info["shortest_path"][j]]["show"] = true
+      }
+
+      if(this.vpn_data.shortest_info["shortest_path"].length <= 2){
+        alert("The minimum weight path is a direct connection")
+      }
+    },
     upload_file(type, event){
       let formData = new FormData();
       formData.append("file", event.target.files[0])
@@ -432,30 +470,33 @@ export default {
       vm.weighttable.res["2"] = null
       vm.weighttable.res["3"] = null
     },
-    check_isp_alone(name, event, raw_value = null){
+    check_isp_alone(name, event, raw_value = null, raw_country = null){
       let value = (event !== undefined)? event.target.value : raw_value
-      this.cleantable.isp.show[this.cleantable.isp.focus].list[name] = value
 
+      let country = raw_country !== null ? raw_country : this.cleantable.isp.focus
+
+      this.cleantable.isp.show[country].list[name] = value
+      
       if (value === "Don't care" || value === "Clean"){
-        let danger_index = this.cleantable.res.isp.unclean.indexOf(name)
+        let danger_index = this.cleantable.res.isp.unclean[country].indexOf(name)
         if (danger_index !== -1){
-          this.cleantable.res.isp.unclean.splice(danger_index, 1)
-          this.cleantable.isp.show[this.cleantable.isp.focus].danger_counter -= 1
+          this.cleantable.res.isp.unclean[country].splice(danger_index, 1)
+          this.cleantable.isp.show[country].danger_counter -= 1
         }
-        if (value === "Clean" && this.cleantable.res.isp.clean.indexOf(name) === -1){
-          this.cleantable.res.isp.clean.push(name)
-          this.cleantable.isp.show[this.cleantable.isp.focus].clean_counter += 1
+        if (value === "Clean" && this.cleantable.res.isp.clean[country].indexOf(name) === -1){
+          this.cleantable.res.isp.clean[country].push(name)
+          this.cleantable.isp.show[country].clean_counter += 1
         }
       }
       if (value === "Don't care" || value === "Danger"){
-        let clean_index = this.cleantable.res.isp.clean.indexOf(name)
+        let clean_index = this.cleantable.res.isp.clean[country].indexOf(name)
         if (clean_index !== -1){
-          this.cleantable.res.isp.clean.splice(clean_index, 1)
-          this.cleantable.isp.show[this.cleantable.isp.focus].clean_counter -= 1
+          this.cleantable.res.isp.clean[country].splice(clean_index, 1)
+          this.cleantable.isp.show[country].clean_counter -= 1
         }
-        if (value === "Danger" && this.cleantable.res.isp.unclean.indexOf(name) === -1){
-          this.cleantable.res.isp.unclean.push(name)
-          this.cleantable.isp.show[this.cleantable.isp.focus].danger_counter += 1
+        if (value === "Danger" && this.cleantable.res.isp.unclean[country].indexOf(name) === -1){
+          this.cleantable.res.isp.unclean[country].push(name)
+          this.cleantable.isp.show[country].danger_counter += 1
         }
       }        
     },
@@ -464,32 +505,56 @@ export default {
         this.check_isp_alone(provider, undefined, type)
       }
     },
-    check_hdm_alone(name, event, raw_value = null){
+    check_hdm_alone(name, event, raw_value = null, raw_category = null){
       let value = (event !== undefined)? event.target.value : raw_value
-      this.cleantable.hdm.show[this.cleantable.hdm.focus].list[name] = value
+      let country = raw_category !== null ? raw_category : this.cleantable.hdm.focus
+      this.cleantable.hdm.show[country].list[name] = value
 
       if (value === "Don't care" || value === "Clean"){
-        let danger_index = this.cleantable.res.hdm.unclean.indexOf(name)
+        let danger_index = this.cleantable.res.hdm.unclean[country].indexOf(name)
         if (danger_index !== -1){
-          this.cleantable.res.hdm.unclean.splice(danger_index, 1)
-          this.cleantable.hdm.show[this.cleantable.hdm.focus].danger_counter -= 1
+          this.cleantable.res.hdm.unclean[country].splice(danger_index, 1)
+          this.cleantable.hdm.show[country].danger_counter -= 1
         }
-        if (value === "Clean" && this.cleantable.res.hdm.clean.indexOf(name) === -1){
-          this.cleantable.res.hdm.clean.push(name)
-          this.cleantable.hdm.show[this.cleantable.hdm.focus].clean_counter += 1
+        if (value === "Clean" && this.cleantable.res.hdm.clean[country].indexOf(name) === -1){
+          this.cleantable.res.hdm.clean[country].push(name)
+          this.cleantable.hdm.show[country].clean_counter += 1
         }
       }
       if (value === "Don't care" || value === "Danger"){
-        let clean_index = this.cleantable.res.hdm.clean.indexOf(name)
+        let clean_index = this.cleantable.res.hdm.clean[country].indexOf(name)
         if (clean_index !== -1){
-          this.cleantable.res.hdm.clean.splice(clean_index, 1)
-          this.cleantable.hdm.show[this.cleantable.hdm.focus].clean_counter -= 1
+          this.cleantable.res.hdm.clean[country].splice(clean_index, 1)
+          this.cleantable.hdm.show[country].clean_counter -= 1
         }
-        if (value === "Danger" && this.cleantable.res.hdm.unclean.indexOf(name) === -1){
-          this.cleantable.res.hdm.unclean.push(name)
-          this.cleantable.hdm.show[this.cleantable.hdm.focus].danger_counter += 1
+        if (value === "Danger" && this.cleantable.res.hdm.unclean[country].indexOf(name) === -1){
+          this.cleantable.res.hdm.unclean[country].push(name)
+          this.cleantable.hdm.show[country].danger_counter += 1
         }
       }        
+    },
+    clean_table_import(name, value, type){
+      let category_country = undefined
+      for(let temp of Object.keys(this.cleantable[type].show)){
+        for(let item of Object.keys(this.cleantable[type].show[temp].list)){
+          if(item === name){
+            category_country = temp
+            break
+          }
+        }
+        if(category_country !== undefined){
+          break
+        }
+      }
+
+      if(category_country !== undefined){
+        if(type === "hdm"){
+          this.check_hdm_alone(name, undefined, value, category_country)
+        }
+        else{
+          this.check_isp_alone(name, undefined, value, category_country)
+        }
+      }
     },
     check_hdm_all(type){
       for (let provider of Object.keys(this.cleantable.hdm.show[this.cleantable.hdm.focus].list)) {
@@ -509,8 +574,61 @@ export default {
     },
     delet_vpn_node(ip){
       delete this.vpntable.res[ip]
+    },
+    vpn_path_all_select(){
+      let vm = this
+      let all_node = ['localhost'].concat(Object.keys(this.vpn_data.show_path['localhost']))
+        all_node.forEach(function (ip, i){
+          all_node.forEach(function (ip2, j){
+            if (i < j){
+              vm.vpn_data.show_path[ip][ip2]["show"] = !vm.vpn_data.show_all
+            }
+          })
+        })
+    },
+    getDefaultCleanTable(){
+
+    },
+    upload_clean_table(event){
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            // Parse the JSON data
+            const parsedData = JSON.parse(e.target.result);
+            console.log(parsedData)
+            // Save the parsed data in the component's data
+            // import hdm clean
+            for(let hdm of parsedData["hdm"]["clean"]){
+              this.clean_table_import(hdm, "Clean", "hdm")
+            }
+            // import hdm danger
+            for(let hdm of parsedData["hdm"]["unclean"]){
+              this.clean_table_import(hdm, "Danger", "hdm")
+            }
+            // import isp clean
+            for(let isp of parsedData["isp"]["clean"]){
+              this.clean_table_import(isp, "Clean", "isp")
+            }
+            // import isp danger
+            for(let isp of parsedData["isp"]["unclean"]){
+              this.clean_table_import(isp, "Danger", "isp")
+            }
+            
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert("Error JSON format:", error);
+            this.jsonData = null;
+          }
+        };
+
+        // Read the file as text
+        reader.readAsText(file);
+      }
     }
-   
   },
   
   mounted(){
@@ -535,12 +653,16 @@ export default {
         console.log(`[INFO] Get brand_list hdm size = ${vm.cleantable.all_table.hdm.length}, isp size = ${Object.keys(vm.cleantable.all_table.isp).length}`)
         console.log(vm.cleantable.all_table)
         for(let key of Object.keys(vm.cleantable.all_table["isp"])){
+          vm.cleantable.res.isp.clean[key] = []
+          vm.cleantable.res.isp.unclean[key] = []
           vm.cleantable.isp.show[key] = {list: {}, clean_counter: 0, danger_counter: 0}
           for(let provider of vm.cleantable.all_table["isp"][key]){
             vm.cleantable.isp.show[key].list[provider] = "Don't care"
           }
         }
         for(let key of Object.keys(vm.cleantable.all_table["hdm"])){
+          vm.cleantable.res.hdm.clean[key] = []
+          vm.cleantable.res.hdm.unclean[key] = []
           vm.cleantable.hdm.show[key] = {list: {}, clean_counter: 0, danger_counter: 0}
           for(let provider of vm.cleantable.all_table["hdm"][key]){
             vm.cleantable.hdm.show[key].list[provider] = "Don't care"
@@ -713,26 +835,30 @@ export default {
               </l-map>
             </div>
           </div>
-          <div class="d-flex">
-            <span class="mx-2">
-              (Danger
-              <span style="color:#FF0000;">■</span>
-              <span style="color:#B6B6B6;">■</span>
-              <span style="color:#FFA500;">■</span>
-              <span style="color:#FFFF00;">■</span>
-              <span style="color:#008000;">■</span>
-              Safe)
-            </span>
-            <span class="mx-2">
-              <button class="btn btn-info btn-sm py-0">Select least weight path </button>
-            </span>
-          </div>
           
           <div v-if="vpn_data.show_path['localhost'] !== undefined">
+            <div class="d-flex">
+              <span class="mx-2">
+                (Danger
+                <span style="color:#FF0000;">■</span>
+                <span style="color:#B6B6B6;">■</span>
+                <span style="color:#FFA500;">■</span>
+                <span style="color:#FFFF00;">■</span>
+                <span style="color:#008000;">■</span>
+                Safe)
+              </span>
+              <span class="mx-2">
+                <button @click="select_shortest_path" class="btn btn-info btn-sm py-0">>Select minimum weight path&lt; (weight:{{vpn_data.shortest_info["shortest_distance"]}})</button>
+              </span>
+            </div>
+
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
+                  <th scope="col">
+                    #
+                    <input type="checkbox" v-model="vpn_data.show_all" @click="vpn_path_all_select" />
+                  </th>
                   <th v-for="(ip, index) in ['localhost'].concat(Object.keys(vpn_data.show_path['localhost']))">{{ ip }}</th>
                 </tr>
               </thead>
@@ -981,8 +1107,11 @@ export default {
             <!-- /Step 2 HDM Selecter -->
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Get Default config</button>
+            <div class="d-flex">
+              <label class="input-group-text bg-info" for="inputGroupFile01">Edit From File: (Please use when no country and category are selected.)</label>
+              <input type="file" class="form-control" id="inputGroupFile01" accept="application/JSON" @change="upload_clean_table($event)">
+            </div>
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="getDefaultCleanTable">Get Default config</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startVPNTable(false)">Save and Next→Set VPN Table</button>
           </div>
         </div>

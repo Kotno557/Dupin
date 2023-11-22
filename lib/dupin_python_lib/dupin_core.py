@@ -194,7 +194,7 @@ class DupinInfoSniffer:
         nm: nmap.PortScanner = nmap.PortScanner()
         try:
             nm.scan(hosts=ip, arguments='-O --osscan-guess', timeout=40, sudo=True)
-            return nm[ip]['osmatch'][0]['osclass'][0]['vendor']
+            return nm[ip]['osmatch'][0]['osclass'][0]['osfamily']
         except Exception as e:
             print('[INFO] dupin_core.py.DupinInfoSniffer: OS Not Available')
             # print(e)

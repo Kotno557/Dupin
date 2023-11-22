@@ -1,5 +1,5 @@
 from lib.dupin_python_lib.dupin_core import DupinPathSniffer, DupinInfoSniffer, DupinLevelGrader, DupinVchainConnecter, database_init
-from lib.dupin_python_lib.dupin_tool import get_ip_coord, ip_level_convert
+from lib.dupin_python_lib.dupin_tool import get_ip_coord, ip_level_convert, shortest_path, clean_table_parser
 from fastapi import FastAPI, Query, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -44,7 +44,7 @@ async def upload(file_type: int, file: UploadFile):
         file_content = await file.read()
         json_data = json.loads(file_content)
         if file_type == 1:
-            CLEAN_TABLE = json_data
+            CLEAN_TABLE = clean_table_parser(json_data)
             print("[INFO] dupin_server.upload: Upload CLEAN_TABLE")
         if file_type == 2:
             VPN_TABLE = json_data
@@ -149,9 +149,9 @@ async def vpn_path_check(target_url: str):
                 "single_weight": sniffer._weight_table[sniffer.weight_result[key]],
                 "draw_path": path_sniffer.draw_path
             }
-        
+            
 
-    return res
+    return {"res": res, "shortest_info": shortest_path(res, target_url)}
 
 
 
