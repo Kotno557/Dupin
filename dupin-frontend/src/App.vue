@@ -591,7 +591,6 @@ export default {
     },
     upload_clean_table(event){
       const file = event.target.files[0];
-
       if (file) {
         const reader = new FileReader();
 
@@ -602,20 +601,28 @@ export default {
             console.log(parsedData)
             // Save the parsed data in the component's data
             // import hdm clean
-            for(let hdm of parsedData["hdm"]["clean"]){
-              this.clean_table_import(hdm, "Clean", "hdm")
+            for(let type of Object.keys(parsedData["hdm"]["clean"])){
+              for(let hdm of parsedData["hdm"]["clean"][type]){
+                this.check_hdm_alone(hdm, undefined, "Clean", type)
+              }
             }
             // import hdm danger
-            for(let hdm of parsedData["hdm"]["unclean"]){
-              this.clean_table_import(hdm, "Danger", "hdm")
+            for(let type of Object.keys(parsedData["hdm"]["unclean"])){
+              for(let hdm of parsedData["hdm"]["unclean"][type]){
+                this.check_hdm_alone(hdm, undefined, "Danger", type)
+              }
             }
             // import isp clean
-            for(let isp of parsedData["isp"]["clean"]){
-              this.clean_table_import(isp, "Clean", "isp")
+            for(let type of Object.keys(parsedData["isp"]["clean"])){
+              for(let isp of parsedData["isp"]["clean"][type]){
+                this.check_isp_alone(isp, undefined, "Clean", type)
+              }
             }
             // import isp danger
-            for(let isp of parsedData["isp"]["unclean"]){
-              this.clean_table_import(isp, "Danger", "isp")
+            for(let type of Object.keys(parsedData["isp"]["unclean"])){
+              for(let isp of parsedData["isp"]["unclean"][type]){
+                this.check_isp_alone(isp, undefined, "Danger", type)
+              }
             }
             
           } catch (error) {
@@ -624,7 +631,6 @@ export default {
             this.jsonData = null;
           }
         };
-
         // Read the file as text
         reader.readAsText(file);
       }
@@ -1108,7 +1114,7 @@ export default {
           </div>
           <div class="modal-footer">
             <div class="d-flex">
-              <label class="input-group-text bg-info" for="inputGroupFile01">Edit From File: (Please use when no country and category are selected.)</label>
+              <label class="input-group-text bg-info" for="inputGroupFile01">Edit From File:</label>
               <input type="file" class="form-control" id="inputGroupFile01" accept="application/JSON" @change="upload_clean_table($event)">
             </div>
             <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="getDefaultCleanTable">Get Default config</button>
