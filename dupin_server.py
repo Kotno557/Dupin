@@ -215,6 +215,13 @@ async def ip():
     ip: str = requests.get('https://checkip.amazonaws.com').text.strip()
     return {"ip": ip}
 
+@app.post('/save_history')
+async def save_history(history_data: Dict):
+    with open('lib/dupin_python_lib/history.json', 'w') as table:
+        json.dump(history_data, table, indent=4)
+
+    return {"msg":"success"}
+
 if __name__ == "__main__":
     database_init()
     conn: sqlite3.Connection = sqlite3.connect('local_database.db')

@@ -1,18 +1,21 @@
 <script>
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LCircle, LMarker, LPopup, LTooltip, LPolyline } from "@vue-leaflet/vue-leaflet";
+import moment from 'moment'
 import L from "leaflet";
 import axios from "axios";
-import default_clean_table from '../../User-defined files/clean/default_clean_table.json';
-
+import default_clean_table from '../../default-config-file/default_clean_table.json';
+import history_table from '../../lib/dupin_python_lib/history.json'
 
 import {Modal} from "bootstrap"
+import { VueElement } from "vue";
 
 let modal;
 let welcon_modal
 let clean_modal
 let vpn_modal
 let weight_modal
+let history_modal
 
 export default {
   components: {
@@ -28,7 +31,7 @@ export default {
     return {
       direct_data: {
         "local":{
-          "ip": null,
+          "ip": "",
           "coord": [0,0],
           "type": "local"
         },
@@ -56,6 +59,7 @@ export default {
         "show_path": {},
         "node": {},
         "select": [] /*["20.84.80.216","20.199.51.125","74.226.208.130"]*/,
+        "select_weight": 0,
         "now": null,
         "shortest_info": {},
         "show_all": false
@@ -91,22 +95,31 @@ export default {
       },
       weighttable:{
         res: {
-          "-1": null,
-          "0": null,
-          "1": null,
-          "2": null,
-          "3": null,
+          "-1": 10000,
+          "0": 10,
+          "1": 5,
+          "2": 3,
+          "3": 0,
         }
       },
+      input_vpn_table: undefined,
       local_zoom: 5,
       vpn_zoom: 5,
       loading: false,
       p_disconnect: false,
 
-      default_clean_table
+      default_clean_table,
+      history_table
     };
   },
   methods: {
+    getNowTime(){
+      var date = new Date();
+      var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
+      var current_time = date.getHours()+":"+date.getMinutes()+":"+ date.getSeconds();
+      var date_time = current_date+" "+current_time;
+      return date_time
+    },
     async target_detection(){
       this.loading = true
 
@@ -227,9 +240,9 @@ export default {
 
       Please click on the grey VPN coordinates to determine the connection path.
 
-      When you have confirm your selection, please press the ${"green 🔗 button".fontcolor("green")} to start the VPN-chaining connection.
+      When you have confirm your selection, please press the green 🔗 button" to start the VPN-chaining connection.
 
-      Onece you want to disconnect, press the ${"red 🔗 button".fontcolor("red")} to termination the connection.
+      Onece you want to disconnect, press the red 🔗 button to termination the connection.
 
       If you don't see any coordinates on the VPN map, please check for error messages on the backend terminal.
       `)
@@ -241,11 +254,106 @@ export default {
         });
       }
       this.loading = true
+
+      let path_weight = 0
+      let path = ['localhost'].concat(this.vpn_data.select)
+      path.push(this.direct_data.target.url)
+      for(let i = 0; i < path.length - 1; i+=1){
+        path_weight += this.vpn_data.path[path[i]][path[i+1]].path_weight
+      }
+      this.vpn_data.select_weight = path_weight
+
+      this.history_table[this.getNowTime()] = {
+        "Start Local IP": this.direct_data.local.ip,
+        "Target URL": this.direct_data.target.url,
+        "Connect Path": this.vpn_data.select,
+        "Weight_direct": this.direct_data.line.weight,
+        "Weight_VPN": this.vpn_data.select_weight
+      }
+
+      try{
+        await axios.post("http://localhost:8000/save_history", this.history_table)
+        await axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
+      }
+      catch(e){
+        console.log("there is a catch of 500 Error")
+        await delay(20000)
+        console.log("delay 20sec")
+        
+        var ip_now 
+        var p = 0
+        do{
+          try{
+            p += 1
+            ip_now = (await axios.get("http://localhost:8000/ip/")).data["ip"]
+            console.log(ip_now, "vs", this.direct_data.local.ip)
+            await delay(5000)
+          }
+          catch(e){
+            console.log(e)
+          }
+        }while(ip_now == this.direct_data.local.ip && p <= 3)
+        
+        if (p > 3){
+          alert(`The connection fail, please check the backend log to get more info`)
+        }
+        else{
+          this.p_disconnect = true
+          alert(`New connection has been established.\n\n
+          IP of loacal from:\n\n
+          ${this.direct_data.local.ip} → ${ip_now}\n\n
+
+          Weight of danger from:\n\n
+          ${this.direct_data.line.weight} → ${this.vpn_data.select_weight}\n\n
+          Enjoy Your Clean Connection Uwu`)
+        }
+        this.loading = false
+      }
+    }, 
+    async disconnect() {
+      this.loading = true
+      try{
+        await axios.get("http://localhost:8000/disconnect")
+      }
+      catch(e){
+        console.log(e)
+      }
+      setTimeout(function () {
+        console.log("wating 5 sec...")
+      }, 5000)
+      this.loading = false
+      alert("The connection data has been stored in the history. If you want to connect directly with the same settings, please go to the connection history")
+      location.reload()
+    },
+    async history_connect(connect_path){
+      this.vpn_data.select = connect_path
+
+      // if(this.check_vpn_correct(connect_path) === false){
+      //   console.log("connect_path", connect_path,"input_table", this.input_vpn_table)
+      //   alert("The VPN selected path and VPN table not match.")
+      //   return
+      // }
+
+      function delay(milliseconds){
+        return new Promise(resolve => {
+          setTimeout(resolve, milliseconds);
+        });
+      }
+      this.loading = true
+
+      // let path_weight = 0
+      // let path = ['localhost'].concat(this.vpn_data.select)
+      // path.push(this.direct_data.target.url)
+      // for(let i = 0; i < path.length - 1; i+=1){
+      //   path_weight += this.vpn_data.path[path[i]][path[i+1]].path_weight
+      // }
+      // this.vpn_data.select_weight = path_weight
+
       try{
         await axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
       }
       catch(e){
-        console.log("there is a catch of 500 ERR")
+        console.log("there is a catch of 500 Error")
         await delay(20000)
         console.log("delay 20sec")
         
@@ -275,21 +383,6 @@ export default {
         }
         this.loading = false
       }
-    }, 
-    async disconnect() {
-      this.loading = true
-      try{
-        await axios.get("http://localhost:8000/disconnect")
-      }
-      catch(e){
-        console.log(e)
-      }
-      setTimeout(function () {
-        console.log("wating 5 sec...")
-      }, 5000)
-      this.loading = false
-      alert("The connection data has been stored in the history. If you want to connect directly with the same settings, please go to the connection history")
-      location.reload()
     },
     update_now (node_new) {
       console.log("click"+node_new)
@@ -298,11 +391,12 @@ export default {
       }
       this.vpn_data.select.push(node_new)
       this.vpn_data.node[node_new].type = "disable"
-      //this.vpn_data.show_path[]
+      
     },
     redo(){
       console.log("back")
       let last = this.vpn_data.select[this.vpn_data.select.length - 1]
+
       this.vpn_data.node[last].type = "enable"
       this.vpn_data.select.pop()
     },
@@ -338,6 +432,9 @@ export default {
     upload_file(type, event){
       let formData = new FormData();
       formData.append("file", event.target.files[0])
+      if (type === 2){
+        this.upload_vpn_input_table(event)
+      }
       axios.post(`http://localhost:8000/upload/${type}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -376,7 +473,7 @@ export default {
     startWelcome(){
       clean_modal.show()
     },
-    startVPNTable(fromHome= true ){
+    startVPNTable(fromHome= true){
       let vm = this
       function download(fileName) {
           // 創建 Blob 對象
@@ -437,6 +534,14 @@ export default {
         download('UserVPNTable.json')
       }
       weight_modal.show()
+    },
+    startHistoryTable(){
+      if(this.input_vpn_table === undefined){
+        alert("The history connection requires you to upload the VPN Table first.")
+      }
+      else{
+        history_modal.show()
+      }
     },
     weight_done(){
       let vm = this
@@ -587,7 +692,30 @@ export default {
         })
     },
     getDefaultCleanTable(){
+      let vm = this
+      function download(fileName) {
+          // 創建 Blob 對象
+          var file = new Blob([JSON.stringify(vm.default_clean_table)], { type: 'application/json' });
+          // 創建 Blob URL
+          var blobUrl = window.URL.createObjectURL(file);
 
+          // 創建新視窗，用於顯示 "Save As..." 對話框
+          var a = document.createElement("a");
+          a.style.display = "none";
+          document.body.appendChild(a);
+
+          // 設定新視窗的 URL 為 Blob URL
+          a.href = blobUrl;
+          a.download = fileName;
+
+          // 觸發點擊事件以顯示 "Save As..." 對話框
+          a.click();
+
+          // 刪除創建的元素和 Blob URL，以避免內存洩漏
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(blobUrl);
+      }
+      download('default_clean_table.json')
     },
     upload_clean_table(event){
       const file = event.target.files[0];
@@ -634,8 +762,109 @@ export default {
         // Read the file as text
         reader.readAsText(file);
       }
+    },
+    upload_vpn_table(event){
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            // Parse the JSON data
+            const parsedData = JSON.parse(e.target.result);
+            console.log(parsedData)
+            // Save the parsed data in the component's data
+            // import hdm clean
+            this.vpntable.res[this.vpntable.input.ip]
+            for(let ip of Object.keys(parsedData)){
+              this.vpntable.res[ip] = parsedData[ip]
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert("Error JSON format:", error);
+            this.jsonData = null;
+          }
+        };
+        // Read the file as text
+        reader.readAsText(file);
+      }
+    },
+    upload_weight_table(event){
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            // Parse the JSON data
+            const parsedData = JSON.parse(e.target.result);
+            console.log(parsedData)
+            // Save the parsed data in the component's data
+            // import hdm clean
+            this.vpntable.res[this.vpntable.input.ip]
+            for(let level of Object.keys(parsedData)){
+              this.weighttable.res[level] = parsedData[level]
+            }
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert("Error JSON format:", error);
+            this.jsonData = null;
+          }
+        };
+        // Read the file as text
+        reader.readAsText(file);
+      }
+    },
+    upload_vpn_input_table(event){
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          try {
+            // Parse the JSON data
+            const parsedData = JSON.parse(e.target.result);
+            console.log(parsedData)
+            // Save the parsed data in the component's data
+            // import hdm clean
+            this.input_vpn_table = parsedData
+          } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert("Error JSON format:", error);
+            this.jsonData = null;
+          }
+        };
+        // Read the file as text
+        reader.readAsText(file);
+      }
+    },
+    isInSameSubnet(ip1, ip2) {
+      // 将IP地址转换为整数
+      function ipToInteger(ip) {
+        return ip.split('.').reduce(function (acc, octet, index, array) {
+          return acc + parseInt(octet) * Math.pow(256, (array.length - index - 1));
+        }, 0);
+      }
+
+      // 获取/24子网的掩码
+      function getSubnetMask(ip) {
+        return ipToInteger(ip) & ipToInteger('255.255.255.0');
+      }
+
+      // 将IP地址与/24子网的掩码进行比较
+      return (ipToInteger(ip1) & getSubnetMask(ip1)) === (ipToInteger(ip2) & getSubnetMask(ip2));
+    },
+    check_vpn_correct(path_list){
+      for(let vpn_ip of path_list){
+        if(this.input_vpn_table === undefined || this.input_vpn_table[vpn_ip] === undefined){
+          return true
+        }
+      }
+      return false
     }
+
   },
+
   
   mounted(){
     const vm = this;
@@ -652,6 +881,7 @@ export default {
     clean_modal = new Modal(document.getElementById("CleanTable"))
     vpn_modal = new Modal(document.getElementById("VPNTable"))
     weight_modal = new Modal(document.getElementById("WeightTable"))
+    history_modal = new Modal(document.getElementById("HistoryTable"))
     welcon_modal.show()
     axios.get(`http://localhost:8000/brand_list`)
       .then(function (response) {
@@ -701,12 +931,15 @@ export default {
           <li class="nav-item">
             <a class="nav-link" href="#" @click="startWeightTable">WeightTable</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="startHistoryTable">HistoryTable</a>
+          </li>
         </ul>
       </div>
     </nav>
     <div class="bd-example m-3"> <!--Local info-->
       <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
-      <p>Debugger: {{vpn_data.path}} </p>
+      <p>Debugger: {{input_vpn_table}} </p>
       <!-- <p> {{vpn_data.path.}} </p> -->
       <!-- <p> {{modal_data}} </p> -->
     </div>
@@ -1117,7 +1350,7 @@ export default {
               <label class="input-group-text bg-info" for="inputGroupFile01">Edit From File:</label>
               <input type="file" class="form-control" id="inputGroupFile01" accept="application/JSON" @change="upload_clean_table($event)">
             </div>
-            <button type="button" class="btn btn-warning" data-bs-dismiss="modal" @click="getDefaultCleanTable">Get Default config</button>
+            <button type="button" class="btn btn-warning" @click="getDefaultCleanTable">Get Default config</button>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startVPNTable(false)">Save and Next→Set VPN Table</button>
           </div>
         </div>
@@ -1209,7 +1442,10 @@ export default {
             <p></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="d-flex">
+              <label class="input-group-text bg-info" for="inputGroupFile02">Edit From File:</label>
+              <input type="file" class="form-control" id="inputGroupFile02" accept="application/JSON" @change="upload_vpn_table($event)">
+            </div>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="startWeightTable(false)">> Set VPN Table</button>
           </div>
         </div>
@@ -1228,13 +1464,15 @@ export default {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <h5>
+            <h2 class="my-3">
               Input weights:
-            </h5>
-            <p>
+            </h2>
+            <h5 class="my-4">
               Please note that weights should be input as positive integers, including 0.<br>
               Lower weights indicate higher safety.
-            </p>
+            </h5>
+            <span class="text-danger mt-5">(If you have no clue about this, please use the default values directly.)</span>
+            
             <form class="row g-3">
               <div class="col-md-6">
                 <div class="input-group input-group-lg">
@@ -1282,18 +1520,75 @@ export default {
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <div class="d-flex">
+              <label class="input-group-text bg-info" for="inputGroupFile03">Edit From File:</label>
+              <input type="file" class="form-control" id="inputGroupFile03" accept="application/JSON" @change="upload_weight_table($event)">
+            </div>
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="weight_done(fromHome=false)">Save and Done</button>
           </div>
         </div>
       </div>
     </div>
-    <!--body end-->
 
+    <!-- history -->
+    <div class="modal fade" id="HistoryTable" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="staticBackdropLabel">
+              Connect History:
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul class="list-unstyled">
+              <h2 class="my-3">
+                History connection records:
+              </h2>
+              <li>- This table records past connection history. If the "operate" button is disabled, it indicates that the connection node does not match the current input VPN Table.</li>
+              <li>- When the IP is displayed in green text, it signifies that the IP is in the same network segment as the current IP (/24). In such cases, a new connection may resemble the scenario recorded in this history.
+                <ul>
+                  <li>*To enhance security, it is not recommended to use historical connections from different network segments to avoid increasing the exposure risk.</li>
+                </ul>
+              </li>
+            </ul>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Time</th>
+                  <th scope="col">Start Local IP</th>
+                  <th scope="col">Target IP</th>
+                  <th scope="col">Connect Path</th>
+                  <th scope="col">Weight Direct</th>
+                  <th scope="col">Weight VPN Use</th>
+                  <th scope="col">Operate</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template v-if="Object.keys(history_table).length > 0">
+                  <tr v-for="time in Object.keys(history_table)">
+                    <th scope="row">{{ time }}</th>
+                    <td :class="isInSameSubnet(direct_data.local.ip, history_table[time]['Start Local IP']) ? ['text-success'] :[]">{{ history_table[time]["Start Local IP"] }}</td>
+                    <td>{{ history_table[time]["Target URL"] }}</td>
+                    <td>{{ history_table[time]["Connect Path"] }}</td>
+                    <td>{{ history_table[time]["Weight_direct"] }}</td>
+                    <td>{{ history_table[time]["Weight_VPN"] }}</td>
+                    <td>
+                      <button v-if="p_disconnect == false" class="btn btn-success btn-sm py-0" @click="history_connect(history_table[time]['Connect Path'])" :disabled="check_vpn_correct(history_table[time]['Connect Path'])">🔗</button>
+                      <button v-if="p_disconnect == true" class="btn btn-danger btn-sm py-0" :disabled="vpn_data.select.length <= 0" @click="disconnect()">🔗</button>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  </div> 
-  
-
+    <!--/ history -->
+  </div>  
+  <!--body end-->
   <!--loading-->
   <div id="dimScreen" v-if="loading">
     <div class="h-100 w-100 d-flex align-items-center justify-content-center">
@@ -1342,7 +1637,7 @@ html, body {
     position: fixed;
     top: 0px;
     left: 0px;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 .custom-list-group {

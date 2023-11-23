@@ -1,0 +1,23 @@
+{
+    "2023-11-23 18:45:49": {
+        "Start Local IP": "17.139.54.80",
+        "Target URL": "www.uni-lj.si",
+        "Connect Path": [
+            "20.84.80.216",
+            "172.160.225.75",
+            "74.226.208.131"
+        ],
+        "Weight_direct": 144,
+        "Weight_VPN": 80
+    },
+    "2023-11-23 20:31:2": {
+        "Start Local IP": "223.139.54.10",
+        "Target URL": "www.uni-lj.si",
+        "Connect Path": [
+            "20.84.80.216",
+            "172.160.225.75"
+        ],
+        "Weight_direct": 85,
+        "Weight_VPN": 80
+    }
+}
