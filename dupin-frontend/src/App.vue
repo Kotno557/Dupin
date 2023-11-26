@@ -938,8 +938,8 @@ export default {
       </div>
     </nav>
     <div class="bd-example m-3"> <!--Local info-->
-      <h1>Your current IP is: {{direct_data.local.ip}}.  Coordination: {{direct_data.local.coord}}.</h1>
-      <p>Debugger: {{input_vpn_table}} </p>
+      <h1>Your current IP is: {{direct_data.local.ip}}, Coordination: {{direct_data.local.coord}}</h1>
+      <!-- <p>Debugger: {{input_vpn_table}} </p> -->
       <!-- <p> {{vpn_data.path.}} </p> -->
       <!-- <p> {{modal_data}} </p> -->
     </div>
@@ -1330,7 +1330,7 @@ export default {
                 </div>
               </div>
             </div>
-            <div class="row border p-1 mt-5">
+            <!-- <div class="row border p-1 mt-5">
               <p>
                 <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                   Debug Use: res Data ►
@@ -1342,7 +1342,7 @@ export default {
                 </div>
               </div>
               <p></p>
-            </div>
+            </div> -->
             <!-- /Step 2 HDM Selecter -->
           </div>
           <div class="modal-footer">
@@ -1427,7 +1427,7 @@ export default {
               </table>
             </div>
           </div>
-          <div class="row border p-1 mt-5">
+          <!-- <div class="row border p-1 mt-5">
             <p>
               <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Debug Use: VPN res Table ►
@@ -1440,7 +1440,7 @@ export default {
               </div>
             </div>
             <p></p>
-          </div>
+          </div> -->
           <div class="modal-footer">
             <div class="d-flex">
               <label class="input-group-text bg-info" for="inputGroupFile02">Edit From File:</label>
@@ -1482,7 +1482,7 @@ export default {
               </div>
               <div class="col-md-6">
                 <div class="input-group input-group-lg">
-                  <span class="input-group-text bg-secondary">UNKNOW</span>
+                  <span class="input-group-text bg-secondary">UNKNOWN</span>
                   <input v-model="weighttable.res['0']" type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
                 </div>
               </div>
@@ -1506,7 +1506,7 @@ export default {
               </div>
             </form>
           </div>
-          <div class="row border p-1 mt-5">
+          <!-- <div class="row border p-1 mt-5">
             <p>
               <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Debug Use: Weight res Table ►
@@ -1517,7 +1517,7 @@ export default {
                 <p>{{ weighttable.res }}</p>
               </div>
             </div>
-          </div>
+          </div> -->
 
           <div class="modal-footer">
             <div class="d-flex">

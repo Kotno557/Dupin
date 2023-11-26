@@ -18,7 +18,7 @@ def ip_level_convert(level: str|int) -> str:
     if type(level) == str:
         table: Dict = {
             "-1": "DANGER",
-            "0": "UNKNOW",
+            "0": "UNKNOWN",
             "1": "LOW",
             "2": "PASSABLE",
             "3": "SAFE"
@@ -26,7 +26,7 @@ def ip_level_convert(level: str|int) -> str:
     else:
         table: Dict = {
             -1: "DANGER",
-            0: "UNKNOW",
+            0: "UNKNOWN",
             1: "LOW",
             2: "PASSABLE",
             3: "SAFE"

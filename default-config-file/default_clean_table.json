@@ -28,15 +28,15 @@
 			"OS Vendor":[
 				"Alcatel-Lucent",
 				"Avaya",
-				"Barracuda",
+				"Barracuda Networks",
 				"Brocade",
 				"Calix",
 				"Cisco",
 				"Control4",
 				"Dell",
 				"Enterasys",
-				"Extreme",
-				"F5",
+				"Extreme Networks",
+				"F5 Networks",
 				"Fortinet",
 				"Juniper",
 				"Ruckus",
@@ -46,8 +46,7 @@
 				"DrayTek",
 				"D-Link",
 				"ZyXEL",
-				"Grandstream",
-				"TMOS"
+				"Grandstream"
 			]
 		},
 		"unclean":{
@@ -989,6 +988,7 @@
 			],
 			"US":[
 				"Amazon.com, Inc.",
+				"Amazon Technologies Inc.",
 				"Rainbow network limited",
 				"Daniel Cid",
 				"Data Communication Business Group",
