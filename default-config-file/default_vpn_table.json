@@ -4,7 +4,7 @@
         "ovpn_path": "/home/dyang/Dobie/vpn_node_ovpn_fold/VPN1.ovpn"
     },
     "172.160.225.75": {
-        "name": "VPN1",
+        "name": "VPN2",
         "ovpn_path": "/home/dyang/Dobie/vpn_node_ovpn_fold/VPN2.ovpn"
     },
     "74.226.208.130": {

@@ -103,8 +103,8 @@ export default {
         }
       },
       input_vpn_table: undefined,
-      local_zoom: 5,
-      vpn_zoom: 5,
+      local_zoom: 3,
+      vpn_zoom: 3,
       loading: false,
       p_disconnect: false,
 
@@ -255,24 +255,26 @@ export default {
       }
       this.loading = true
 
-      let path_weight = 0
-      let path = ['localhost'].concat(this.vpn_data.select)
-      path.push(this.direct_data.target.url)
-      for(let i = 0; i < path.length - 1; i+=1){
-        path_weight += this.vpn_data.path[path[i]][path[i+1]].path_weight
-      }
-      this.vpn_data.select_weight = path_weight
+      // let path_weight = 0
+      // let path = ['localhost'].concat(this.vpn_data.select)
+      // path.push(this.direct_data.target.url)
+      // console.log(path)
+      // console.log(this.vpn_data.path)
+      // for(let i = 0; i < (path.length - 1); i++){
+      //   console.log("add, path weight", path[i], path[i+1])
+      //   path_weight += this.vpn_data.show_path[path[i]][path[i+1]]['weight']
+      // }
+      // this.vpn_data.select_weight = path_weight
 
-      this.history_table[this.getNowTime()] = {
-        "Start Local IP": this.direct_data.local.ip,
-        "Target URL": this.direct_data.target.url,
-        "Connect Path": this.vpn_data.select,
-        "Weight_direct": this.direct_data.line.weight,
-        "Weight_VPN": this.vpn_data.select_weight
-      }
+      // this.history_table[this.getNowTime()] = {
+      //   "Start Local IP": this.direct_data.local.ip,
+      //   "Target URL": this.direct_data.target.url,
+      //   "Connect Path": this.vpn_data.select,
+      //   "Weight_direct": this.direct_data.line.weight,
+      //   "Weight_VPN": this.vpn_data.select_weight
+      // }
 
       try{
-        await axios.post("http://localhost:8000/save_history", this.history_table)
         await axios.post(`http://localhost:8000/connect/?target_url=${this.direct_data.target.url}`, this.vpn_data.select)
       }
       catch(e){
@@ -299,13 +301,18 @@ export default {
         }
         else{
           this.p_disconnect = true
-          alert(`New connection has been established.\n\n
-          IP of loacal from:\n\n
-          ${this.direct_data.local.ip} → ${ip_now}\n\n
+          let alert_msg =`New connection has been established.\n
+IP Of Loacal From:\n
+${this.direct_data.local.ip} → ${ip_now}\n
+VPN Path:\n
+localhost->${this.vpn_data.select.join("->")}`
+          // alert_msg += `localhost -${this.vpn_data.path['localhost'][this.vpn_data.select[0]].path_weight}-> ${this.vpn_data.select[0]}`
+          // for(let i = 0; i < this.vpn_data.select.length - 1; i++){
+          //   alert_msg += ` -${this.vpn_data.path[this.vpn_data.select[i]][this.vpn_data.select[i+1]].path_weight}-> ${this.vpn_data.select[i+1]}`
+          // }
+          // alert_msg += ` -${this.vpn_data.path[this.vpn_data.select[this.vpn_data.select.length - 1]][this.direct_data.target.url].path_weight}-> ${this.direct_data.target.url}`
 
-          Weight of danger from:\n\n
-          ${this.direct_data.line.weight} → ${this.vpn_data.select_weight}\n\n
-          Enjoy Your Clean Connection Uwu`)
+          alert(alert_msg)
         }
         this.loading = false
       }
@@ -321,8 +328,23 @@ export default {
       setTimeout(function () {
         console.log("wating 5 sec...")
       }, 5000)
+
+      try{
+        // this.history_table[this.getNowTime()] = {
+        //   "Start Local IP": this.direct_data.local.ip,
+        //   "Target URL": this.direct_data.target.url,
+        //   "Connect Path": this.vpn_data.select,
+        //   "Weight_direct": this.direct_data.line.weight,
+        //   "Weight_VPN": this.vpn_data.select_weight
+        // }
+        await axios.post("http://localhost:8000/save_history", this.history_table)
+      }
+      catch(e){
+        console.log(e)
+      }
+
       this.loading = false
-      alert("The connection data has been stored in the history. If you want to connect directly with the same settings, please go to the connection history")
+      alert("The VPN connection has been interrupted. Please verify whether your IP address has reverted to its original state.")
       location.reload()
     },
     async history_connect(connect_path){
@@ -465,7 +487,7 @@ export default {
       return icon
     },
     showModal(start, end, data){
-      this.modal_data.title = `Path Detection: ${start} → ${end}, Weight ${this.direct_data.line.weight}`
+      this.modal_data.title = `Path Detection: ${start} → ${end}`
       this.modal_data.data = data
 
       modal.show()
@@ -931,9 +953,9 @@ export default {
           <li class="nav-item">
             <a class="nav-link" href="#" @click="startWeightTable">WeightTable</a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="#" @click="startHistoryTable">HistoryTable</a>
-          </li>
+          </li> -->
         </ul>
       </div>
     </nav>
@@ -990,7 +1012,7 @@ export default {
         <div class="col">
           <h5>▼ Direct Scan</h5>
           <div class="map">
-            <div style="height:600px; width:800px">
+            <div style="height:400px; width:600px">
               <l-map v-model:zoom="local_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -1022,10 +1044,10 @@ export default {
           <div class="h-100 w-100 d-flex align-items-center justify-content-center">
             <div class="d-flex flex-column align-items-center">
               <div>
-                <button class="btn btn-primary" @click="vpn_detection" :disabled="direct_data.line.summary === null"> >VPN detect></button>
+                <button class="btn btn-primary" @click="vpn_detection" :disabled="direct_data.line.summary === null"> VPN Detection</button>
               </div>
               <div>
-                Path selector:  
+                Path Selector:  
               </div>
               <div>
                 <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="redo()">↩</button>
@@ -1034,7 +1056,7 @@ export default {
                 <button class="btn btn-warning" :disabled="vpn_data.select.length <= 0" @click="path_clear()">↺</button>
               </div>
               <span>
-                VPN chain select:
+                VPN Chain Selected:
               </span>
               <span v-if="vpn_data.select.length == 0">
                 None
@@ -1048,7 +1070,7 @@ export default {
         <div class="col">
           <h5> ▼ VPN Scan</h5>
           <div class="map">
-            <div style="height:600px; width:800px">
+            <div style="height:400px; width:600px">
               <l-map v-model:zoom="vpn_zoom" :center="direct_data.local.coord">
                 <l-tile-layer
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -1087,7 +1109,7 @@ export default {
                 Safe)
               </span>
               <span class="mx-2">
-                <button @click="select_shortest_path" class="btn btn-info btn-sm py-0">>Select minimum weight path&lt; (weight:{{vpn_data.shortest_info["shortest_distance"]}})</button>
+                <button @click="select_shortest_path" class="btn btn-info btn-sm py-0">>Select Minimum Weight Path&lt; (Weight:{{vpn_data.shortest_info["shortest_distance"]}})</button>
               </span>
             </div>
 
@@ -1621,7 +1643,7 @@ export default {
 }
 
 .map {
-  height: 600px;
+  height: 400px;
 }
 
 html, body {

@@ -19,5 +19,14 @@
         ],
         "Weight_direct": 85,
         "Weight_VPN": 80
+    },
+    "2023-11-27 14:29:6": {
+        "Start Local IP": "210.240.156.46",
+        "Target URL": "www.uni-lj.si",
+        "Connect Path": [
+            "172.160.225.75"
+        ],
+        "Weight_direct": 81,
+        "Weight_VPN": 54
     }
 }
