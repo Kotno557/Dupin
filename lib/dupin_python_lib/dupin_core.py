@@ -143,6 +143,11 @@ class DupinInfoSniffer:
                     lookup_info: Dict = requests.get(f"http://ip-api.com/json/{ip}").json()
                     # find isp
                     isp = lookup_info["isp"]
+                    isp = "".join(lookup_info[""].split(' ')[1:]).strip(' ')
+                    if isp == "":
+                        isp = lookup_info["isp"]
+                    if isp == "":
+                        isp = lookup_info["org"]
                     
                     # find contry
                     country = lookup_info["country"]

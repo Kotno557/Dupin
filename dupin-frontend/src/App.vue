@@ -1022,7 +1022,7 @@ export default {
           <div class="h-100 w-100 d-flex align-items-center justify-content-center">
             <div class="d-flex flex-column align-items-center">
               <div>
-                <button class="btn btn-primary" @click="vpn_detection">>VPN detect></button>
+                <button class="btn btn-primary" @click="vpn_detection" :disabled="direct_data.line.summary === null"> >VPN detect></button>
               </div>
               <div>
                 Path selector:  
