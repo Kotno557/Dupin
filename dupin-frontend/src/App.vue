@@ -6,6 +6,7 @@ import L from "leaflet";
 import axios from "axios";
 import default_clean_table from '../../default-config-file/default_clean_table.json';
 import history_table from '../../lib/dupin_python_lib/history.json'
+import example_data from '../../present_website.json'
 
 import {Modal} from "bootstrap"
 import { VueElement } from "vue";
@@ -36,7 +37,7 @@ export default {
           "type": "local"
         },
         "target":{
-          "url": null,
+          "url": "",
           "ip": null,
           "coord": [0,0],
           "type": "target"
@@ -109,7 +110,8 @@ export default {
       p_disconnect: false,
 
       default_clean_table,
-      history_table
+      history_table,
+      example_data
     };
   },
   methods: {
@@ -448,7 +450,7 @@ localhost->${this.vpn_data.select.join("->")}`
       }
 
       if(this.vpn_data.shortest_info["shortest_path"].length <= 2){
-        alert("The minimum weight path is a direct connection")
+        alert("The minimum weight path is direct connection.")
       }
     },
     upload_file(type, event){
@@ -1001,8 +1003,18 @@ localhost->${this.vpn_data.select.join("->")}`
           </label>
           <input class="form-control" type="text" placeholder="6c3********abd">
         </div>
-        <div class="col-md-12">
-          <button v-on:click="target_detection" type="button" class="btn btn-primary mt-3">Detection</button>
+        <div class="col-md-1">
+          <button v-on:click="target_detection" type="button" class="btn btn-primary" :disabled="direct_data.target.url === '' " >Detection</button>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+            Already cached domain ►
+          </button>
+        </div>
+        <div class="collapse" id="collapseExample">
+          <div class="card card-body">
+            {{ example_data }}
+          </div>
         </div>
       </form>
     </div>
@@ -1631,9 +1643,9 @@ localhost->${this.vpn_data.select.join("->")}`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  background-color: rgb(222, 220, 220);
+  /* background-color: rgb(222, 220, 220); */
+  background-color: #F2F2F2;
 }
-
 .bd-example {
   position: relative;
   padding: 1rem;

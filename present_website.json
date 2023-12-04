@@ -1,11 +1,7 @@
-{
-    "edu": [
-        {"name": "盧比安納大學", "url": "www.uni-lj.si", "country": "斯洛維尼亞"},
-        {"name": "河北东方学院", "url": "www.hbdfxy.cn", "country": "中國"}
-    ],
-    "bank": [
-        {"name":"第一證券", "url": "www.firstrade.com", "country": "CDN"},
-        {"url": "ceidg.gov.pl"},
-        {"name":"Contour", "url": "kontur.ru", "country": "Russia"}
-    ]
-}
+[
+    {"name": "盧比安納大學", "domain": "www.uni-lj.si", "country": "斯洛維尼亞"},
+    {"name": "河北东方学院", "domain": "www.hbdfxy.cn", "country": "中國"},
+    {"name": "愛荷華大學", "domain": "uiowa.edu", "country": "美國"},
+    {"name": "濟州國立大學", "domain": "www.jejunu.ac.kr", "country": "韓國"},
+    {"name": "利茲貝克特大學", "domain": "www.leedsbeckett.ac.uk", "country": "英國"}
+]
