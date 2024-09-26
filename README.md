@@ -35,7 +35,7 @@
     npm run dev (The application will listen on http://localhost:5173)
     
 ### for dupin_vpn_server:
-    apt update\
+    apt update
     apt install pip dublin-traceroute nmap
     git clone https://github.com/Kotno557/Dobie
     cd Dobie
