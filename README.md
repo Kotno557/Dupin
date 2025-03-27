@@ -5,7 +5,7 @@
 ![image](https://github.com/user-attachments/assets/875354e5-9e28-4874-85bb-25b148276503)
 
 #### Project Results Presentation
-##### Demo Video
+##### Demo Video (Click image to redirect to YouTube)
 [<img src="https://img.youtube.com/vi/fuFwcfrXpi4/maxresdefault.jpg" width="50%">](https://youtu.be/fuFwcfrXpi4)
 
 ##### Flowchart
