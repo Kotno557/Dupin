@@ -55,6 +55,3 @@
     chmod +x openvpn-install.sh
     ./openvpn-install.sh
     (Get the oven file to localhost)
-
-to be completed.
-
