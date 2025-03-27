@@ -1,9 +1,16 @@
 # Dupin
 #### _Clean Network-Based Transmission Path Risk Detection and Improvement Program_
 
-[![N|Solid](https://www.python.org/static/community_logos/python-powered-w-100x40.png)](https://www.python.org)
+#### Project Architecture
+![image](https://github.com/user-attachments/assets/875354e5-9e28-4874-85bb-25b148276503)
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+#### Project Results Presentation
+##### Demo Video
+[<img src="https://img.youtube.com/vi/fuFwcfrXpi4/maxresdefault.jpg" width="50%">](https://youtu.be/fuFwcfrXpi4)
+
+##### Flowchart
+![image](https://github.com/user-attachments/assets/ccb65207-d81a-4092-9b5d-477f96566b3a)
+
 
 #### REQUIREMENTS ####
 
